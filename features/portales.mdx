@@ -1,11 +1,11 @@
 ---
 title: Portales externos
-description: Acceso para usuarios fuera del equipo interno. TMS expone dos portales con guards de autenticación independientes: Portal Proveedores y Portal Factoraje.
+description: Acceso para usuarios fuera del equipo interno. El sistema expone dos portales con guards de autenticación independientes: Portal Proveedores y Portal Factoraje.
 ---
 
 ## Por qué existen
 
-Los proveedores de transporte y las empresas de factoraje necesitan interactuar con el sistema sin tener acceso al backoffice interno. TMS resuelve esto con dos portales bajo el prefijo `/portal/`.
+Los proveedores de transporte y las empresas de factoraje necesitan interactuar con el sistema sin tener acceso al backoffice interno. El sistema resuelve esto con dos portales bajo el prefijo `/portal/`.
 
 <Columns cols={2}>
   <Card title="Portal Proveedores" icon="truck" href="#portal-proveedores">
@@ -37,7 +37,7 @@ URL base: `/portal/proveedores`
     Cargar el Proof of Delivery del embarque entregado.
   </Card>
   <Card title="Subir factura" icon="receipt">
-    Cargar el XML CFDI de la factura emitida a TMS para iniciar el flujo de cobro.
+    Cargar el XML CFDI de la factura emitida a la empresa para iniciar el flujo de cobro.
   </Card>
 </Columns>
 
@@ -47,13 +47,13 @@ Cuando el cliente exige el POD original en físico, el proveedor puede marcar **
 
 <Steps>
   <Step title="Solicitud" icon="send">
-    El proveedor (o TMS) marca la solicitud en el embarque.
+    El proveedor (o el operador) marca la solicitud en el embarque.
   </Step>
   <Step title="Envío por mensajería" icon="package">
     El proveedor envía el POD en físico y registra fecha y guía en el portal.
   </Step>
-  <Step title="Recepción en TMS" icon="check-circle">
-    Al recibir el documento, TMS marca **recibido** y la fecha. Esto cierra el ciclo.
+  <Step title="Recepción en el sistema" icon="check-circle">
+    Al recibir el documento, el sistema marca **recibido** y la fecha. Esto cierra el ciclo.
   </Step>
 </Steps>
 

@@ -3,9 +3,9 @@ title: Factoraje
 description: Operaciones con empresas de factoraje, comisiones configurables, días de crédito por empresa y portal externo dedicado para que las factoreras descarguen documentos y registren pagos.
 ---
 
-## Qué es factoraje en TMS
+## Qué es el factoraje en el sistema
 
-El factoraje permite que TMS canalice ciertas facturas de proveedor a través de una **empresa de factoraje**, que adelanta el pago al proveedor a cambio de una comisión.
+El factoraje permite que la empresa canalice ciertas facturas de proveedor a través de una **empresa de factoraje**, que adelanta el pago al proveedor a cambio de una comisión.
 
 <Columns cols={2}>
   <Card title="Operaciones" icon="layers">
@@ -18,7 +18,7 @@ El factoraje permite que TMS canalice ciertas facturas de proveedor a través de
     La empresa de factoraje accede a un portal con guard separado para descargar documentos y registrar pagos.
   </Card>
   <Card title="Sincronización" icon="refresh-cw">
-    Comando programado que mantiene los estados de pago alineados entre TMS y la operación.
+    Comando programado que mantiene los estados de pago alineados entre el sistema y la operación.
   </Card>
 </Columns>
 
@@ -28,7 +28,7 @@ El factoraje permite que TMS canalice ciertas facturas de proveedor a través de
 |--------|-------------|
 | Pendiente | Operación creada, esperando que la empresa de factoraje pague al proveedor |
 | Pagado proveedor | La empresa de factoraje ya le pagó al proveedor |
-| Pagado TMS | TMS ya le pagó a la empresa de factoraje (cierra el ciclo) |
+| Pagado por la empresa | La empresa ya le pagó a la empresa de factoraje (cierra el ciclo) |
 
 ## Crear una operación
 
@@ -50,10 +50,10 @@ Cada `EmpresaFactoraje` admite:
 
 <ExpandableGroup>
   <Expandable title="Comisiones" default-open="true">
-    Comisión total negociada con el proveedor, dividida entre la parte que absorbe el proveedor y la que retiene TMS. Configurable por empresa con override por proveedor.
+    Comisión total negociada con el proveedor, dividida entre la parte que absorbe el proveedor y la que retiene la empresa. Configurable por empresa con override por proveedor.
   </Expandable>
   <Expandable title="Días de crédito">
-    Días de crédito otorgados al proveedor (por defecto 5) y a TMS (por defecto 60) para liquidar la operación.
+    Días de crédito otorgados al proveedor (por defecto 5) y a la empresa (por defecto 60) para liquidar la operación.
   </Expandable>
   <Expandable title="Datos fiscales">
     RFC, razón social y datos bancarios. Se usan en constancias y comprobantes generados por el sistema.
@@ -83,7 +83,7 @@ El comando `factoraje:sincronizar-pagos` se ejecuta periódicamente. Su trabajo:
 
 <Tabs>
   <Tab title="Constancia de empresa" icon="file-badge">
-    PDF firmado por TMS que la empresa de factoraje puede descargar como constancia de la relación comercial.
+    PDF firmado por la empresa que la empresa de factoraje puede descargar como constancia de la relación comercial.
   </Tab>
   <Tab title="Comprobante de pago a proveedor" icon="file-check">
     PDF con el detalle del pago de la empresa de factoraje al proveedor. Útil para conciliaciones del proveedor.

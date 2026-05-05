@@ -7,9 +7,9 @@ description: Cómo se canaliza una factura de proveedor a una empresa de factora
 
 El factoraje conviene cuando:
 
-- El proveedor necesita liquidez antes del plazo de crédito que TMS le otorga.
+- El proveedor necesita liquidez antes del plazo de crédito que la empresa le otorga.
 - Una empresa de factoraje ofrece pagar al proveedor más rápido a cambio de una comisión.
-- TMS prefiere mantener su propio plazo de pago largo y el proveedor cobrar pronto.
+- La empresa prefiere mantener su propio plazo de pago largo y el proveedor cobrar pronto.
 
 ## Antes de empezar
 
@@ -26,7 +26,7 @@ El factoraje conviene cuando:
     En la tarjeta del proveedor, marca **Pagar con factoraje** y selecciona la empresa de factoraje.
   </Step>
   <Step title="Configura comisiones" icon="percent">
-    El sistema toma la comisión configurada en la empresa o el override negociado por proveedor. Verifica que el split (parte que absorbe el proveedor vs. la que retiene TMS) sea el pactado.
+    El sistema toma la comisión configurada en la empresa o el override negociado por proveedor. Verifica que el split (parte que absorbe el proveedor vs. la que retiene la empresa) sea el pactado.
   </Step>
   <Step title="Guarda" icon="save">
     El embarque queda con la marca de factoraje. La operación de factoraje se creará al subir la factura del proveedor.
@@ -37,9 +37,9 @@ El factoraje conviene cuando:
 
 <Steps>
   <Step title="El proveedor sube su factura" icon="upload">
-    Desde el portal de proveedores, el proveedor sube el XML CFDI que emitió a TMS.
+    Desde el portal de proveedores, el proveedor sube el XML CFDI que emitió a la empresa.
   </Step>
-  <Step title="TMS valida el XML" icon="shield-check">
+  <Step title="El sistema valida el XML" icon="shield-check">
     El sistema extrae UUID, RFC, monto, fecha y método de pago. Valida que todo cuadre con el embarque.
   </Step>
   <Step title="Se crea la operación de factoraje" icon="layers">
@@ -64,17 +64,17 @@ El factoraje conviene cuando:
   </Step>
 </Steps>
 
-## TMS paga a la empresa de factoraje
+## Pago final a la empresa de factoraje
 
 <Steps>
   <Step title="Cumplido el plazo" icon="calendar">
-    Cuando se cumple el plazo de crédito de TMS hacia la empresa de factoraje (típicamente 60 días), TMS le paga.
+    Cuando se cumple el plazo de crédito hacia la empresa de factoraje (típicamente 60 días), la empresa le paga.
   </Step>
   <Step title="Registra el pago a la empresa" icon="credit-card">
     Desde **Cuentas por Pagar**, registra el pago a la empresa de factoraje. La operación pasa a `pagado_tms`.
   </Step>
   <Step title="Ciclo cerrado" icon="check">
-    El embarque queda completamente conciliado: cliente pagó, factoraje pagó al proveedor, TMS pagó al factoraje.
+    El embarque queda completamente conciliado: cliente pagó, factoraje pagó al proveedor, la empresa pagó al factoraje.
   </Step>
 </Steps>
 

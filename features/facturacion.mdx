@@ -46,7 +46,7 @@ description: Emisión de comprobantes fiscales digitales ante el SAT vía Factur
   El sistema soporta varias razones sociales emisoras simultáneamente. Cada `RazonSocialEmisora` tiene sus propias credenciales de FacturAPI o Facturama, encriptadas en base de datos.
 </Callout>
 
-Al crear un embarque, eliges qué razón social timbrará. Esto permite operar múltiples entidades fiscales desde un solo TMS.
+Al crear un embarque, eliges qué razón social timbrará. Esto permite operar múltiples entidades fiscales desde un solo sistema.
 
 ## Validación contra el catálogo SAT
 
@@ -71,7 +71,7 @@ Antes de timbrar, el sistema valida campos contra los catálogos oficiales del S
 
 ## Errores SAT que el sistema traduce
 
-Cuando FacturAPI o el SAT responden con un error específico de Carta Porte, TMS lo traduce a una explicación accionable dentro de la propia pre-factura.
+Cuando FacturAPI o el SAT responden con un error específico de Carta Porte, el sistema lo traduce a una explicación accionable dentro de la propia pre-factura.
 
 <ExpandableGroup>
   <Expandable title="CP116 — Régimen aduanero faltante o sobrante">

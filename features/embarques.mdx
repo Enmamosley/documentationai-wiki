@@ -75,13 +75,13 @@ Cada `EmbarqueProveedor` guarda:
 
 <Tabs>
   <Tab title="POD" icon="file-check">
-    El **Proof of Delivery** se sube como imagen o PDF. Cuando el POD físico viaja por mensajería, el sistema rastrea: solicitado → enviado por proveedor → recibido por TMS, con sus fechas.
+    El **Proof of Delivery** se sube como imagen o PDF. Cuando el POD físico viaja por mensajería, el sistema rastrea: solicitado → enviado por proveedor → recibido por la empresa, con sus fechas.
   </Tab>
   <Tab title="Carta Porte del proveedor" icon="file-text">
     Si el proveedor emite la Carta Porte, su XML se sube y el sistema extrae automáticamente los datos relevantes para autollenar el embarque.
   </Tab>
   <Tab title="Carta Porte propia" icon="edit">
-    Si TMS emite la Carta Porte directamente (sin XML del proveedor), el embarque se marca con `usa_carta_porte_propia` y los datos se editan desde el detalle.
+    Si la empresa emite la Carta Porte directamente (sin XML del proveedor), el embarque se marca con `usa_carta_porte_propia` y los datos se editan desde el detalle.
   </Tab>
   <Tab title="Factura del proveedor" icon="receipt">
     El XML CFDI del proveedor se carga al embarque. Su UUID y monto se vinculan para conciliar contra cuentas por pagar.

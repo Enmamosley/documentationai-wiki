@@ -38,7 +38,7 @@ Ambos errores apuntan a la misma confusión: el embarque tiene **campos de trans
 
 <Tabs>
   <Tab title="Es nacional de verdad" icon="map-pin">
-    Quita el pedimento del XML. Si el XML viene del proveedor, súbelo corregido. Como alternativa, marca **Carta Porte Propia** en el embarque para que TMS genere el XML sin pedimento.
+    Quita el pedimento del XML. Si el XML viene del proveedor, súbelo corregido. Como alternativa, marca **Carta Porte Propia** en el embarque para que el sistema genere el XML sin pedimento.
   </Tab>
   <Tab title="Es internacional" icon="globe">
     Cambia el tipo de servicio a internacional. El pedimento queda permitido y el timbrado pasa.
@@ -60,7 +60,7 @@ Ambos errores apuntan a la misma confusión: el embarque tiene **campos de trans
 
 ## Carta Porte Propia: cuándo usarla
 
-Cuando el XML del proveedor es problemático y no puedes obtener uno corregido a tiempo, marca **Carta Porte Propia** en el embarque. Esto le dice a TMS que genere el XML directamente con los datos editables del sistema, ignorando el XML del proveedor.
+Cuando el XML del proveedor es problemático y no puedes obtener uno corregido a tiempo, marca **Carta Porte Propia** en el embarque. Esto le dice al sistema que genere el XML directamente con los datos editables, ignorando el XML del proveedor.
 
 <Steps>
   <Step title="Activa Carta Porte Propia">
@@ -70,7 +70,7 @@ Cuando el XML del proveedor es problemático y no puedes obtener uno corregido a
     Edita ubicaciones, mercancías, vehículo, chofer y demás. El sistema guarda todo como overrides.
   </Step>
   <Step title="Genera el XML">
-    Al timbrar, TMS construye el XML desde cero con los datos capturados, omitiendo el XML del proveedor.
+    Al timbrar, el sistema construye el XML desde cero con los datos capturados, omitiendo el XML del proveedor.
   </Step>
 </Steps>
 
