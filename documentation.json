@@ -1,6 +1,6 @@
 {
-  "name": "TMS Logística",
-  "description": "Sistema interno de gestión de transporte: embarques, facturación CFDI 4.0 con Carta Porte 3.1, cobranza, cuentas por pagar y factoraje.",
+  "name": "Embarque",
+  "description": "Sistema de gestión de transporte: embarques, facturación CFDI 4.0 con Carta Porte 3.1, cobranza, cuentas por pagar y factoraje.",
   "colors": {
     "light": {
       "brand": "#3B82F6"
@@ -181,5 +181,6 @@
       }
     ]
   },
-  "template": "atlas"
+  "template": "atlas",
+  "title": "Embarque"
 }
