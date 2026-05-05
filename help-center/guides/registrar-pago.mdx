@@ -1,0 +1,98 @@
+---
+title: Registrar un pago
+description: Guía paso a paso para aplicar un pago a una o varias facturas emitidas en TMS Logística.
+---
+
+## Antes de empezar
+
+Necesitas:
+
+- Permiso `cxc.registrarPago` (incluido en Finanzas y Administrador).
+- Una o varias facturas emitidas con saldo pendiente.
+- Datos del pago: monto, fecha, forma de pago, moneda.
+
+## Pago a una sola factura
+
+<Steps>
+  <Step title="Abre la factura" icon="file-text">
+    Desde **Cuentas por Cobrar**, busca la factura por folio, cliente o filtra por aging. Abre el detalle.
+  </Step>
+  <Step title="Pulsa Registrar pago" icon="dollar-sign">
+    En el detalle, haz clic en **Registrar pago**.
+  </Step>
+  <Step title="Captura los datos del pago" icon="edit">
+    - **Monto**: el sistema sugiere el saldo pendiente; puedes capturar uno menor para pago parcial.
+    - **Fecha**: día efectivo del pago.
+    - **Forma de pago**: transferencia, tarjeta, cheque, efectivo, etc. (catálogo SAT).
+    - **Moneda**: si es distinta a la de la factura, captura el tipo de cambio aplicable.
+    - **Referencia**: número de transferencia o referencia bancaria.
+  </Step>
+  <Step title="Verifica retenciones" icon="percent">
+    Si la factura tiene retenciones (IVA o ISR), el sistema las muestra y descuenta del monto neto que el cliente paga.
+  </Step>
+  <Step title="Guarda" icon="save">
+    Al guardar, el saldo de la factura se actualiza. Si queda en cero, la factura pasa a **Pagada**.
+  </Step>
+  <Step title="Genera complemento si aplica" icon="receipt">
+    Si la factura es PPD (Pago en Parcialidades o Diferido), el sistema te ofrecerá generar el complemento de pago de inmediato. Puedes hacerlo ahora o más tarde.
+  </Step>
+</Steps>
+
+## Pago múltiple (varias facturas a la vez)
+
+Cuando el cliente paga varias facturas con una sola transferencia:
+
+<Steps>
+  <Step title="Abre Pago múltiple" icon="files">
+    En **Cuentas por Cobrar**, pulsa **Pago múltiple**.
+  </Step>
+  <Step title="Selecciona las facturas" icon="check-square">
+    Marca las facturas del mismo cliente que cubre la transferencia. El sistema acumula el saldo total a cubrir.
+  </Step>
+  <Step title="Captura el monto recibido" icon="dollar-sign">
+    Captura el monto total. Si es menor al saldo acumulado, el sistema distribuye **FIFO** (cubre primero las facturas más antiguas).
+  </Step>
+  <Step title="Confirma y genera complemento" icon="receipt">
+    Al confirmar, se crean los pagos individuales en cada factura. Si todas son PPD, el sistema te ofrece generar **un solo complemento** que cubra todas a la vez.
+  </Step>
+</Steps>
+
+<Callout kind="info">
+  El sistema impide combinar facturas de **distintos clientes** en un mismo pago múltiple. Cada cliente debe tener su propio registro.
+</Callout>
+
+## Editar o eliminar un pago
+
+<Tabs>
+  <Tab title="Editar" icon="edit">
+    Si necesitas corregir un dato del pago (referencia, fecha, forma de pago), abre el detalle del pago y pulsa **Editar**. Requiere permiso `cxc.editarPago`.
+  </Tab>
+  <Tab title="Eliminar" icon="trash">
+    Solo en casos excepcionales (pago duplicado o aplicado por error). Requiere permiso `cxc.eliminarPago`. Si la factura ya tiene complemento de pago timbrado, primero hay que cancelar el complemento.
+  </Tab>
+</Tabs>
+
+## Pagos en moneda distinta
+
+<ExpandableGroup>
+  <Expandable title="Cliente paga en USD una factura en MXN" default-open="true">
+    Captura el pago en USD con el tipo de cambio del día. El sistema convierte y aplica al saldo MXN. Las diferencias por fluctuación cambiaria se manejan como ajuste contable separado.
+  </Expandable>
+  <Expandable title="Cliente paga en MXN una factura en USD">
+    Análogo: captura el monto en MXN con el tipo de cambio aplicable y el sistema aplica al saldo USD.
+  </Expandable>
+  <Expandable title="Tipo de cambio que usar">
+    El sistema sugiere el tipo de cambio Banxico del día del pago. Si tu organización usa otro criterio (ej. el tipo de cambio del día anterior), captúralo manualmente.
+  </Expandable>
+</ExpandableGroup>
+
+## Siguiente
+
+<Columns cols={2}>
+  <Card title="Generar complemento de pago" icon="receipt" href="/help-center/guides/complemento-pago" horizontal>
+    Si la factura es PPD, emite el complemento de pago.
+  </Card>
+  <Card title="Reportes de cobranza" icon="bar-chart-3" href="/features/reportes" horizontal>
+    Revisa cobranza mensual, cartera de clientes y estado de cuenta.
+  </Card>
+</Columns>

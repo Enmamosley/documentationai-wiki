@@ -1,0 +1,72 @@
+---
+title: Cancelar una factura
+description: Cómo iniciar la cancelación de un CFDI ante el SAT desde TMS Logística y qué esperar después.
+---
+
+## Antes de cancelar
+
+<Callout kind="warning">
+  Cancelar un CFDI es una operación que se reporta al SAT. Asegúrate de que es lo correcto antes de iniciar el flujo. Si solo quieres devolver parcialmente, considera generar una **nota de crédito** en lugar de cancelar.
+</Callout>
+
+Necesitas el permiso `facturas.cancel` (incluido en los roles Administrador y Finanzas).
+
+## Cómo iniciar la cancelación
+
+<Steps>
+  <Step title="Abre la factura" icon="file">
+    Desde **Cuentas por Cobrar** o desde el detalle del embarque, abre la factura emitida.
+  </Step>
+  <Step title="Inicia la cancelación" icon="x-circle">
+    Haz clic en **Cancelar factura**. El sistema pide motivo y, si aplica, datos del comprobante sustituto.
+  </Step>
+  <Step title="Selecciona motivo SAT" icon="list">
+    Elige uno de los motivos oficiales:
+
+    - **01** — Comprobante emitido con errores con relación. Requiere UUID de la factura sustituta.
+    - **02** — Comprobante emitido con errores sin relación.
+    - **03** — No se llevó a cabo la operación.
+    - **04** — Operación nominativa relacionada en una factura global.
+  </Step>
+  <Step title="Envía la solicitud" icon="send">
+    El sistema envía la cancelación a FacturAPI y al SAT. La factura queda en estado **En proceso de cancelación**.
+  </Step>
+</Steps>
+
+## ¿Cuándo queda cancelada?
+
+Depende del receptor:
+
+<Tabs>
+  <Tab title="Cancelación inmediata" icon="zap">
+    Algunas facturas pueden cancelarse sin aceptación del receptor (montos chicos, cierto tipo de comprobantes). En esos casos, el estado pasa de inmediato a **Cancelada**.
+  </Tab>
+  <Tab title="Requiere aceptación" icon="clock">
+    Cuando la cancelación requiere que el cliente acepte (la mayoría de casos), el estado queda en **En proceso**. El SAT notifica al cliente, que tiene 72 horas para aceptar o rechazar; si no responde, se considera aceptada.
+  </Tab>
+</Tabs>
+
+<Callout kind="info">
+  El sistema consulta periódicamente el estatus en el SAT con el comando `cancelaciones:verificar-pendientes`. No necesitas hacer nada: el listado se actualiza solo cuando la cancelación se concreta.
+</Callout>
+
+## ¿Y si la cancelación se rechaza?
+
+Si el cliente rechaza la cancelación, la factura queda **vigente** y la solicitud se cierra. Puedes intentarlo de nuevo solo si surge un motivo nuevo.
+
+## ¿Qué pasa con el complemento de pago si cancelo la factura?
+
+<Callout kind="warning">
+  Si la factura tiene complementos de pago emitidos, **debes cancelar primero los complementos** y luego la factura. El sistema valida esta dependencia y bloquea la cancelación de la factura si quedan complementos vigentes.
+</Callout>
+
+## Alternativas a cancelar
+
+Cuando lo que necesitas es ajustar montos, no necesariamente tienes que cancelar:
+
+| Caso | Solución recomendada |
+|------|----------------------|
+| Devolver parte del monto | **Nota de crédito** (CFDI tipo "E") |
+| Sustituir por una factura nueva | Cancela con motivo **01** y referencia el UUID de la sustituta |
+| Cambiar datos del receptor | Cancela y emite una nueva con los datos correctos |
+| Errores de captura no fiscales | Pide al administrador que edite el embarque (algunos campos siguen editables después de timbrado) |

@@ -1,151 +1,103 @@
 ---
-title: Embarque Features Guide
-description: Learn about the core modules of Embarque, from shipment management to financial compliance and collections.
+title: Resumen de módulos
+description: Vista general de los módulos de TMS Logística. Cada módulo tiene su propia página con detalle a profundidad.
 ---
 
-## Overview
+## Estructura del sistema
 
-Embarque provides a unified platform to manage shipments, SAT-compliant invoicing, collections, and operational workflows. You centralize all logistics operations to reduce errors, speed up collections, and ensure compliance with CFDI 4.0 and Carta Porte 3.1 standards.
+TMS Logística está organizado en módulos funcionales accesibles desde el menú lateral. El acceso a cada módulo depende de los permisos del rol del usuario.
 
 <Columns cols={2}>
-  <Card title="Embarques & Providers" icon="truck" href="/docs/embarques">
-    Track shipments and manage providers in one dashboard.
+  <Card title="Embarques" icon="truck" href="/features/embarques">
+    Núcleo operativo: ciclo de vida del embarque, paradas, documentos, gastos adicionales y BOL.
   </Card>
-  <Card title="SAT Facturación" icon="file-text" href="/docs/facturacion">
-    Generate compliant CFDI and Carta Porte documents automatically.
+  <Card title="Facturación CFDI" icon="file-text" href="/features/facturacion">
+    Timbrado CFDI 4.0 con Carta Porte 3.1, multi-RFC emisor, validación previa y manejo de errores SAT.
   </Card>
-  <Card title="Cobranza Tracking" icon="dollar-sign" href="/docs/cobranza">
-    Monitor payments and automate follow-ups.
+  <Card title="Cuentas por Cobrar" icon="dollar-sign" href="/features/cobranza">
+    Pagos individuales y múltiples, complementos de pago, aging y notas de crédito.
   </Card>
-  <Card title="Workflow Automation" icon="zap" href="/docs/workflows">
-    Streamline operations with custom alerts and roles.
+  <Card title="Cuentas por Pagar" icon="credit-card" href="/features/cuentas-por-pagar">
+    Facturas de proveedores, pagos, retenciones y comprobantes de pago.
+  </Card>
+  <Card title="Factoraje" icon="banknote" href="/features/factoraje">
+    Operaciones con empresas de factoraje, comisiones, días de crédito y portal externo.
+  </Card>
+  <Card title="Reportes" icon="bar-chart-3" href="/features/reportes">
+    11 reportes operativos y financieros con exportación a Excel.
+  </Card>
+  <Card title="Configuración" icon="settings" href="/features/configuracion">
+    Razones sociales emisoras, tipos de cambio, penalizaciones y bitácoras del sistema.
+  </Card>
+  <Card title="Portales externos" icon="external-link" href="/features/portales">
+    Acceso para proveedores y empresas de factoraje con guards independientes.
   </Card>
 </Columns>
 
-## Embarques and Providers Module
-
-Use the Embarques module to register shipments, assign providers, and track status in real-time. You create shipments with details like origin, destination, and cargo weight, then match them to trusted providers.
-
-<Steps>
-  <Step title="Create Shipment" icon="plus">
-    Enter shipment details including client, route, and expected delivery date.
-
-    ```javascript
-    // Example API call to create a shipment
-    const shipment = await fetch('https://api.embarque.mx/v1/shipments', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer YOUR_TOKEN', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        clientId: 'cli_123',
-        origin: 'Monterrey',
-        destination: 'CDMX',
-        cargoWeight: 500
-      })
-    });
-    ```
-  </Step>
-  <Step title="Assign Provider" icon="users">
-    Select from your provider list or invite new ones via email integration.
-  </Step>
-  <Step title="Track Status" icon="map-pin">
-    Monitor real-time updates with automated notifications.
-  </Step>
-</Steps>
-
-<Callout kind="tip">
-  Integrate with GPS providers for live tracking without additional setup.
-</Callout>
-
-## SAT Facturación with CFDI and Carta Porte
-
-Embarque automates invoicing compliant with SAT regulations. Generate CFDI 4.0 for standard sales and Carta Porte 3.1 for shipments directly from shipment data.
-
-<Tabs>
-  <Tab title="CFDI 4.0" icon="file">
-    Standard electronic invoices for services and goods.
-
-    ```json
-    {
-      "serie": "A",
-      "folio": "12345",
-      "fecha": "2024-10-15T10:00:00",
-      "subTotal": 1500.00,
-      "total": 1860.00
-    }
-    ```
-  </Tab>
-  <Tab title="Carta Porte 3.1" icon="truck">
-    Shipment-specific complements with transport details.
-
-    ```json
-    {
-      "transporte": {
-        "ubicacion": "Monterrey",
-        "destino": "CDMX",
-        "mercancia": [
-          {
-            "descripcion": "Electrónicos",
-            "peso": "500kg"
-          }
-        ]
-      }
-    }
-    ```
-  </Tab>
-</Tabs>
-
-## Cobranza and Payments Tracking
-
-Track accounts receivable with visibility into due dates, overdue amounts, and payment history. You set up automated reminders and escalate collections based on rules.
-
-<CodeGroup tabs="Dashboard,API">
-  ```javascript
-  // Query overdue invoices via API
-  const overdues = await fetch('https://api.embarque.mx/v1/invoices/overdue?days=30', {
-    headers: { 'Authorization': 'Bearer YOUR_TOKEN' }
-  });
-  ```
-  ```json
-  // Dashboard filter example
-  {
-    "filter": "overdue > 30 days",
-    "status": "pending"
-  }
-  ```
-</CodeGroup>
-
-## Operational Workflows and Automation
-
-Automate repetitive tasks like shipment confirmation, invoice generation, and payment reminders. Define workflows that trigger based on events such as shipment delivery.
+## Cómo se relacionan los módulos
 
 ```mermaid
 graph TD
-    A[Shipment Created] --> B[Assign Provider]
-    B --> C[Generate Carta Porte]
-    C --> D[Delivery Confirmed]
-    D --> E[Invoice & Collect]
-    E --> F[Payment Received]
+    A[Embarque] --> B[Documentación: POD + XML]
+    B --> C[Facturación CFDI + Carta Porte]
+    C --> D[Cuentas por Cobrar]
+    D --> E[Complemento de Pago]
+    A --> F[Cuentas por Pagar al proveedor]
+    F --> G[Factoraje]
+    A -.acceso externo.-> H[Portal Proveedores]
+    G -.acceso externo.-> I[Portal Factoraje]
+    D --> J[Reportes financieros]
+    A --> K[Reportes operativos]
 ```
 
-## Customization Options
-
-Tailor Embarque to your team with role-based permissions and custom alerts.
+## Capacidades transversales
 
 <ExpandableGroup>
-  <Expandable title="Roles and Permissions" default-open="true">
-    Assign roles like Admin, Operator, or Accountant. Each role controls access to modules.
-
-    | Role       | Embarques | Facturación | Cobranza |
-    |------------|-----------|-------------|----------|
-    | Admin      | Full     | Full       | Full    |
-    | Operator   | Edit     | View       | None    |
-    | Accountant | View     | Full       | Full    |
+  <Expandable title="Multi-moneda MXN/USD" default-open="true">
+    Embarques, facturas y pagos pueden expresarse en MXN o USD. El tipo de cambio se obtiene de la API de Banxico y se almacena en la tabla `tipos_cambio`. La cobranza calcula totales y aging por moneda de forma separada.
   </Expandable>
-  <Expandable title="Custom Alerts">
-    Set email or WhatsApp alerts for events like payment overdue or SAT rejection.
+  <Expandable title="Multi-RFC emisor">
+    El sistema soporta varias razones sociales emisoras (modelo `RazonSocialEmisora`) cada una con sus propias credenciales de FacturAPI o Facturama, encriptadas en base de datos.
+  </Expandable>
+  <Expandable title="Auditoría con Activity Log">
+    Toda acción crítica queda registrada en `activity_log` (Spatie Activity Log): cambios de estado, edición de datos sensibles, cancelaciones, autorizaciones de costos y aprobaciones.
+  </Expandable>
+  <Expandable title="Permisos granulares">
+    Más de 50 permisos individuales (Spatie Permission) controlan qué puede hacer cada rol. Ejemplos: `embarques.aprobarCostos`, `cxc.exportar`, `facturas.notaCredito`, `clientes.view-all`.
+  </Expandable>
+  <Expandable title="Buscador global">
+    Combinación de teclas **Ctrl+K** (Windows/Linux) o **⌘+K** (macOS) abre el buscador global. Encuentra embarques, clientes, proveedores y facturas respetando los permisos del usuario.
+  </Expandable>
+  <Expandable title="Notificaciones internas">
+    Las notificaciones del sistema se acumulan en el centro de notificaciones (campana en el header). Avisan de aprobaciones pendientes, vencimientos y cambios de estado.
   </Expandable>
 </ExpandableGroup>
 
-<Callout kind="success">
-  Start with default workflows and customize as your operations scale.
+## Procesos en segundo plano
+
+El sistema corre tareas asíncronas en cola para no bloquear la interfaz:
+
+| Job | Cuándo se dispara |
+|-----|-------------------|
+| `EnviarComplementoPagoEmailJob` | Tras generar un complemento de pago, lo envía al cliente con PDF y XML adjuntos |
+| `ConsultarEstatusSatJob` | Verifica el estatus de cancelación de una factura ante el SAT |
+| `EnviarBOLProveedorJob` | Envía el Bill of Lading firmado al proveedor por correo |
+
+<Callout kind="tip">
+  La cola usa el driver `database`. En producción debe ejecutarse `php artisan queue:work` como proceso supervisado.
 </Callout>
+
+## Comandos programados
+
+Se ejecutan vía `php artisan schedule:run` (cron del servidor):
+
+| Comando | Propósito |
+|---------|-----------|
+| `cxc:actualizar-dias-vencidos` | Recalcula días vencidos en cuentas por cobrar |
+| `cxp:actualizar-dias-vencidos` | Recalcula días vencidos en cuentas por pagar |
+| `facturas:notificar-vencidas` | Envía correos de aviso por facturas vencidas |
+| `facturas:descargar-faltantes` | Descarga PDF/XML faltantes de FacturAPI |
+| `complementos:generar-automaticos` | Genera complementos de pago pendientes |
+| `cancelaciones:verificar-pendientes` | Consulta el SAT por cancelaciones en proceso |
+| `factoraje:sincronizar-pagos` | Sincroniza pagos del módulo de factoraje |
+| `uploads:clean-temp` | Limpia archivos temporales subidos |

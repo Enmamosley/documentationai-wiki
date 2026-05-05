@@ -1,0 +1,99 @@
+---
+title: Factoraje
+description: Operaciones con empresas de factoraje, comisiones configurables, días de crédito por empresa y portal externo dedicado para que las factoreras descarguen documentos y registren pagos.
+---
+
+## Qué es factoraje en TMS
+
+El factoraje permite que TMS canalice ciertas facturas de proveedor a través de una **empresa de factoraje**, que adelanta el pago al proveedor a cambio de una comisión.
+
+<Columns cols={2}>
+  <Card title="Operaciones" icon="layers">
+    Cada operación liga una factura del proveedor con una empresa de factoraje y registra estados de pago.
+  </Card>
+  <Card title="Empresas" icon="building">
+    Catálogo de empresas de factoraje con comisiones, días de crédito y datos de contacto.
+  </Card>
+  <Card title="Portal externo" icon="external-link">
+    La empresa de factoraje accede a un portal con guard separado para descargar documentos y registrar pagos.
+  </Card>
+  <Card title="Sincronización" icon="refresh-cw">
+    Comando programado que mantiene los estados de pago alineados entre TMS y la operación.
+  </Card>
+</Columns>
+
+## Estados de una operación
+
+| Estado | Significado |
+|--------|-------------|
+| Pendiente | Operación creada, esperando que la empresa de factoraje pague al proveedor |
+| Pagado proveedor | La empresa de factoraje ya le pagó al proveedor |
+| Pagado TMS | TMS ya le pagó a la empresa de factoraje (cierra el ciclo) |
+
+## Crear una operación
+
+<Steps>
+  <Step title="Marca el embarque para factoraje" icon="check-circle">
+    Al asignar el proveedor en el embarque, indica `pagar_con_factoraje = true` y selecciona la empresa.
+  </Step>
+  <Step title="Sube los documentos" icon="upload">
+    Cuando el proveedor entrega su factura (XML + PDF), el sistema crea automáticamente la operación de factoraje vinculada.
+  </Step>
+  <Step title="Notifica a la empresa" icon="send">
+    La operación queda visible en el portal externo de la empresa de factoraje. Ellos descargan los documentos y proceden a pagar.
+  </Step>
+</Steps>
+
+## Configuración de empresas
+
+Cada `EmpresaFactoraje` admite:
+
+<ExpandableGroup>
+  <Expandable title="Comisiones" default-open="true">
+    Comisión total negociada con el proveedor, dividida entre la parte que absorbe el proveedor y la que retiene TMS. Configurable por empresa con override por proveedor.
+  </Expandable>
+  <Expandable title="Días de crédito">
+    Días de crédito otorgados al proveedor (por defecto 5) y a TMS (por defecto 60) para liquidar la operación.
+  </Expandable>
+  <Expandable title="Datos fiscales">
+    RFC, razón social y datos bancarios. Se usan en constancias y comprobantes generados por el sistema.
+  </Expandable>
+  <Expandable title="Acceso al portal">
+    Cada empresa tiene un usuario de portal con su propio email y contraseña hasheada. El acceso se gestiona desde la configuración.
+  </Expandable>
+</ExpandableGroup>
+
+## Pago múltiple desde el portal
+
+La empresa de factoraje puede seleccionar varias operaciones del mismo proveedor y pagarlas en una sola transferencia.
+
+<Callout kind="info">
+  La validación impide combinar operaciones de distintos proveedores o monedas en un mismo pago múltiple. El total acumulado se muestra en una barra flotante mientras seleccionan.
+</Callout>
+
+## Sincronización
+
+El comando `factoraje:sincronizar-pagos` se ejecuta periódicamente. Su trabajo:
+
+- Verifica que cada operación tenga consistente su estado de pago.
+- Actualiza el aging de las cuentas afectadas.
+- Detecta operaciones que llevan demasiado tiempo en un estado y alerta al equipo de finanzas.
+
+## Constancias y comprobantes
+
+<Tabs>
+  <Tab title="Constancia de empresa" icon="file-badge">
+    PDF firmado por TMS que la empresa de factoraje puede descargar como constancia de la relación comercial.
+  </Tab>
+  <Tab title="Comprobante de pago a proveedor" icon="file-check">
+    PDF con el detalle del pago de la empresa de factoraje al proveedor. Útil para conciliaciones del proveedor.
+  </Tab>
+</Tabs>
+
+## Permisos relacionados
+
+| Permiso | Función |
+|---------|---------|
+| `factoraje.view` | Ver módulo de factoraje |
+| `factoraje.create` / `factoraje.edit` | Crear y editar operaciones |
+| Acceso al portal externo | Se gestiona con un guard `factoraje` separado del resto del sistema |

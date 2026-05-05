@@ -1,0 +1,126 @@
+---
+title: Cuentas por Cobrar
+description: Registro de pagos individuales y múltiples, complementos de pago tipo P, aging por moneda, notas de crédito y cancelación de facturas.
+---
+
+## Qué administra el módulo
+
+Cuentas por Cobrar (CxC) gestiona el ciclo de cobranza de las facturas emitidas a clientes:
+
+<Columns cols={2}>
+  <Card title="Pagos" icon="dollar-sign">
+    Registro de pagos parciales o totales contra una o varias facturas.
+  </Card>
+  <Card title="Complementos de Pago" icon="receipt">
+    Generación automática del CFDI tipo "P" cuando una factura PPD recibe un pago.
+  </Card>
+  <Card title="Aging" icon="calendar-clock">
+    Cálculo y visualización de días vencidos por factura, separado por moneda.
+  </Card>
+  <Card title="Notas de crédito" icon="rotate-ccw">
+    Devoluciones parciales o totales contra una factura emitida.
+  </Card>
+</Columns>
+
+## Registrar un pago
+
+<Tabs>
+  <Tab title="Pago individual" icon="file-plus">
+    Desde el detalle de una factura, captura monto, fecha, moneda y forma de pago. El sistema valida que el monto no exceda el saldo pendiente.
+  </Tab>
+  <Tab title="Pago múltiple" icon="files">
+    Desde **Cuentas por Cobrar → Pago múltiple**, selecciona varias facturas del mismo cliente y aplica el total con distribución FIFO. Útil cuando el cliente paga varias facturas con una sola transferencia.
+  </Tab>
+</Tabs>
+
+<Callout kind="info">
+  Los pagos en moneda distinta a la de la factura aplican el tipo de cambio Banxico del día del pago. La distribución FIFO se documenta en `PagoCxC` para conservar trazabilidad.
+</Callout>
+
+## Retenciones
+
+Cuando el cliente retiene IVA o ISR, el sistema calcula los montos automáticamente con base en las tasas configuradas en el embarque. Los pagos quedan registrados con sus retenciones y se reflejan en el complemento de pago correspondiente.
+
+## Aging y vencimientos
+
+El comando programado `cxc:actualizar-dias-vencidos` corre todos los días para recalcular días vencidos por factura. Esto alimenta:
+
+<Columns cols={2}>
+  <Card title="Indicadores visuales" icon="alert-triangle">
+    Badges de aging en el listado: al día, por vencer, vencida 1-30 días, 30-60, 60-90, +90.
+  </Card>
+  <Card title="Reportes" icon="bar-chart-3">
+    Cartera de Clientes y Facturas Vencidas se calculan a partir de estos campos.
+  </Card>
+  <Card title="Alertas por correo" icon="mail">
+    El comando `facturas:notificar-vencidas` envía recordatorios al cliente cuando una factura se vence.
+  </Card>
+  <Card title="Estado de cuenta" icon="file-text">
+    Genera un PDF por cliente con todas sus facturas pendientes y aging.
+  </Card>
+</Columns>
+
+## Acciones sobre una factura
+
+<ExpandableGroup>
+  <Expandable title="Reenviar factura" default-open="true">
+    Vuelve a enviar la factura al cliente por correo con PDF y XML adjuntos. Útil cuando el cliente no la recibió o pidió reenviarla.
+  </Expandable>
+  <Expandable title="Cancelar factura">
+    Inicia el flujo de cancelación ante el SAT con motivo oficial. Si requiere aceptación del receptor, queda en proceso hasta que el SAT confirme.
+  </Expandable>
+  <Expandable title="Generar nota de crédito">
+    Crea un CFDI tipo "E" referenciando la factura. Reduce el saldo pendiente proporcionalmente.
+  </Expandable>
+  <Expandable title="Consultar estatus SAT">
+    Pide al SAT el estado vigente de la factura (vigente, cancelada, en proceso de cancelación).
+  </Expandable>
+</ExpandableGroup>
+
+## Complemento de pago (CFDI tipo P)
+
+Cuando una factura tiene método de pago **PPD** (Pago en Parcialidades o Diferido), el SAT exige emitir un complemento por cada pago recibido.
+
+<Steps>
+  <Step title="Registra el pago" icon="dollar-sign">
+    Aplica el pago a la factura como de costumbre.
+  </Step>
+  <Step title="Selecciona el flujo de complemento" icon="file-plus">
+    Si el cliente paga varias facturas en una transferencia, puedes generar un complemento que las cubra todas.
+  </Step>
+  <Step title="Genera el complemento" icon="zap">
+    El sistema arma el CFDI tipo "P" con todos los doctos relacionados, sus saldos anteriores y nuevos, y lo envía a FacturAPI para timbrado.
+  </Step>
+  <Step title="Envío automático" icon="send">
+    El job `EnviarComplementoPagoEmailJob` envía el complemento al cliente con PDF y XML adjuntos.
+  </Step>
+</Steps>
+
+<Callout kind="tip">
+  El comando `complementos:generar-automaticos` revisa pagos sin complemento y los genera en lote, útil para corregir omisiones históricas.
+</Callout>
+
+## Estadísticas y reportes
+
+Desde el listado de CxC se accede a:
+
+| Reporte | Qué muestra |
+|---------|-------------|
+| Cartera de Clientes | Aging total por cliente |
+| Cobranza Mensual | Pagos recibidos por mes y moneda |
+| Facturas Vencidas | Listado de facturas con días vencidos |
+| Facturas Sin Enviar | Facturas timbradas que no se han enviado al cliente |
+| Estado de Cuenta | PDF por cliente |
+
+Todos exportables a Excel.
+
+## Permisos relacionados
+
+| Permiso | Función |
+|---------|---------|
+| `cxc.view` | Ver módulo de cobranza |
+| `cxc.registrarPago` | Aplicar pagos |
+| `cxc.editarPago` / `cxc.eliminarPago` | Modificar o quitar pagos registrados |
+| `cxc.viewReportes` | Acceder a los reportes financieros |
+| `cxc.exportar` | Exportar listados a Excel |
+| `complementos.create` | Generar complementos de pago |

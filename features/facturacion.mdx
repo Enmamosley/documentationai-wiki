@@ -1,0 +1,144 @@
+---
+title: Facturación CFDI 4.0 con Carta Porte 3.1
+description: Emisión de comprobantes fiscales digitales ante el SAT vía FacturAPI, con vista previa, validación previa y manejo de errores específicos del catálogo SAT.
+---
+
+## Tipos de factura que emite el sistema
+
+<Columns cols={2}>
+  <Card title="Carta Porte" icon="truck">
+    CFDI tipo "I" (Ingreso) con complemento Carta Porte 3.1 para embarques nacionales o internacionales.
+  </Card>
+  <Card title="Servicio Logístico" icon="briefcase">
+    CFDI tipo "I" sin complemento Carta Porte. Se usa cuando se factura solo el servicio.
+  </Card>
+  <Card title="Nota de Crédito" icon="rotate-ccw">
+    CFDI tipo "E" (Egreso) para devolución parcial o total de una factura emitida.
+  </Card>
+  <Card title="Complemento de Pago" icon="credit-card">
+    CFDI tipo "P" para acreditar pagos de facturas con método PPD (Pago en Parcialidades o Diferido).
+  </Card>
+</Columns>
+
+## Flujo de emisión
+
+<Steps>
+  <Step title="Pre-factura" icon="eye">
+    Desde el detalle del embarque, abre **Pre-factura**. El sistema arma el borrador con cliente, conceptos, impuestos y datos de Carta Porte.
+  </Step>
+  <Step title="Vista previa" icon="search">
+    Se muestra el JSON que se enviará a FacturAPI con todos los campos editables. Puedes ajustar mercancía, vehículo, ubicaciones, régimen aduanero y más antes de timbrar.
+  </Step>
+  <Step title="Validación previa" icon="shield-check">
+    El servicio `CartaPorteValidacionService` revisa que los datos cumplan con el catálogo SAT (`c_Estado`, `c_Municipio`, `c_Localidad`, `c_TipoMateria`, etc.) y bloquea el timbrado si detecta problemas conocidos.
+  </Step>
+  <Step title="Timbrado" icon="zap">
+    Se llama a FacturAPI. Si responde con éxito, el sistema descarga el PDF y XML, los guarda y marca el embarque como **Facturado**.
+  </Step>
+  <Step title="Entrega al cliente" icon="send">
+    El usuario con permiso `facturacion.send` puede enviar la factura por correo al cliente con PDF y XML adjuntos.
+  </Step>
+</Steps>
+
+## Multi-RFC emisor
+
+<Callout kind="info">
+  El sistema soporta varias razones sociales emisoras simultáneamente. Cada `RazonSocialEmisora` tiene sus propias credenciales de FacturAPI o Facturama, encriptadas en base de datos.
+</Callout>
+
+Al crear un embarque, eliges qué razón social timbrará. Esto permite operar múltiples entidades fiscales desde un solo TMS.
+
+## Validación contra el catálogo SAT
+
+Antes de timbrar, el sistema valida campos contra los catálogos oficiales del SAT. Los más críticos:
+
+| Campo | Catálogo SAT |
+|-------|--------------|
+| Estado | `c_Estado` (32 entidades) |
+| Municipio | `c_Municipio` |
+| Localidad | `c_Localidad` |
+| Código postal | `c_CodigoPostal` |
+| Material peligroso | `c_MaterialPeligroso` |
+| Tipo de embalaje | `c_TipoEmbalaje` |
+| Tipo de materia | `c_TipoMateria` |
+| Régimen aduanero | `c_RegimenAduanero` |
+| Clave de producto | `c_ClaveProdServ` |
+| Clave de unidad | `c_ClaveUnidad` |
+
+<Callout kind="tip">
+  Los códigos postales se cargan de forma masiva desde el catálogo SAT con `php artisan sat:importar-codigos-postales`. Esto permite validar la combinación CP + colonia + localidad sin pegarle al SAT en cada timbrado.
+</Callout>
+
+## Errores SAT que el sistema traduce
+
+Cuando FacturAPI o el SAT responden con un error específico de Carta Porte, TMS lo traduce a una explicación accionable dentro de la propia pre-factura.
+
+<ExpandableGroup>
+  <Expandable title="CP116 — Régimen aduanero faltante o sobrante">
+    El nodo `RegimenesAduaneros` es obligatorio cuando `TranspInternac="Sí"` y prohibido cuando es "No". Verifica que el tipo de servicio del embarque sea correcto.
+  </Expandable>
+  <Expandable title="CP143 — Colonia inválida para el código postal">
+    El código de colonia no pertenece al CP en el catálogo SAT. Edita la ubicación o deja la colonia vacía.
+  </Expandable>
+  <Expandable title="CP147 — Localidad inválida">
+    La combinación estado/municipio/localidad no existe en el catálogo. Deja la localidad vacía o corrígela según `c_Localidad`.
+  </Expandable>
+  <Expandable title="CP149 — Peso bruto no coincide">
+    El `PesoBrutoTotal` debe ser exactamente la suma de los `PesoEnKg` de cada mercancía. Edita el peso en los datos de Carta Porte.
+  </Expandable>
+  <Expandable title="CP155 — MaterialPeligroso no válido">
+    El valor declarado en `MaterialPeligroso` no coincide con lo esperado para el `BienesTransp` de la mercancía. Verifica el catálogo.
+  </Expandable>
+  <Expandable title="CP170 — TipoMateria solo en internacional">
+    `TipoMateria` se incluyó en un transporte nacional. Verifica que el embarque no esté marcado como internacional o quita el campo del XML.
+  </Expandable>
+  <Expandable title="CP171 — DescripcionMateria condicional">
+    `DescripcionMateria` solo se permite cuando `TipoMateria="05"`. Elimínala o ajusta el `TipoMateria`.
+  </Expandable>
+  <Expandable title="CP172 — Pedimento solo en internacional">
+    `DocumentacionAduanera` (pedimento) se incluyó en un transporte nacional. Quita el pedimento o usa Carta Porte Propia.
+  </Expandable>
+</ExpandableGroup>
+
+<Callout kind="tip">
+  Cada uno de estos errores tiene su propia página en [Solución de Problemas](/help-center/troubleshooting/errores-sat) con causa y pasos detallados.
+</Callout>
+
+## Cancelación de facturas
+
+<Steps>
+  <Step title="Selecciona la factura" icon="file-x">
+    Abre el listado de facturas emitidas y elige **Cancelar** en la factura objetivo.
+  </Step>
+  <Step title="Captura motivo SAT" icon="edit">
+    Selecciona uno de los motivos oficiales del SAT (01, 02, 03 o 04). Si el motivo es 01, captura el UUID de la factura sustituta.
+  </Step>
+  <Step title="Envío a FacturAPI" icon="send">
+    El sistema envía la solicitud de cancelación. Si requiere aceptación del receptor, queda en estado **En proceso**.
+  </Step>
+  <Step title="Verificación periódica" icon="clock">
+    El comando `cancelaciones:verificar-pendientes` consulta el SAT regularmente para actualizar el estatus de la cancelación.
+  </Step>
+</Steps>
+
+## Notas de crédito
+
+Las notas de crédito (CFDI tipo "E") se emiten desde el detalle de una factura emitida. Permiten devolver parcial o totalmente una factura, dejando un saldo pendiente que se aplica contra cobranza.
+
+## Consultar estatus SAT
+
+El job `ConsultarEstatusSatJob` y el comando `cancelaciones:verificar-pendientes` mantienen sincronizado el estatus de cancelación entre FacturAPI y el SAT real, sin bloquear la interfaz del usuario.
+
+## Permisos relacionados
+
+| Permiso | Función |
+|---------|---------|
+| `facturas.view` | Ver facturas emitidas |
+| `facturas.create` | Emitir CFDI desde un embarque |
+| `facturas.cancel` | Cancelar factura ante el SAT |
+| `facturas.viewXML` | Descargar XML |
+| `facturas.download` | Descargar PDF |
+| `facturas.reenviar` | Reenviar factura por correo |
+| `facturas.consultarSAT` | Consultar estatus en el SAT |
+| `facturas.notaCredito` | Generar nota de crédito |
+| `facturacion.send` | Enviar al cliente final |

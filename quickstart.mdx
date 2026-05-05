@@ -1,143 +1,122 @@
 ---
-title: Getting Started with Embarque
-description: Set up your Embarque account and complete your first shipment workflow in under 10 minutes.
+title: Primeros pasos
+description: Inicia sesión, conoce el dashboard según tu rol y crea tu primer embarque en TMS Logística.
 ---
 
-## Prerequisites
-
-Before starting, ensure you have:
+## Antes de comenzar
 
 <Callout kind="info">
-- A valid business email address
-- Access to your SAT credentials (RFC, e.firma or password)
-- Basic details about your first shipment (origin, destination, client info)
-- A modern web browser (Chrome, Firefox, or Safari)
+  Necesitas:
+  - Una cuenta creada por un administrador del sistema (no hay registro público).
+  - Un rol asignado: Administrador, Operador, Finanzas, Vendedor, Customer Service, Coordinador Operativo, Gerente Comercial o Pricing.
+  - Un navegador moderno (Chrome, Firefox o Safari).
 </Callout>
 
 <Callout kind="tip">
-Embarque supports unlimited users from day one. No contracts required.
+  Si tu instalación tiene `SHOW_DEMO_LOGIN=true` activado, verás botones de acceso rápido por rol en la pantalla de login. Útiles para pruebas, no para producción.
 </Callout>
 
-## Sign Up and Log In
-
-Follow these steps to create your account and access the dashboard.
+## Iniciar sesión
 
 <Steps>
-  <Step title="Create Account" icon="user-plus">
-    Visit [https://embarque.mx](https://embarque.mx) and click **Agendar demo** or **Sign Up**.
-
-    Fill in your email, company name, and phone number. Submit the form to receive your invitation link.
+  <Step title="Abre la aplicación" icon="log-in">
+    Ingresa a la URL de tu instalación (por ejemplo `https://tms.tuempresa.com`).
   </Step>
 
-  <Step title="Verify Email" icon="mail">
-    Check your inbox for the verification email from Embarque. Click the link to activate your account.
+  <Step title="Captura tus credenciales" icon="user">
+    Escribe tu correo y contraseña. Si olvidaste tu contraseña, usa el enlace **¿Olvidaste tu contraseña?** para recibir un correo de restablecimiento.
   </Step>
 
-  <Step title="Log In" icon="log-in">
-    Return to [https://app.embarque.mx](https://app.embarque.mx). Enter your email and set your password.
+  <Step title="Llega a tu dashboard" icon="layout-dashboard">
+    Según tu rol, el sistema te lleva a un dashboard distinto:
+
+    - Administrador / Finanzas → **Dashboard general**
+    - Operador → **Dashboard operativo**
+    - Vendedor → **Dashboard de vendedor**
+    - Customer Service → **Dashboard de customer service**
   </Step>
 </Steps>
 
-## Initial Dashboard Setup
-
-Customize your dashboard for your logistics operation.
-
-<Steps>
-  <Step title="Connect SAT Credentials" icon="settings">
-    Navigate to **Settings > SAT Integration**.
-
-    Enter your RFC and upload your e.firma or CSD password. Test the connection to ensure CFDI 4.0 and Carta Porte 3.1 compliance.
-  </Step>
-
-  <Step title="Assign Roles" icon="users">
-    Go to **Team > Users**.
-
-    Invite team members by email. Assign roles like **Admin**, **Dispatcher**, or **Accountant** for embarque creation, invoicing, and collections.
-  </Step>
-
-  <Step title="Set Company Profile" icon="building">
-    In **Settings > Company**, add your business address, logo, and default payment terms.
-  </Step>
-</Steps>
-
-## Create Your First Embarque
-
-Generate your first shipment and invoice it seamlessly.
+## Conoce el dashboard
 
 <Tabs>
-  <Tab title="Quick Embarque" icon="truck">
-    <Steps>
-      <Step title="New Shipment" icon="plus">
-        Click **New Embarque** on the dashboard. Enter origin (`<Monterrey>`), destination (`<Mexico City>`), weight (`<500kg>`), and client details.
-      </Step>
-
-      <Step title="Generate Carta Porte" icon="file-text">
-        Review shipment details. Click **Generate CFDI** to create SAT-compliant invoice with Carta Porte 3.1.
-      </Step>
-
-      <Step title="Send to Client" icon="send">
-        Share the PDF invoice via email or WhatsApp integration. Track status in **Cobranza**.
-      </Step>
-    </Steps>
+  <Tab title="General" icon="layout-dashboard">
+    Disponible para Administrador, Finanzas y Gerente Comercial. Resume embarques activos, facturación reciente y métricas globales.
   </Tab>
-
-  <Tab title="Bulk Upload" icon="upload">
-    For multiple shipments, use **Imports > Excel Template**.
-
-    Download the template, fill with shipment data, and upload. Embarque processes and generates invoices automatically.
+  <Tab title="Operativo" icon="truck">
+    Pensado para el equipo de operaciones. Lista embarques por estado, paradas pendientes y documentos por subir.
+  </Tab>
+  <Tab title="Vendedor" icon="briefcase">
+    Muestra los embarques y clientes asignados al vendedor, sus comisiones devengadas y pendientes.
+  </Tab>
+  <Tab title="Customer Service" icon="headphones">
+    Foco en el seguimiento posventa: estado de embarques, alertas de retrasos, contactos del cliente.
   </Tab>
 </Tabs>
 
-## Upload Initial Documents
+## Crear tu primer embarque
 
-Organize your existing data quickly.
+<Callout kind="info">
+  Requiere los permisos `embarques.create` y `clientes.view`. Estos permisos están en los roles Operador, Coordinador Operativo, Vendedor y Administrador.
+</Callout>
 
-<Expandable title="How to Bulk Upload Historical Embarques" default-open="true">
-  1. Prepare an Excel file with columns: Client, Origin, Destination, Date, Amount.
-  2. Go to **Data > Imports**.
-  3. Select **Historical Embarques** and upload your file.
-  4. Map columns and preview. Confirm to import.
+<Steps>
+  <Step title="Entra a Embarques" icon="truck">
+    En el menú lateral, abre **Embarques** y haz clic en **Nuevo embarque**.
+  </Step>
 
-  <Callout kind="success">
-    Imports support up to 1,000 rows. 98% SAT acceptance on first try.
-  </Callout>
-</Expandable>
+  <Step title="Captura los datos básicos" icon="edit">
+    Llena cliente, origen, destino, mercancía, peso, moneda (MXN o USD) y referencia.
 
-## Basic Navigation
+    Si la moneda es USD, el sistema sugiere el **tipo de cambio Banxico** del día.
+  </Step>
 
-Familiarize yourself with key sections.
+  <Step title="Asigna proveedor de transporte" icon="users">
+    Un embarque puede tener uno o varios proveedores. Se registran en la tabla `embarque_proveedor` con su tarifa, moneda y comisión.
+  </Step>
 
-| Section       | Purpose                          |
-|---------------|----------------------------------|
-| Dashboard     | Overview of pending embarques, cobranza |
-| Embarques     | Create and manage shipments      |
-| Facturación   | CFDI generation and SAT status   |
-| Cobranza      | Accounts receivable tracking     |
-| Team          | User roles and permissions       |
-| Reports       | Analytics on operations          |
+  <Step title="Agrega paradas si aplica" icon="map-pin">
+    Si el embarque tiene paradas intermedias, captúralas como **stops** con su ubicación y notas de tracking.
+  </Step>
 
-## Next Steps
+  <Step title="Guarda" icon="save">
+    El embarque queda en estado **Pendiente** y aparece en el listado, listo para avanzar de estado.
+  </Step>
+</Steps>
 
-Explore advanced features.
+## Ciclo de vida del embarque
+
+El sistema usa un flujo lineal con un estado terminal de cancelación:
+
+<Callout kind="info">
+  `Pendiente` → `En tránsito` → `Entregado` → `Documentado` → `Facturado` → `Pagado`
+
+  En cualquier punto antes de **Pagado**, el embarque puede pasar a `Cancelado`.
+</Callout>
+
+| Estado | Significado |
+|--------|-------------|
+| Pendiente | Creado, esperando asignación o inicio |
+| En tránsito | En camino (incluye carga, cruce de aduana, etc.) |
+| Entregado | Llegó al destino |
+| Documentado | POD, Carta Porte y demás documentos completos |
+| Facturado | CFDI emitido al cliente |
+| Pagado | Cobrado |
+| Cancelado | Cancelado (con auditoría y posibilidad de revertir) |
+
+## Siguiente paso
 
 <Columns cols={2}>
-  <Card title="Advanced Cobranza" icon="dollar-sign" href="/authentication">
-    Automate collections and aging reports.
+  <Card title="Documentar y facturar" icon="file-text" href="/help-center/guides/timbrar-factura" horizontal>
+    Sube POD y XML del proveedor, valida la Carta Porte y timbra el CFDI.
   </Card>
-
-  <Card title="Integrations" icon="plug" href="/configuration">
-    Connect with your accounting software.
+  <Card title="Registrar un pago" icon="dollar-sign" href="/help-center/guides/registrar-pago" horizontal>
+    Aplica un pago a una factura emitida y genera el complemento de pago.
   </Card>
-
-  <Card title="Custom Reports" icon="bar-chart-3" href="/guides">
-    Build dashboards for your metrics.
+  <Card title="Conoce los módulos" icon="layers" href="/features" horizontal>
+    Revisa cada módulo a profundidad antes de empezar a operar.
   </Card>
-
-  <Card title="Support" icon="help-circle" href="/faq">
-    Get help from our team.
+  <Card title="Solución de problemas" icon="alert-triangle" href="/help-center/troubleshooting/errores-sat" horizontal>
+    Errores frecuentes de timbrado SAT y cómo resolverlos.
   </Card>
 </Columns>
-
-<Callout kind="tip">
-  This starter workflow gets you operational in under 10 minutes. Customize roles and integrations as your team grows.
-</Callout>

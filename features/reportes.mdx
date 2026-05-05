@@ -1,0 +1,104 @@
+---
+title: Reportes
+description: 11 reportes operativos y financieros con exportación a Excel, filtros por fecha, cliente, vendedor y moneda.
+---
+
+## Qué reportes existen
+
+<Columns cols={2}>
+  <Card title="Operativos" icon="truck">
+    Pendientes por documentar y por facturar — orientados al equipo operativo.
+  </Card>
+  <Card title="Financieros" icon="dollar-sign">
+    Cobranza mensual, cartera de clientes, facturas vencidas, estado de cuenta.
+  </Card>
+  <Card title="Comercial" icon="briefcase">
+    Comisiones de vendedores con penalizaciones por vencimiento, utilidades por embarque.
+  </Card>
+  <Card title="Resumen ejecutivo" icon="bar-chart-3">
+    Facturación diaria, consolidado mensual, facturas sin enviar.
+  </Card>
+</Columns>
+
+## Catálogo de reportes
+
+<ExpandableGroup>
+  <Expandable title="Cartera de Clientes" default-open="true">
+    Aging total agrupado por cliente. Muestra saldo total, vencido por rango (1-30, 30-60, 60-90, +90 días) y separado por moneda. Útil para reuniones de cobranza.
+  </Expandable>
+  <Expandable title="Cobranza Mensual">
+    Pagos recibidos por mes con desglose por cliente y moneda. Permite ver tendencias y compararse con metas mensuales.
+  </Expandable>
+  <Expandable title="Comisiones de Vendedores">
+    Comisiones devengadas por vendedor, referidor e IPA. Tiene tabs separados:
+
+    - **Comisionables**: facturas pagadas, listas para cobrar comisión.
+    - **Pendientes de comisionar**: facturas emitidas pero no cobradas.
+
+    Aplica **penalizaciones escalonadas por vencimiento** (10%, 25%, 50%, 100%) según los días que la factura lleva vencida sin cobrarse.
+  </Expandable>
+  <Expandable title="Consolidado Mensual">
+    Resumen ejecutivo del mes: facturación total, cobranza, embarques cerrados, utilidad bruta.
+  </Expandable>
+  <Expandable title="Estado de Cuenta del Cliente">
+    PDF descargable por cliente con todas sus facturas pendientes, pagos recibidos y saldo final. Apto para enviar al cliente.
+  </Expandable>
+  <Expandable title="Facturación Diaria">
+    Volumen facturado día a día con desglose por razón social emisora.
+  </Expandable>
+  <Expandable title="Facturas Sin Enviar">
+    Facturas timbradas que aún no se han enviado al cliente. Suele indicar olvidos o retrasos del equipo de facturación.
+  </Expandable>
+  <Expandable title="Facturas Vencidas">
+    Listado puro de facturas con días vencidos. Filtros por cliente, vendedor y rango de aging.
+  </Expandable>
+  <Expandable title="Pendientes por Documentar">
+    Embarques entregados pero sin POD o sin Carta Porte del proveedor. Foco del equipo operativo.
+  </Expandable>
+  <Expandable title="Pendientes por Facturar">
+    Embarques documentados que están listos para emitir CFDI. Foco del equipo de facturación.
+  </Expandable>
+  <Expandable title="Utilidades (Margen)">
+    Margen por embarque calculado en USD unificado para comparar nacionales e internacionales. Considera precio cliente, costo proveedor, gastos adicionales y comisiones.
+  </Expandable>
+</ExpandableGroup>
+
+## Filtros comunes
+
+<Tabs>
+  <Tab title="Por fecha" icon="calendar">
+    Rango de fechas (desde / hasta) o presets (mes actual, mes anterior, año actual).
+  </Tab>
+  <Tab title="Por cliente" icon="user">
+    Combo con búsqueda. Si tu rol restringe el listado, solo verás los clientes a los que tienes acceso.
+  </Tab>
+  <Tab title="Por vendedor" icon="briefcase">
+    Filtro disponible cuando el reporte tiene relevancia comercial. Vendedores ven solo lo propio.
+  </Tab>
+  <Tab title="Por moneda" icon="dollar-sign">
+    MXN, USD o ambos con conversión a USD unificado para comparaciones.
+  </Tab>
+</Tabs>
+
+## Exportación
+
+<Callout kind="info">
+  Todos los reportes exponen el botón **Exportar a Excel**. La exportación respeta los filtros activos y los permisos del usuario, evitando exponer datos a los que no debería tener acceso.
+</Callout>
+
+| Reporte | Hoja Excel |
+|---------|-----------|
+| Cartera de Clientes | `CarteraClientes.xlsx` |
+| Cobranza Mensual | `CobranzaMensual.xlsx` |
+| CxP listado | `CxP.xlsx` |
+| Embarques (operación) | `Embarques.xlsx` |
+
+## Permisos
+
+<Callout kind="info">
+  Acceder a un reporte requiere el permiso correspondiente al módulo:
+
+  - Reportes financieros → `cxc.viewReportes` o `facturas.view`.
+  - Reportes operativos → `embarques.view-all`.
+  - Reporte de comisiones → permisos adicionales relacionados con el rol comercial.
+</Callout>

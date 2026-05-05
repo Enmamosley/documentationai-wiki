@@ -1,45 +1,85 @@
 ---
-title: Introduction to Embarque
-description: Discover Embarque, a SaaS platform that centralizes shipments, SAT invoicing, and collections for efficient logistics operations in Mexico.
+title: Introducción a TMS Logística
+description: Sistema interno de gestión de transporte para intermediarios logísticos en México. Centraliza embarques, facturación CFDI 4.0 con Carta Porte 3.1, cobranza, cuentas por pagar y factoraje.
 ---
 
-<Image
-  src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416420393-s9t4cno1w99-Image-8.png?q=85&fm=auto&auto=compress%2Cformat"
-  alt="Embarque documentation"
-  width="800"
-  height="400"
-/>
+## Bienvenido a TMS Logística
 
-## Welcome to Embarque
-
-Embarque centralizes shipments, SAT invoicing, and collections in one system. You gain full control over your logistics operations with CFDI 4.0 and Carta Porte 3.1 support for seamless compliance.
+TMS Logística es un sistema interno construido para intermediarios logísticos que operan en México. Reúne en una sola aplicación el ciclo de vida del embarque, la facturación electrónica ante el SAT, la gestión de cuentas por cobrar y por pagar, y la operación de factoraje con proveedores.
 
 <Columns cols={2}>
-  <Card title="Shipments Management" icon="package" href="/quickstart">
-    Track and organize all your embarques from dispatch to delivery in real time.
+  <Card title="Embarques" icon="truck" href="/features/embarques">
+    Administra el ciclo completo: creación, asignación de proveedor, paradas, documentación y cierre.
   </Card>
-  <Card title="SAT Invoicing" icon="file-text" href="/invoicing">
-    Generate compliant CFDI 4.0 and Carta Porte 3.1 facturas with 98% first-time SAT acceptance.
+  <Card title="Facturación CFDI" icon="file-text" href="/features/facturacion">
+    Timbra CFDI 4.0 con complemento Carta Porte 3.1 vía FacturAPI, con multi-RFC emisor.
   </Card>
-  <Card title="Collections & Payments" icon="dollar-sign" href="/collections">
-    Manage cuentas por cobrar and pagar to accelerate cash flow and reduce delays.
+  <Card title="Cobranza" icon="dollar-sign" href="/features/cobranza">
+    Registra pagos individuales o múltiples, complementos de pago y aging por moneda.
   </Card>
-  <Card title="Operational Visibility" icon="eye" href="/dashboard">
-    Get a single source of truth to eliminate errors from fragmented tools like Excel and WhatsApp.
+  <Card title="Factoraje" icon="banknote" href="/features/factoraje">
+    Opera con empresas de factoraje, gestiona comisiones y expone un portal externo dedicado.
   </Card>
 </Columns>
 
-## Explore Embarque
+## Qué encontrarás aquí
 
 <Columns cols={2}>
-  <Card title="Get Started" icon="zap" href="/quickstart" horizontal>
-    Set up your account and process your first shipment in minutes.
+  <Card title="Comienza ya" icon="zap" href="/quickstart" horizontal>
+    Inicia sesión, conoce el dashboard y crea tu primer embarque en minutos.
   </Card>
-  <Card title="Key Modules" icon="settings" href="/modules" horizontal>
-    Dive into shipments, invoicing, and collections features tailored for Mexican logistics.
+  <Card title="Recorre los módulos" icon="layers" href="/features" horizontal>
+    Embarques, facturación, finanzas, factoraje, reportes y configuración.
+  </Card>
+  <Card title="Centro de Ayuda" icon="help-circle" href="/help-center" horizontal>
+    Guías paso a paso, preguntas frecuentes y solución de errores SAT.
+  </Card>
+  <Card title="Cambios recientes" icon="clock" href="/changelog" horizontal>
+    Historial de versiones y mejoras del sistema.
   </Card>
 </Columns>
 
-<Callout kind="tip">
-  This documentation was generated as a starter kit. Customize the content to match your product.
+## A quién está dirigido
+
+<Tabs>
+  <Tab title="Equipo interno" icon="users">
+    El sistema se diseñó para uso de personal interno con roles diferenciados:
+
+    - **Administrador** — control total del sistema y configuración.
+    - **Operador** y **Coordinador Operativo** — alta de embarques, paradas, documentos.
+    - **Finanzas** — facturación, cobranza, cuentas por pagar.
+    - **Vendedor** — clientes asignados, comisiones, embarques propios.
+    - **Customer Service** — seguimiento de embarques de sus clientes.
+    - **Gerente Comercial** — supervisión comercial y comisiones.
+    - **Pricing** — administración de tarifas.
+  </Tab>
+  <Tab title="Acceso externo" icon="external-link">
+    Existen dos portales con autenticación independiente:
+
+    - **Portal Proveedores** (`/portal/proveedores`) — los transportistas suben PODs y facturas, consultan embarques asignados y revisan el estado de sus pagos.
+    - **Portal Factoraje** (`/portal/factoraje`) — las empresas de factoraje descargan facturas y comprobantes, y registran pagos a TMS o al proveedor.
+  </Tab>
+</Tabs>
+
+## Cumplimiento fiscal
+
+<Callout kind="info">
+  TMS Logística emite CFDI 4.0 con complemento **Carta Porte 3.1** ante el SAT, usando FacturAPI como timbrador principal y Facturama como alternativa para escenarios específicos.
 </Callout>
+
+El sistema valida los datos de Carta Porte antes del timbrado y traduce los códigos de error del SAT (CP116, CP143, CP147, CP149, CP155, CP170, CP171, CP172) a soluciones accionables dentro de la propia interfaz.
+
+## Stack del producto
+
+| Capa | Tecnología |
+|------|-----------|
+| Framework | Laravel 11 (PHP 8.2+) |
+| Frontend reactivo | Livewire 3 + Volt |
+| UI | Tailwind CSS 4 + DaisyUI 5 |
+| Base de datos | MySQL |
+| Timbrado | FacturAPI + Facturama (fallback) |
+| Tipo de cambio | API de Banxico |
+| Permisos | Spatie Laravel Permission |
+| PDF | DomPDF |
+| Excel | Maatwebsite Excel |
+| Monitoreo | Sentry |

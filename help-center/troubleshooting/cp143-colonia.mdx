@@ -1,0 +1,57 @@
+---
+title: CP143 - Colonia no pertenece al código postal
+description: Cómo resolver el error CP143 cuando la colonia capturada no corresponde al código postal según el catálogo SAT.
+---
+
+## Síntomas
+
+- Mensaje de FacturAPI: **CP143 — Colonia no pertenece al código postal**.
+- La factura no se timbra.
+
+## Causa
+
+El SAT mantiene un catálogo (`c_Colonia` y `c_CodigoPostal`) donde cada colonia está asociada a códigos postales específicos. Si la colonia capturada en una ubicación de Carta Porte no aparece como válida para ese CP, el SAT rechaza el timbrado con CP143.
+
+<Callout kind="info">
+  Este error suele venir de XMLs de proveedor que reportan colonias con código inexistente, o de capturas manuales con erratas.
+</Callout>
+
+## Cómo resolverlo
+
+<Steps>
+  <Step title="Identifica la ubicación afectada">
+    En la pre-factura, FacturAPI reporta si el error es en origen o destino. Anota cuál.
+  </Step>
+  <Step title="Edita los datos de Carta Porte">
+    Desde el detalle del embarque, abre **Editar Carta Porte** y ubica la sección de origen o destino afectada.
+  </Step>
+  <Step title="Revisa la colonia">
+    Verifica el código postal y luego la colonia. Las opciones:
+
+    - **Corregir la colonia** según el catálogo SAT del CP.
+    - **Dejar la colonia vacía** — está permitido y suele ser la solución más rápida.
+    - **Cambiar el código postal** si el CP es lo incorrecto.
+  </Step>
+  <Step title="Vuelve a timbrar" icon="zap">
+    Guarda los cambios y reintenta el timbrado desde la pre-factura.
+  </Step>
+</Steps>
+
+## ¿Cómo verifico una colonia válida?
+
+<Tabs>
+  <Tab title="Catálogo SAT" icon="external-link">
+    El SAT publica el catálogo en su portal de catálogos para CFDI 4.0 y Carta Porte. Busca por código postal para ver las colonias válidas.
+  </Tab>
+  <Tab title="Buscador interno" icon="search">
+    Si tu instalación tiene cargado el catálogo local (`sat_codigos_postales`), puedes consultarlo desde la pantalla de edición de ubicación.
+  </Tab>
+</Tabs>
+
+## Por qué no es seguro adivinar la colonia
+
+<Callout kind="warning">
+  No copies la colonia de otro documento o de la dirección que el cliente te dio. El catálogo SAT puede tener un nombre normalizado distinto. Si la colonia no coincide exactamente con el catálogo, el timbrado falla.
+
+  Cuando dudes, **deja la colonia vacía**. El SAT lo acepta y el riesgo de error es cero.
+</Callout>

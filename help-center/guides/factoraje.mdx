@@ -1,0 +1,109 @@
+---
+title: Operación de factoraje
+description: Cómo se canaliza una factura de proveedor a una empresa de factoraje en TMS Logística, paso a paso.
+---
+
+## Cuándo usar factoraje
+
+El factoraje conviene cuando:
+
+- El proveedor necesita liquidez antes del plazo de crédito que TMS le otorga.
+- Una empresa de factoraje ofrece pagar al proveedor más rápido a cambio de una comisión.
+- TMS prefiere mantener su propio plazo de pago largo y el proveedor cobrar pronto.
+
+## Antes de empezar
+
+- La empresa de factoraje debe estar dada de alta en **Configuración → Empresas de Factoraje** (acceso de Administrador).
+- El proveedor de transporte y la empresa de factoraje deben tener una relación previa (negociar comisiones y términos).
+
+## Marcar un embarque para factoraje
+
+<Steps>
+  <Step title="Abre el embarque" icon="truck">
+    Crea o edita un embarque y ve a la sección de proveedor.
+  </Step>
+  <Step title="Activa la opción de factoraje" icon="check">
+    En la tarjeta del proveedor, marca **Pagar con factoraje** y selecciona la empresa de factoraje.
+  </Step>
+  <Step title="Configura comisiones" icon="percent">
+    El sistema toma la comisión configurada en la empresa o el override negociado por proveedor. Verifica que el split (parte que absorbe el proveedor vs. la que retiene TMS) sea el pactado.
+  </Step>
+  <Step title="Guarda" icon="save">
+    El embarque queda con la marca de factoraje. La operación de factoraje se creará al subir la factura del proveedor.
+  </Step>
+</Steps>
+
+## Recibir la factura del proveedor
+
+<Steps>
+  <Step title="El proveedor sube su factura" icon="upload">
+    Desde el portal de proveedores, el proveedor sube el XML CFDI que emitió a TMS.
+  </Step>
+  <Step title="TMS valida el XML" icon="shield-check">
+    El sistema extrae UUID, RFC, monto, fecha y método de pago. Valida que todo cuadre con el embarque.
+  </Step>
+  <Step title="Se crea la operación de factoraje" icon="layers">
+    Automáticamente se crea un `FactorajeOperacion` ligado al embarque, al proveedor, a la factura y a la empresa de factoraje. Estado inicial: **Pendiente**.
+  </Step>
+  <Step title="La empresa de factoraje recibe la operación" icon="external-link">
+    En su portal externo, la empresa de factoraje ve la nueva operación pendiente, descarga la factura, el POD y la constancia.
+  </Step>
+</Steps>
+
+## La empresa de factoraje paga al proveedor
+
+<Steps>
+  <Step title="Selecciona la operación" icon="layers">
+    Desde su portal, la empresa abre la operación pendiente.
+  </Step>
+  <Step title="Registra el pago al proveedor" icon="dollar-sign">
+    Captura monto, fecha y referencia. Si paga varias operaciones del mismo proveedor en una transferencia, usa **pago múltiple**.
+  </Step>
+  <Step title="Estado pasa a Pagado proveedor" icon="check-circle">
+    La operación queda en `pagado_proveedor`. El proveedor ve en su portal que su factura ya fue cobrada.
+  </Step>
+</Steps>
+
+## TMS paga a la empresa de factoraje
+
+<Steps>
+  <Step title="Cumplido el plazo" icon="calendar">
+    Cuando se cumple el plazo de crédito de TMS hacia la empresa de factoraje (típicamente 60 días), TMS le paga.
+  </Step>
+  <Step title="Registra el pago a la empresa" icon="credit-card">
+    Desde **Cuentas por Pagar**, registra el pago a la empresa de factoraje. La operación pasa a `pagado_tms`.
+  </Step>
+  <Step title="Ciclo cerrado" icon="check">
+    El embarque queda completamente conciliado: cliente pagó, factoraje pagó al proveedor, TMS pagó al factoraje.
+  </Step>
+</Steps>
+
+## Sincronización automática
+
+El comando programado `factoraje:sincronizar-pagos` corre periódicamente y:
+
+- Verifica que cada operación tenga un estado consistente con sus pagos registrados.
+- Actualiza el aging de las operaciones pendientes.
+- Alerta al equipo cuando una operación lleva demasiado tiempo en un mismo estado.
+
+## Comisiones y reportes
+
+| Reporte | Qué muestra |
+|---------|-------------|
+| Listado de operaciones | Estado actual, comisión negociada, días vencidos |
+| Cuentas por pagar — vía factoraje | Filtro de CxP que solo muestra operaciones de factoraje |
+| Constancia de empresa | PDF que la empresa puede descargar como respaldo de la relación |
+
+## Cuándo cambia la comisión negociada
+
+<Callout kind="info">
+  La comisión configurada en la empresa de factoraje es el default. Si negociaste con un proveedor específico una comisión distinta, captúrala en el catálogo del proveedor como **override**. El sistema la usará al crear las operaciones de factoraje de ese proveedor.
+</Callout>
+
+## Permisos relacionados
+
+| Permiso | Para qué |
+|---------|----------|
+| `factoraje.view` | Ver el módulo |
+| `factoraje.create` / `factoraje.edit` | Operaciones internas |
+| Acceso a portal externo | Se gestiona desde la configuración de empresas de factoraje |

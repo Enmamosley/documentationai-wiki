@@ -1,0 +1,61 @@
+---
+title: CP149 - Peso bruto total no coincide
+description: Cómo resolver el error CP149 cuando el PesoBrutoTotal no es igual a la suma de pesos individuales de las mercancías.
+---
+
+## Síntomas
+
+- Mensaje: **CP149 — PesoBrutoTotal**.
+- La factura no se timbra.
+
+## Causa
+
+En la Carta Porte, el campo `PesoBrutoTotal` debe ser **exactamente** la suma de los `PesoEnKg` de cada mercancía declarada. El SAT valida la igualdad y rechaza si difieren incluso por decimales.
+
+<Callout kind="info">
+  Este error es muy común cuando se editan pesos individuales sin actualizar el total, o cuando un XML del proveedor trae sumas redondeadas.
+</Callout>
+
+## Cómo resolverlo
+
+<Steps>
+  <Step title="Abre los datos de Carta Porte" icon="edit">
+    En el detalle del embarque, abre la edición de datos de Carta Porte.
+  </Step>
+  <Step title="Suma los pesos individuales" icon="calculator">
+    Calcula la suma de `PesoEnKg` de todas las mercancías del embarque. Anótala con todos los decimales.
+  </Step>
+  <Step title="Captura el peso total" icon="save">
+    Ajusta `PesoBrutoTotal` con el valor exacto de la suma. Guarda los cambios.
+  </Step>
+  <Step title="Reintenta el timbrado" icon="zap">
+    Vuelve a la pre-factura y timbra de nuevo.
+  </Step>
+</Steps>
+
+## Si el problema viene del XML del proveedor
+
+<Steps>
+  <Step title="Sube un XML corregido">
+    Pídele al proveedor que reemita su XML con los pesos consistentes.
+  </Step>
+  <Step title="Edita en TMS">
+    Si no puedes obtener un XML nuevo, edita los datos directamente en TMS. Los cambios se guardan como **overrides** sobre el XML original sin alterarlo.
+  </Step>
+</Steps>
+
+## Casos comunes
+
+<ExpandableGroup>
+  <Expandable title="Decimales que no cuadran" default-open="true">
+    Si tienes mercancías con peso 100.33 kg, 200.34 kg y un total declarado de 300.67 kg, el SAT validará 100.33 + 200.34 = 300.67 ✓.
+
+    Si en cambio declaraste 300.66 (por redondeo) o 300.7 (por truncar decimales), CP149 se dispara.
+  </Expandable>
+  <Expandable title="Mercancía borrada y total no actualizado">
+    Eliminaste una mercancía del listado pero el peso total quedó como antes. Recalcula y guarda.
+  </Expandable>
+  <Expandable title="Unidad de medida inconsistente">
+    Asegúrate de que todas las mercancías estén en kilogramos. Mezclar libras o toneladas con kilogramos sin convertir genera el error.
+  </Expandable>
+</ExpandableGroup>

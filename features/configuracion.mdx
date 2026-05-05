@@ -1,0 +1,95 @@
+---
+title: Configuración
+description: Razones sociales emisoras, tipos de cambio, penalizaciones por vencimiento, bitácoras de API y de correo.
+---
+
+## Secciones de configuración
+
+Solo accesible para Administrador. Concentra los parámetros que afectan a todo el sistema.
+
+<Columns cols={2}>
+  <Card title="Razones sociales emisoras" icon="building">
+    Define las entidades fiscales que pueden timbrar facturas en el sistema, cada una con sus credenciales de FacturAPI o Facturama.
+  </Card>
+  <Card title="Tipos de cambio" icon="dollar-sign">
+    Histórico de tipo de cambio Banxico USD/MXN consultable y editable manualmente cuando aplica.
+  </Card>
+  <Card title="Penalizaciones" icon="alert-circle">
+    Configura los porcentajes de penalización aplicables al cálculo de comisiones según los días que una factura lleva vencida.
+  </Card>
+  <Card title="Bitácoras del sistema" icon="terminal">
+    Logs de llamadas a APIs externas y de correos enviados, con filtros y exportación.
+  </Card>
+</Columns>
+
+## Razones sociales emisoras
+
+<Steps>
+  <Step title="Datos fiscales" icon="building">
+    RFC, razón social, régimen fiscal, código postal del lugar de expedición.
+  </Step>
+  <Step title="Credenciales del timbrador" icon="key">
+    API key de FacturAPI (sandbox o live) o usuario y password de Facturama. Se guardan **encriptadas** en base de datos.
+  </Step>
+  <Step title="Activa la razón social" icon="check">
+    Marca como activa para que aparezca como opción al crear embarques y emitir facturas.
+  </Step>
+</Steps>
+
+<Callout kind="info">
+  El campo `usa_facturapi` decide qué timbrador se llama. Si la razón social no usa FacturAPI, el sistema usa Facturama como alternativa.
+</Callout>
+
+## Tipos de cambio
+
+El listado muestra el histórico día a día. Se actualiza automáticamente desde la API de Banxico, pero un administrador puede capturar manualmente un tipo de cambio si la API falló o si se necesita un valor fijo para un día específico.
+
+<Callout kind="tip">
+  El sistema requiere `BANXICO_TOKEN` configurado. Sin token, los tipos de cambio se ingresan a mano.
+</Callout>
+
+## Penalizaciones de comisiones
+
+Los vendedores reciben comisión por las facturas que se cobran. Si una factura se vence sin cobrarse, la comisión asociada se penaliza.
+
+<Tabs>
+  <Tab title="Tramos por defecto" icon="percent">
+    | Días vencidos | Penalización |
+    |---------------|--------------|
+    | 1-30 | 10% |
+    | 31-60 | 25% |
+    | 61-90 | 50% |
+    | 91+ | 100% (sin comisión) |
+  </Tab>
+  <Tab title="Personalización" icon="settings">
+    Los porcentajes y tramos son editables desde **Configuración → Penalizaciones**.
+  </Tab>
+</Tabs>
+
+## Bitácoras del sistema
+
+<Tabs>
+  <Tab title="API Requests Log" icon="terminal">
+    Cada llamada a APIs externas (FacturAPI, Facturama, Banxico, SAT) queda registrada con: endpoint, método, status code, tiempo de respuesta, payload y respuesta. Permite diagnosticar problemas de timbrado o de tipo de cambio sin esperar a Sentry.
+  </Tab>
+  <Tab title="Email Logs" icon="mail">
+    Cada correo enviado por el sistema (factura, complemento, alerta de vencimiento, BOL, modificación de costo) queda en el log con destinatario, asunto, adjuntos y resultado del envío.
+  </Tab>
+</Tabs>
+
+## Otras configuraciones disponibles
+
+<ExpandableGroup>
+  <Expandable title="Tipos de servicio" default-open="false">
+    Catálogo de tipos de servicio que TMS ofrece (ej. nacional terrestre, internacional, dedicado). Cada tipo tiene un prefijo de folio que se aplica al crear el embarque.
+  </Expandable>
+  <Expandable title="Tipos de unidad y de documento">
+    Catálogos de unidades de transporte y de documentos que se manejan en el sistema. Se mantienen alineados con los catálogos SAT cuando aplica.
+  </Expandable>
+  <Expandable title="Roles y permisos">
+    El listado de roles y permisos se gestiona desde la configuración. Los permisos se siembran con `php artisan db:seed --class=RoleSeeder`.
+  </Expandable>
+  <Expandable title="Códigos postales SAT">
+    El catálogo `c_CodigoPostal` del SAT se importa con `php artisan sat:importar-codigos-postales`. Esto evita pegarle al SAT en cada validación de Carta Porte.
+  </Expandable>
+</ExpandableGroup>

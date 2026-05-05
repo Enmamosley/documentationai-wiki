@@ -1,23 +1,53 @@
 ---
-title: ¿Cómo accedo a mi cuenta de Embarque?
-description: Instrucciones para iniciar sesión en Embarque.
+title: Acceso a la cuenta
+description: Cómo iniciar sesión en TMS Logística y qué hacer si olvidaste tu contraseña.
 ---
 
-## Acceso a Embarque
+## Iniciar sesión
 
-Para ingresar a tu cuenta:
-
-1. Ve a `https://app.embarque.com`
-2. Haz clic en "Iniciar sesión"
-3. Introduce tu correo electrónico y contraseña
-4. Da clic en "Entrar"
+<Steps>
+  <Step title="Abre la URL de tu instalación">
+    Tu administrador te compartió la URL del sistema (por ejemplo `https://tms.tuempresa.com`).
+  </Step>
+  <Step title="Captura tus credenciales">
+    Escribe el correo electrónico y la contraseña que te asignaron.
+  </Step>
+  <Step title="Entrar">
+    Haz clic en **Iniciar sesión**. Si tu rol tiene un dashboard específico, el sistema te llevará allí automáticamente.
+  </Step>
+</Steps>
 
 ## ¿Olvidaste tu contraseña?
 
-- Haz clic en "¿Olvidaste tu contraseña?"
-- Ingresa tu correo y revisa tu bandeja de entrada
-- Sigue el enlace para restablecerla
+<Steps>
+  <Step title="Pide el restablecimiento">
+    En la pantalla de login, haz clic en **¿Olvidaste tu contraseña?**.
+  </Step>
+  <Step title="Captura tu correo">
+    Ingresa el correo asociado a tu cuenta y envía el formulario.
+  </Step>
+  <Step title="Revisa tu bandeja">
+    Recibirás un correo con un enlace para crear una nueva contraseña. El enlace tiene caducidad por seguridad.
+  </Step>
+  <Step title="Define una contraseña nueva">
+    Sigue el enlace, captura la nueva contraseña dos veces y guarda. Vuelve al login y entra normalmente.
+  </Step>
+</Steps>
 
 <Callout kind="tip">
-Usa un navegador actualizado para mejor experiencia.
+  Si no recibes el correo en pocos minutos, revisa tu carpeta de spam. Si tampoco está ahí, contacta al administrador del sistema.
+</Callout>
+
+## ¿Por qué no puedo crear una cuenta yo mismo?
+
+<Callout kind="info">
+  TMS Logística es un sistema **interno**. El registro público está deshabilitado: solo un administrador puede dar de alta usuarios y asignarles un rol.
+</Callout>
+
+## ¿Qué pasa si veo botones de acceso rápido?
+
+En instalaciones de desarrollo y staging puede aparecer un panel con botones de acceso rápido por rol (admin, operador, vendedor, etc.). Esto es controlado por la variable de entorno `SHOW_DEMO_LOGIN`.
+
+<Callout kind="warning">
+  En producción esos botones deben estar **desactivados**. Si los ves en una instalación productiva, repórtalo al administrador del sistema.
 </Callout>

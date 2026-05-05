@@ -1,0 +1,97 @@
+---
+title: Cuentas por Pagar
+description: Registro de facturas de proveedores, pagos con retenciones, comprobantes de pago y conciliación contra el XML del proveedor.
+---
+
+## Qué administra el módulo
+
+Cuentas por Pagar (CxP) gestiona lo que TMS le debe a sus proveedores de transporte: facturas recibidas, pagos efectuados y retenciones aplicadas.
+
+<Columns cols={2}>
+  <Card title="Facturas recibidas" icon="receipt">
+    El XML CFDI del proveedor se carga al embarque y queda en el listado de CxP con su UUID, monto, moneda y vencimiento.
+  </Card>
+  <Card title="Pagos a proveedor" icon="credit-card">
+    Registro de pagos individuales o agrupados. Cada pago queda asociado a la factura recibida correspondiente.
+  </Card>
+  <Card title="Retenciones" icon="percent">
+    Aplicación automática de retenciones de ISR e IVA según las tasas configuradas. Se generan los comprobantes de retención.
+  </Card>
+  <Card title="Comprobante de pago" icon="file-text">
+    PDF con detalle del pago, retenciones y datos fiscales del proveedor. Descargable desde el detalle del pago.
+  </Card>
+</Columns>
+
+## Carga de la factura del proveedor
+
+<Steps>
+  <Step title="Sube el XML al embarque" icon="upload">
+    Desde el detalle del embarque, en la sección de documentos, sube el CFDI del proveedor en formato XML.
+  </Step>
+  <Step title="Extracción automática" icon="zap">
+    El sistema extrae UUID, RFC emisor, monto, fecha y método de pago. Valida que el RFC coincida con el del proveedor asignado.
+  </Step>
+  <Step title="Aparece en CxP" icon="list">
+    La factura queda en el listado de Cuentas por Pagar con estado **Pendiente**, lista para ser pagada.
+  </Step>
+</Steps>
+
+<Callout kind="info">
+  El sistema rastrea separadamente la factura recibida (lo que el proveedor cobró) del costo pactado (lo que TMS aceptó pagar). Las diferencias se conciliancomo gastos adicionales o ajustes.
+</Callout>
+
+## Filtros del listado
+
+<Tabs>
+  <Tab title="Pago directo" icon="banknote">
+    Facturas que TMS pagará directamente al proveedor desde su tesorería.
+  </Tab>
+  <Tab title="Vía factoraje" icon="layers">
+    Facturas que se canalizan a una empresa de factoraje. Aparecen marcadas con la empresa de factoraje y siguen un flujo distinto.
+  </Tab>
+  <Tab title="Por proveedor" icon="users">
+    Filtra solo las facturas de un proveedor específico.
+  </Tab>
+  <Tab title="Por aging" icon="calendar-clock">
+    Por vencer, vencidas, dentro de 30 días.
+  </Tab>
+</Tabs>
+
+## Registrar un pago a proveedor
+
+<Steps>
+  <Step title="Elige la factura" icon="file-check">
+    Desde el listado, abre **Registrar pago** sobre la factura recibida.
+  </Step>
+  <Step title="Captura datos del pago" icon="edit">
+    Monto, fecha, forma de pago, cuenta bancaria y referencia. El sistema sugiere el monto pendiente con retenciones ya descontadas.
+  </Step>
+  <Step title="Verifica retenciones" icon="percent">
+    Las tasas de retención de ISR e IVA se calculan a partir del proveedor o del embarque. Puedes ajustarlas si el caso lo requiere.
+  </Step>
+  <Step title="Genera comprobante" icon="file-text">
+    Al guardar, el sistema produce el PDF de comprobante de pago descargable desde el detalle.
+  </Step>
+</Steps>
+
+## Aging y vencimientos
+
+El comando programado `cxp:actualizar-dias-vencidos` corre diariamente. Mantiene el aging de las facturas recibidas, lo que alimenta el dashboard de finanzas y los reportes.
+
+<Callout kind="tip">
+  El módulo separa explícitamente lo vencido por moneda. Una empresa que paga en USD y MXN ve métricas independientes para cada una.
+</Callout>
+
+## Niveles de autorización
+
+<Callout kind="info">
+  Los pagos por encima de cierto monto pueden requerir autorización de un segundo nivel. Esta lógica se aplica desde el código del componente Livewire de pago, validando contra el rol del usuario.
+</Callout>
+
+## Permisos relacionados
+
+| Permiso | Función |
+|---------|---------|
+| `cxp.view` | Ver módulo de cuentas por pagar |
+| `cxp.create` / `cxp.edit` / `cxp.delete` | CRUD de facturas recibidas |
+| `cxp.registrarPago` | Registrar pagos a proveedor |

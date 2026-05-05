@@ -1,0 +1,87 @@
+---
+title: Timbrar factura con Carta Porte
+description: Guía paso a paso para emitir un CFDI 4.0 con complemento Carta Porte 3.1 desde un embarque.
+---
+
+## Antes de empezar
+
+El embarque debe estar en estado **Documentado**, lo que implica:
+
+- POD subido.
+- XML del proveedor cargado (o **Carta Porte Propia** activada).
+- Datos de mercancía, vehículo y ubicaciones completos.
+
+Necesitas el permiso `facturas.create`.
+
+## Paso a paso
+
+<Steps>
+  <Step title="Abre la pre-factura" icon="file-text">
+    Desde el detalle del embarque, haz clic en **Pre-factura** o **Facturar**.
+  </Step>
+  <Step title="Revisa los conceptos" icon="search">
+    El sistema arma los conceptos a facturar (servicio de transporte, gastos adicionales aprobados, maniobras, almacenaje). Verifica montos, tasas de IVA y retenciones.
+  </Step>
+  <Step title="Revisa los datos de Carta Porte" icon="truck">
+    En la sección de Carta Porte verás los 14 campos editables: ubicaciones, mercancías, vehículo, chofer, distancia, etc.
+
+    Si algo está incorrecto, edítalo aquí. Los cambios se guardan como overrides sobre el XML del proveedor sin alterarlo.
+  </Step>
+  <Step title="Validación previa" icon="shield-check">
+    Pulsa **Validar** o el sistema lo hará automáticamente al timbrar. Si detecta problemas (ej. CP143, CP149, CP170), te muestra explicación y bloquea el envío hasta que corrijas.
+  </Step>
+  <Step title="Timbra" icon="zap">
+    Cuando todo esté correcto, pulsa **Timbrar**. El sistema envía a FacturAPI y espera la respuesta.
+
+    - Si pasa: aparece el UUID, se descargan PDF y XML, y el embarque pasa a **Facturado**.
+    - Si falla: aparece el código de error con explicación. Corrige y reintenta.
+  </Step>
+  <Step title="Envía al cliente" icon="send">
+    Si tienes permiso `facturacion.send`, pulsa **Enviar al cliente** para que reciba PDF y XML por correo. Si no, el equipo de Finanzas se encargará del envío.
+  </Step>
+</Steps>
+
+## Si el timbrado falla
+
+<Tabs>
+  <Tab title="Error de Carta Porte (CP1xx)" icon="alert-triangle">
+    Sigue [Errores de timbrado SAT](/help-center/troubleshooting/errores-sat). El sistema traduce los errores más comunes a una explicación accionable.
+  </Tab>
+  <Tab title="Error genérico" icon="help-circle">
+    Anota el código y abre **Configuración → API Requests Log** para ver el detalle del request y la respuesta. Comparte con tu administrador si no puedes resolver.
+  </Tab>
+  <Tab title="Timeout o sin respuesta" icon="clock">
+    Si FacturAPI no responde, el sistema detiene el envío con un **circuit breaker** y permite reintentar después. No se cobra timbre por intentos fallidos.
+  </Tab>
+</Tabs>
+
+## Casos especiales
+
+<ExpandableGroup>
+  <Expandable title="Cliente extranjero (RFC genérico)" default-open="true">
+    Si el cliente es extranjero, usa el RFC genérico `XEXX010101000` y captura su nombre fiscal y país. El sistema soporta facturación a clientes extranjeros con FacturAPI o Facturama según el caso.
+  </Expandable>
+  <Expandable title="Embarque internacional con Facturama">
+    Algunos embarques internacionales requieren timbrar con Facturama en lugar de FacturAPI. La razón social emisora controla esto: si la razón social tiene `usa_facturapi = false`, se usa Facturama.
+  </Expandable>
+  <Expandable title="Carta Porte Propia">
+    Si activaste **Carta Porte Propia** en el embarque, el XML se construye desde cero con los datos editables del sistema. El proveedor original no se considera.
+  </Expandable>
+  <Expandable title="Servicio Logístico (sin Carta Porte)">
+    Si el embarque se factura como servicio logístico puro (sin complemento Carta Porte), marca el flag `facturar_como_logistico` antes de pre-facturar. El CFDI sale como tipo "I" sin complemento de transporte.
+  </Expandable>
+</ExpandableGroup>
+
+## Después de timbrar
+
+<Columns cols={2}>
+  <Card title="Registrar pago" icon="dollar-sign" href="/help-center/guides/registrar-pago" horizontal>
+    Cuando el cliente pague, aplica el pago en CxC.
+  </Card>
+  <Card title="Generar complemento" icon="receipt" href="/help-center/guides/complemento-pago" horizontal>
+    Si la factura es PPD, emite el complemento de pago al recibir abonos.
+  </Card>
+  <Card title="Cancelar (si fue error)" icon="x-circle" href="/help-center/faq/cancelar-factura" horizontal>
+    Solo si lo necesitas. La cancelación se reporta al SAT.
+  </Card>
+</Columns>

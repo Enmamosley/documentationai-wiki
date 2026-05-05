@@ -1,0 +1,70 @@
+---
+title: Roles y permisos
+description: Roles disponibles en TMS Logística y qué puede hacer cada uno.
+---
+
+## Roles del sistema
+
+TMS Logística tiene 8 roles internos predefinidos. Cada rol agrupa un conjunto de permisos granulares.
+
+| Rol | Para quién |
+|-----|-----------|
+| Administrador | Personal con control total del sistema y configuración |
+| Operador | Equipo operativo que captura y mueve embarques |
+| Coordinador Operativo | Supervisión operativa, autorización de costos |
+| Finanzas | Equipo de facturación, cobranza, cuentas por pagar |
+| Vendedor | Comerciales con sus clientes asignados |
+| Customer Service | Seguimiento posventa de embarques |
+| Gerente Comercial | Supervisión comercial y comisiones |
+| Pricing | Administración de tarifas |
+
+## Qué puede hacer cada rol
+
+<ExpandableGroup>
+  <Expandable title="Administrador" default-open="true">
+    Acceso a todo el sistema. Único rol que entra a **Configuración** (razones sociales, tipos de cambio, penalizaciones, bitácoras, roles).
+  </Expandable>
+  <Expandable title="Operador / Coordinador Operativo">
+    Crear, editar, cancelar y cambiar de estado embarques. Subir documentos (POD, XML del proveedor, factura del proveedor). Solicitar modificación de costo. Coordinador adicionalmente puede **autorizar costos y gastos**.
+  </Expandable>
+  <Expandable title="Finanzas">
+    Emitir facturas, cancelar facturas, generar notas de crédito, registrar pagos en CxC y CxP, generar complementos de pago, ver y exportar reportes financieros.
+  </Expandable>
+  <Expandable title="Vendedor">
+    Ver solo sus clientes y embarques asignados. Crear embarques. Ver sus comisiones devengadas y pendientes. **No** ve facturas de otros vendedores ni la cobranza global.
+  </Expandable>
+  <Expandable title="Customer Service">
+    Ver embarques de los clientes asignados, capturar notas de tracking, comunicar al cliente, gestionar el ciclo de POD físico cuando aplica.
+  </Expandable>
+  <Expandable title="Gerente Comercial">
+    Ver toda la comisión, todas las cuentas y reportes comerciales. Supervisión de vendedores.
+  </Expandable>
+  <Expandable title="Pricing">
+    Mantenimiento de tarifas, condiciones comerciales y configuración de precios.
+  </Expandable>
+</ExpandableGroup>
+
+## Permisos granulares
+
+Por encima de los roles, hay más de 50 permisos individuales que controlan acciones puntuales. Algunos ejemplos:
+
+| Permiso | Qué controla |
+|---------|--------------|
+| `embarques.aprobarCostos` | Autorizar modificaciones de costo solicitadas |
+| `embarques.aprobarGastos` | Autorizar gastos adicionales |
+| `embarques.editarPedimento` | Editar el pedimento desde el detalle |
+| `embarques.view-precios` | Ver precios y márgenes |
+| `clientes.view-all` | Ver todos los clientes (no solo los asignados) |
+| `facturas.notaCredito` | Generar notas de crédito |
+| `facturacion.send` | Enviar facturas por correo al cliente |
+| `cxc.exportar` | Exportar listados de cobranza a Excel |
+
+## ¿Cómo se asigna un rol?
+
+<Callout kind="info">
+  Solo un Administrador puede crear usuarios y asignarles un rol. Si necesitas que tu rol cambie o que se te otorgue un permiso, escríbele al administrador del sistema en tu organización.
+</Callout>
+
+## ¿Por qué no puedo entrar a una pantalla?
+
+Si una opción del menú no aparece o ves un mensaje de "no autorizado", lo más probable es que tu rol no tenga el permiso correspondiente. Pídele al administrador que revise tus permisos en la configuración.

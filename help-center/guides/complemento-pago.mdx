@@ -1,0 +1,101 @@
+---
+title: Generar complemento de pago
+description: Cuándo y cómo emitir el CFDI tipo P (complemento de pago) en TMS Logística.
+---
+
+## Cuándo es obligatorio
+
+<Callout kind="warning">
+  El SAT exige emitir un complemento de pago **cada vez que se recibe un abono** sobre una factura con método de pago **PPD** (Pago en Parcialidades o Diferido). Esto incluye pagos totales y parciales.
+
+  Las facturas con método **PUE** (Pago en Una sola Exhibición) **no** requieren complemento — se consideran pagadas en el momento del timbrado.
+</Callout>
+
+## Flujo recomendado: complemento al registrar el pago
+
+La forma más simple es generar el complemento en el mismo momento que registras el pago.
+
+<Steps>
+  <Step title="Registra el pago" icon="dollar-sign">
+    Sigue [Registrar un pago](/help-center/guides/registrar-pago).
+  </Step>
+  <Step title="Acepta generar complemento" icon="check">
+    Al guardar el pago, si la factura es PPD, el sistema ofrece generar el complemento. Acepta.
+  </Step>
+  <Step title="Revisa el resumen" icon="eye">
+    Verás los datos del complemento: factura(s) cubiertas, saldos anteriores, montos pagados, saldos nuevos.
+  </Step>
+  <Step title="Timbra" icon="zap">
+    Pulsa **Timbrar complemento**. El sistema envía a FacturAPI y descarga PDF y XML del complemento.
+  </Step>
+  <Step title="Envío automático" icon="send">
+    El job `EnviarComplementoPagoEmailJob` envía el complemento al cliente con PDF y XML adjuntos.
+  </Step>
+</Steps>
+
+## Complemento que cubre varias facturas
+
+Si el cliente pagó varias facturas en una sola transferencia, **un solo complemento** puede cubrirlas a todas. Sigue [Registrar un pago → Pago múltiple](/help-center/guides/registrar-pago).
+
+## Generar complementos pendientes en lote
+
+Si por alguna razón hay pagos registrados sin su complemento, puedes correr el comando programado:
+
+<Steps>
+  <Step title="Pide al administrador">
+    El administrador del sistema ejecuta:
+    ```bash
+    php artisan complementos:generar-automaticos
+    ```
+  </Step>
+  <Step title="El sistema procesa la cola">
+    Genera complementos para todos los pagos PPD pendientes y los envía al cliente. Los resultados quedan en el log de email y en el listado de complementos.
+  </Step>
+</Steps>
+
+<Callout kind="tip">
+  Este comando es seguro de re-ejecutar: omite pagos que ya tienen complemento.
+</Callout>
+
+## Cancelar un complemento
+
+Si un complemento se emitió por error (ej. un pago aplicado a la factura equivocada):
+
+<Steps>
+  <Step title="Abre el complemento">
+    En **Complementos de pago**, busca el complemento por folio o por cliente.
+  </Step>
+  <Step title="Cancela ante el SAT">
+    Pulsa **Cancelar**. El flujo es similar al de cancelación de factura: motivo SAT y, en su caso, espera la aceptación del receptor.
+  </Step>
+  <Step title="Regulariza el pago">
+    Una vez cancelado el complemento, puedes editar o eliminar el pago original y emitir un complemento nuevo correctamente.
+  </Step>
+</Steps>
+
+<Callout kind="warning">
+  Cancelar el complemento **antes** que la factura misma es obligatorio si quieres cancelar la factura. El sistema valida esta dependencia.
+</Callout>
+
+## Datos que el complemento reporta al SAT
+
+| Sección | Contenido |
+|---------|-----------|
+| Receptor | RFC, razón social, uso CFDI **CP01** |
+| Pago | Fecha, forma de pago, moneda, monto total |
+| Doctos relacionados | Cada factura con UUID, saldo anterior, importe pagado, saldo nuevo |
+| Impuestos del pago | IVA y retenciones desglosadas a la fecha del pago |
+
+## Errores comunes
+
+<ExpandableGroup>
+  <Expandable title="No se genera porque la factura es PUE" default-open="true">
+    Las facturas PUE no requieren complemento. Verifica el método de pago de la factura: si es PUE y querías PPD, primero cancela y reemite con el método correcto.
+  </Expandable>
+  <Expandable title="No se genera porque el monto no cuadra">
+    Si la suma de pagos relacionados no coincide con el monto del complemento, FacturAPI rechaza. Revisa que las distribuciones FIFO no hayan dejado decimales sueltos.
+  </Expandable>
+  <Expandable title="No se envía al cliente">
+    Si el correo no llega, revisa **Configuración → Email Logs** para ver el resultado del envío. Las causas frecuentes son correo del cliente mal capturado o servidor SMTP caído.
+  </Expandable>
+</ExpandableGroup>

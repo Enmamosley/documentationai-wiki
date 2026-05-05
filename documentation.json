@@ -1,5 +1,5 @@
 {
-  "name": "Embarque",
+  "name": "TMS Logística",
   "colors": {
     "light": {
       "brand": "#3B82F6"
@@ -11,87 +11,157 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
+        "tab": "Documentación",
         "icon": "book",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Comenzar",
             "icon": "rocket",
             "pages": [
               {
-                "title": "Introduction",
+                "title": "Introducción",
                 "path": "introduction",
                 "icon": "home"
               },
               {
-                "title": "Quickstart",
+                "title": "Primeros pasos",
                 "path": "quickstart",
                 "icon": "zap"
               }
             ]
           },
           {
-            "group": "Core Concepts",
+            "group": "Módulos",
             "icon": "layers",
             "pages": [
               {
-                "title": "Features",
+                "title": "Resumen de módulos",
                 "path": "features",
                 "icon": "star"
+              },
+              {
+                "title": "Embarques",
+                "path": "features/embarques",
+                "icon": "truck"
+              },
+              {
+                "title": "Facturación CFDI",
+                "path": "features/facturacion",
+                "icon": "file-text"
+              },
+              {
+                "title": "Cuentas por Cobrar",
+                "path": "features/cobranza",
+                "icon": "dollar-sign"
+              },
+              {
+                "title": "Cuentas por Pagar",
+                "path": "features/cuentas-por-pagar",
+                "icon": "credit-card"
+              },
+              {
+                "title": "Factoraje",
+                "path": "features/factoraje",
+                "icon": "banknote"
+              },
+              {
+                "title": "Reportes",
+                "path": "features/reportes",
+                "icon": "bar-chart-3"
+              },
+              {
+                "title": "Configuración",
+                "path": "features/configuracion",
+                "icon": "settings"
+              },
+              {
+                "title": "Portales externos",
+                "path": "features/portales",
+                "icon": "external-link"
               }
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
-        "icon": "code",
-        "groups": [
-          {
-            "group": "Endpoints",
-            "openapi": "api-reference/openapi.yaml"
-          }
-        ]
-      },
-      {
-        "tab": "Help Center",
+        "tab": "Centro de Ayuda",
         "icon": "help-circle",
         "pages": [
           {
-            "title": "Help Center",
+            "title": "Centro de Ayuda",
             "path": "help-center",
             "icon": "home"
           },
           {
-            "group": "FAQs",
+            "group": "Preguntas Frecuentes",
             "icon": "help-circle",
             "expandable": false,
             "pages": [
               {
-                "title": "Acceso a Cuenta",
+                "title": "Acceso a la cuenta",
                 "path": "help-center/faq/acceso-cuenta"
+              },
+              {
+                "title": "Roles y permisos",
+                "path": "help-center/faq/roles-permisos"
+              },
+              {
+                "title": "Cancelar una factura",
+                "path": "help-center/faq/cancelar-factura"
+              },
+              {
+                "title": "Portal de proveedores",
+                "path": "help-center/faq/portal-proveedores"
               }
             ]
           },
           {
-            "group": "Troubleshooting",
+            "group": "Solución de Problemas",
             "icon": "alert-triangle",
             "expandable": false,
             "pages": [
               {
-                "title": "Error de Facturación",
-                "path": "help-center/troubleshooting/error-facturacion"
+                "title": "Errores de timbrado SAT",
+                "path": "help-center/troubleshooting/errores-sat"
+              },
+              {
+                "title": "CP143 - Colonia inválida",
+                "path": "help-center/troubleshooting/cp143-colonia"
+              },
+              {
+                "title": "CP149 - Peso bruto no coincide",
+                "path": "help-center/troubleshooting/cp149-peso"
+              },
+              {
+                "title": "CP170/CP172 - Internacional vs nacional",
+                "path": "help-center/troubleshooting/cp170-172-internacional"
               }
             ]
           },
           {
-            "group": "Guides",
+            "group": "Guías paso a paso",
             "icon": "book-open",
             "expandable": false,
             "pages": [
               {
-                "title": "Crear Embarque",
+                "title": "Crear un embarque",
                 "path": "help-center/guides/crear-embarque"
+              },
+              {
+                "title": "Timbrar factura con Carta Porte",
+                "path": "help-center/guides/timbrar-factura"
+              },
+              {
+                "title": "Registrar un pago",
+                "path": "help-center/guides/registrar-pago"
+              },
+              {
+                "title": "Generar complemento de pago",
+                "path": "help-center/guides/complemento-pago"
+              },
+              {
+                "title": "Operación de factoraje",
+                "path": "help-center/guides/factoraje"
               }
             ]
           }
@@ -102,7 +172,7 @@
         "icon": "clock",
         "pages": [
           {
-            "title": "Release History",
+            "title": "Historial de cambios",
             "path": "changelog",
             "icon": "history"
           }

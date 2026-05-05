@@ -1,0 +1,79 @@
+---
+title: CP170 y CP172 - Internacional vs nacional
+description: Cómo resolver los errores CP170 (TipoMateria) y CP172 (DocumentacionAduanera) que ocurren cuando un embarque tiene campos de comercio internacional siendo nacional, o al revés.
+---
+
+## El patrón común
+
+Ambos errores apuntan a la misma confusión: el embarque tiene **campos de transporte internacional** declarados, pero el atributo `TranspInternac` está marcado como "No".
+
+<Callout kind="info">
+  El SAT exige que los campos exclusivos de comercio internacional (como `TipoMateria` o `DocumentacionAduanera`) **solo aparezcan** cuando `TranspInternac="Sí"`. Si están en un viaje nacional, rechaza el timbrado.
+</Callout>
+
+## CP170 — TipoMateria
+
+**Mensaje del SAT.** "TipoMateria no debe existir".
+
+**Causa.** En al menos una mercancía se declaró `TipoMateria` (un código del catálogo `c_TipoMateria`), pero el embarque está marcado como **nacional**.
+
+**Solución según el caso real:**
+
+<Tabs>
+  <Tab title="Es nacional de verdad" icon="map-pin">
+    Quita el `TipoMateria` de las mercancías. Edita los datos de Carta Porte desde el detalle del embarque y borra ese campo en cada mercancía afectada.
+  </Tab>
+  <Tab title="Es internacional pero no estaba marcado" icon="globe">
+    Cambia el tipo de servicio del embarque a internacional. Esto activa los campos aduaneros y permite que `TipoMateria` exista.
+  </Tab>
+</Tabs>
+
+## CP172 — DocumentacionAduanera
+
+**Mensaje del SAT.** "DocumentacionAduanera no debe existir".
+
+**Causa.** Hay un pedimento o documento aduanero declarado en una mercancía nacional.
+
+**Solución:**
+
+<Tabs>
+  <Tab title="Es nacional de verdad" icon="map-pin">
+    Quita el pedimento del XML. Si el XML viene del proveedor, súbelo corregido. Como alternativa, marca **Carta Porte Propia** en el embarque para que TMS genere el XML sin pedimento.
+  </Tab>
+  <Tab title="Es internacional" icon="globe">
+    Cambia el tipo de servicio a internacional. El pedimento queda permitido y el timbrado pasa.
+  </Tab>
+</Tabs>
+
+## Cómo decidir si es nacional o internacional
+
+<Callout kind="info">
+  Un embarque es **internacional** cuando cruza una aduana. Si el origen y destino están dentro de México y no hay cruce de frontera, es **nacional** independientemente de quién es el cliente.
+</Callout>
+
+| Caso | Tipo |
+|------|------|
+| Origen Monterrey, destino CDMX | Nacional |
+| Origen Laredo TX (USA), destino Monterrey | Internacional |
+| Origen Monterrey, destino Laredo TX (USA) | Internacional |
+| Origen Tijuana, destino San Diego | Internacional |
+
+## Carta Porte Propia: cuándo usarla
+
+Cuando el XML del proveedor es problemático y no puedes obtener uno corregido a tiempo, marca **Carta Porte Propia** en el embarque. Esto le dice a TMS que genere el XML directamente con los datos editables del sistema, ignorando el XML del proveedor.
+
+<Steps>
+  <Step title="Activa Carta Porte Propia">
+    En el detalle del embarque, marca `usa_carta_porte_propia = true`.
+  </Step>
+  <Step title="Captura los datos manualmente">
+    Edita ubicaciones, mercancías, vehículo, chofer y demás. El sistema guarda todo como overrides.
+  </Step>
+  <Step title="Genera el XML">
+    Al timbrar, TMS construye el XML desde cero con los datos capturados, omitiendo el XML del proveedor.
+  </Step>
+</Steps>
+
+<Callout kind="warning">
+  Carta Porte Propia es una salida de emergencia. Cuando puedas, pide al proveedor un XML correcto: la conciliación con su factura es más limpia cuando ambos documentos vienen del mismo origen.
+</Callout>

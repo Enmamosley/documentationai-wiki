@@ -1,0 +1,78 @@
+---
+title: Portal de proveedores
+description: Cómo accede un proveedor de transporte al portal externo y qué puede hacer ahí.
+---
+
+## Para qué sirve el portal
+
+El portal de proveedores es un acceso externo dedicado para los transportistas que ejecutan los embarques de TMS. Les permite operar sin tener cuentas dentro del backoffice.
+
+## Cómo accede un proveedor
+
+<Steps>
+  <Step title="Activa el acceso del proveedor" icon="user-plus">
+    Un administrador activa al proveedor desde su catálogo o ejecuta el comando `php artisan portal:habilitar-proveedor {id}`.
+  </Step>
+  <Step title="El proveedor recibe sus credenciales" icon="mail">
+    Le llega un correo con la URL del portal (`/portal/proveedores/login`) y una contraseña inicial.
+  </Step>
+  <Step title="Cambia la contraseña" icon="lock">
+    En su primera entrada, el sistema le pide cambiarla por una propia.
+  </Step>
+</Steps>
+
+## Qué ve el proveedor
+
+<Columns cols={2}>
+  <Card title="Sus embarques" icon="truck">
+    Solo los embarques donde está asignado. No ve embarques de otros proveedores.
+  </Card>
+  <Card title="Detalle del embarque" icon="file-text">
+    Datos del embarque, ruta, fechas, contactos, descarga de carta de instrucciones y BOL.
+  </Card>
+  <Card title="Sus facturas" icon="receipt">
+    Las facturas que él mismo le ha emitido a TMS y el estado de pago.
+  </Card>
+  <Card title="Solicitar POD físico" icon="package">
+    Marcar cuándo envió el POD original por mensajería.
+  </Card>
+</Columns>
+
+## Qué puede hacer el proveedor
+
+<Tabs>
+  <Tab title="Subir POD" icon="upload">
+    Cuando entrega la carga, sube el Proof of Delivery firmado en imagen o PDF. El sistema lo guarda contra el embarque y notifica al equipo operativo de TMS.
+  </Tab>
+  <Tab title="Subir factura" icon="receipt">
+    Cuando emite su CFDI a TMS, sube el XML al embarque. El sistema extrae UUID, monto y método de pago, y crea la factura recibida en CxP automáticamente.
+  </Tab>
+  <Tab title="Consultar pagos" icon="dollar-sign">
+    Ve qué facturas le han sido pagadas y cuáles están en proceso, con fecha estimada según los días de crédito pactados.
+  </Tab>
+  <Tab title="POD físico" icon="map-pin">
+    Si TMS le pide el POD original en físico, el proveedor lo manda por mensajería y registra fecha y guía en el portal.
+  </Tab>
+</Tabs>
+
+## ¿Qué NO ve el proveedor?
+
+<Callout kind="info">
+  El portal expone únicamente datos del proveedor que está autenticado. No ve:
+
+  - Embarques de otros proveedores.
+  - Comisiones internas de TMS, márgenes ni precios al cliente final.
+  - Datos bancarios o cuentas de otros proveedores.
+  - Facturas emitidas a clientes de TMS.
+</Callout>
+
+## ¿Cuánto tarda en pagarse una factura del proveedor?
+
+Depende de los días de crédito pactados y de si la factura está marcada para **factoraje** o pago directo:
+
+| Modalidad | Tiempo típico |
+|-----------|---------------|
+| Pago directo | Según los días de crédito acordados con TMS |
+| Vía factoraje | Más rápido, según los días de crédito de la empresa de factoraje (típicamente 5 días) |
+
+El proveedor ve el estado actual y la fecha estimada en su listado de facturas.

@@ -1,21 +1,104 @@
 ---
-title: Crear un Embarque Nuevo
-description: Guía rápida para registrar un embarque en Embarque.
+title: Crear un embarque
+description: Guía paso a paso para registrar un nuevo embarque en TMS Logística, asignar proveedor y dejarlo listo para operar.
 ---
 
-## Pasos para crear un embarque
+## Antes de empezar
+
+Necesitas:
+
+- Permiso `embarques.create` (incluido en Operador, Coordinador Operativo, Vendedor y Administrador).
+- Cliente dado de alta en el catálogo.
+- Al menos un proveedor activo para asignar.
+- Si el embarque es internacional, el agente aduanal en el catálogo.
+
+## Paso a paso
 
 <Steps>
-  <Step title="Ingresa al sistema">
-    Ve a `https://app.embarque.com` e inicia sesión.
+  <Step title="Inicia sesión y abre Embarques" icon="log-in">
+    Entra al sistema y haz clic en **Embarques** en el menú lateral. Pulsa **Nuevo embarque**.
   </Step>
-  <Step title="Da clic en 'Nuevo Embarque'">
-    En el menú principal, selecciona "Nuevo Embarque".
+  <Step title="Captura datos del cliente y servicio" icon="user">
+    - **Cliente**: selecciona del combo. Si no aparece, pídele a alguien con permiso `clientes.create` que lo agregue.
+    - **Tipo de servicio**: nacional, internacional, dedicado, etc. Define el prefijo del folio.
+    - **Referencia del cliente**: el folio o PO que el cliente usa internamente.
+    - **Orden de compra del cliente**: si aplica, captúrala.
   </Step>
-  <Step title="Llena la información requerida">
-    Completa los campos de cliente, destino y mercancía.
+  <Step title="Captura origen y destino" icon="map-pin">
+    Selecciona del catálogo de destinos o agrégalos como texto libre si son nuevos. Para Carta Porte se requiere domicilio fiscal completo: estado, municipio, código postal, colonia (opcional, ver [CP143](/help-center/troubleshooting/cp143-colonia)).
   </Step>
-  <Step title="Guarda y confirma">
-    Haz clic en "Guardar" para registrar el embarque. Revísalo desde el panel principal.
+  <Step title="Captura mercancía" icon="package">
+    - **Descripción**: qué se transporta.
+    - **Peso (kg)**, **volumen (m³)**, **número de piezas**, **valor declarado**.
+    - **Clave SAT**: clave de producto y unidad del catálogo (`c_ClaveProdServ`, `c_ClaveUnidad`).
+    - **Material peligroso**: marca según corresponda.
+  </Step>
+  <Step title="Define moneda y razón social emisora" icon="dollar-sign">
+    - **Moneda de facturación**: MXN o USD.
+    - **Tipo de cambio** (si es USD): el sistema sugiere el de Banxico del día.
+    - **Razón social emisora**: la entidad que timbrará la factura. Define qué credenciales de FacturAPI/Facturama se usan.
+  </Step>
+  <Step title="Configura impuestos" icon="percent">
+    - **Aplicar IVA** y su tasa.
+    - **Retención de IVA** y su tasa (si el cliente retiene).
+    - **Retención de ISR** y su tasa (si aplica).
+  </Step>
+  <Step title="Asigna proveedor o proveedores" icon="users">
+    Cada proveedor se captura con:
+
+    - Tarifa pactada y moneda.
+    - Comisión negociada.
+    - Días de crédito para el pago.
+    - **Pagar con factoraje**: si aplica, marca y selecciona la empresa de factoraje.
+  </Step>
+  <Step title="Captura paradas si aplica" icon="route">
+    Si el embarque tiene paradas intermedias, agrégalas con ubicación y fecha estimada.
+  </Step>
+  <Step title="Guarda" icon="save">
+    El embarque queda con folio asignado y estado **Pendiente**, listo para avanzar a **En tránsito** cuando inicie la operación.
   </Step>
 </Steps>
+
+## Pasos opcionales tras crear
+
+<Columns cols={2}>
+  <Card title="Generar BOL" icon="file-text" href="/features/embarques">
+    Genera el Bill of Lading firmado y envíalo al proveedor para que lo presente al cargar.
+  </Card>
+  <Card title="Carta de instrucciones" icon="send">
+    Genera un PDF con instrucciones específicas y compártelo al proveedor.
+  </Card>
+  <Card title="Capturar gastos adicionales" icon="receipt">
+    Si pactaste maniobras, almacenaje u otros gastos, captúralos antes de facturar.
+  </Card>
+  <Card title="Solicitar modificación de costo" icon="edit">
+    Si después de creado el costo cambia, usa el flujo de solicitud con autorización.
+  </Card>
+</Columns>
+
+## Errores frecuentes
+
+<ExpandableGroup>
+  <Expandable title="No puedo seleccionar al cliente" default-open="true">
+    El cliente puede estar inactivo o no estar asignado a tu vendedor (si tu rol restringe la vista). Pide a un administrador que verifique.
+  </Expandable>
+  <Expandable title="No me deja guardar por moneda">
+    Si la moneda es USD y no hay tipo de cambio del día en el sistema, captura uno manualmente desde **Configuración → Tipos de cambio** o pide al administrador que active el token de Banxico.
+  </Expandable>
+  <Expandable title="No aparece la razón social emisora">
+    La razón social puede estar inactiva o no tener credenciales configuradas. Solo Administrador puede activarla en **Configuración → Razones sociales**.
+  </Expandable>
+</ExpandableGroup>
+
+## Siguiente
+
+Cuando el embarque se entregue y tengas POD + factura del proveedor, sigue con:
+
+<Columns cols={2}>
+  <Card title="Timbrar factura" icon="zap" href="/help-center/guides/timbrar-factura" horizontal>
+    Genera el CFDI con Carta Porte para el cliente.
+  </Card>
+  <Card title="Registrar pago" icon="dollar-sign" href="/help-center/guides/registrar-pago" horizontal>
+    Cuando el cliente pague, aplica el pago en CxC.
+  </Card>
+</Columns>

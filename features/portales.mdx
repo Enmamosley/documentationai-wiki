@@ -1,0 +1,132 @@
+---
+title: Portales externos
+description: Acceso para usuarios fuera del equipo interno. TMS expone dos portales con guards de autenticación independientes: Portal Proveedores y Portal Factoraje.
+---
+
+## Por qué existen
+
+Los proveedores de transporte y las empresas de factoraje necesitan interactuar con el sistema sin tener acceso al backoffice interno. TMS resuelve esto con dos portales bajo el prefijo `/portal/`.
+
+<Columns cols={2}>
+  <Card title="Portal Proveedores" icon="truck" href="#portal-proveedores">
+    Para los transportistas: ven sus embarques, suben PODs y facturas, consultan pagos.
+  </Card>
+  <Card title="Portal Factoraje" icon="banknote" href="#portal-factoraje">
+    Para las empresas de factoraje: descargan documentos, registran pagos, gestionan operaciones.
+  </Card>
+</Columns>
+
+<Callout kind="info">
+  Cada portal tiene su propio guard de autenticación, sus propios componentes Livewire y un eager loading limitado para no exponer datos sensibles del backoffice (comisiones internas, márgenes, otras cuentas).
+</Callout>
+
+## Portal Proveedores
+
+URL base: `/portal/proveedores`
+
+### Qué puede hacer un proveedor
+
+<Columns cols={2}>
+  <Card title="Dashboard" icon="layout-dashboard">
+    Resumen de embarques asignados y estado de pagos.
+  </Card>
+  <Card title="Detalle de embarque" icon="truck">
+    Ver datos del embarque, descargar la carta de instrucciones y el BOL.
+  </Card>
+  <Card title="Subir POD" icon="upload">
+    Cargar el Proof of Delivery del embarque entregado.
+  </Card>
+  <Card title="Subir factura" icon="receipt">
+    Cargar el XML CFDI de la factura emitida a TMS para iniciar el flujo de cobro.
+  </Card>
+</Columns>
+
+### Solicitar POD físico
+
+Cuando el cliente exige el POD original en físico, el proveedor puede marcar **POD físico solicitado** desde el portal. El flujo:
+
+<Steps>
+  <Step title="Solicitud" icon="send">
+    El proveedor (o TMS) marca la solicitud en el embarque.
+  </Step>
+  <Step title="Envío por mensajería" icon="package">
+    El proveedor envía el POD en físico y registra fecha y guía en el portal.
+  </Step>
+  <Step title="Recepción en TMS" icon="check-circle">
+    Al recibir el documento, TMS marca **recibido** y la fecha. Esto cierra el ciclo.
+  </Step>
+</Steps>
+
+### Filtrado de datos
+
+<Callout kind="info">
+  El proveedor solo ve los embarques donde está asignado y solo sus propios PODs. Esto se aplica filtrando por `proveedor_id` en cada query del portal.
+</Callout>
+
+### Activación
+
+Para activar el acceso de un proveedor al portal:
+
+<Tabs>
+  <Tab title="Comando artisan" icon="terminal">
+    Desde el servidor:
+    ```bash
+    php artisan portal:habilitar-proveedor {proveedor_id}
+    ```
+    Genera credenciales y las envía por correo al contacto del proveedor.
+  </Tab>
+  <Tab title="Desde el sistema" icon="user-plus">
+    Un administrador puede activar el portal desde el detalle del proveedor en el catálogo de proveedores.
+  </Tab>
+</Tabs>
+
+## Portal Factoraje
+
+URL base: `/portal/factoraje`
+
+### Qué puede hacer una empresa de factoraje
+
+<Columns cols={2}>
+  <Card title="Operaciones pendientes" icon="layers">
+    Ver las operaciones de factoraje vinculadas a la empresa, con su estado actual.
+  </Card>
+  <Card title="Descargar documentos" icon="download">
+    Bajar XML, PDF, POD y constancia de cada operación.
+  </Card>
+  <Card title="Registrar pago al proveedor" icon="dollar-sign">
+    Indicar que la empresa ya le pagó al proveedor; cambia el estado a `pagado_proveedor`.
+  </Card>
+  <Card title="Pago múltiple" icon="files">
+    Seleccionar varias operaciones del mismo proveedor y registrar un solo pago. Una barra flotante muestra el total acumulado mientras seleccionan.
+  </Card>
+</Columns>
+
+### Validaciones del pago múltiple
+
+<Callout kind="info">
+  El sistema impide combinar operaciones de **distintos proveedores** o **distintas monedas** en un mismo pago múltiple. Esto evita inconsistencias contables.
+</Callout>
+
+### Comprobante de pago a proveedor
+
+Al registrar un pago, la empresa puede descargar el comprobante PDF que detalla qué operaciones cubrió y por qué monto, útil para enviárselo al proveedor.
+
+## Seguridad de los portales
+
+<ExpandableGroup>
+  <Expandable title="Guards independientes" default-open="true">
+    Los portales no usan el guard `web` del backoffice. Cada uno tiene su propio guard (`proveedor`, `factoraje`) con su propia tabla de usuarios y su propio middleware. Un usuario interno no puede entrar al portal sin sus credenciales específicas.
+  </Expandable>
+  <Expandable title="Contraseñas hasheadas">
+    Las contraseñas se almacenan con cast `hashed` (bcrypt). Nunca se exponen en logs ni en respuestas.
+  </Expandable>
+  <Expandable title="Eager loading limitado">
+    Las consultas del portal cargan solo los campos necesarios. No se devuelven márgenes, comisiones internas, datos de otros proveedores ni cuentas bancarias internas.
+  </Expandable>
+  <Expandable title="Rate limiting">
+    Los endpoints de subida de archivos están protegidos con un límite de 30 peticiones por minuto.
+  </Expandable>
+  <Expandable title="HMAC en enlaces compartidos">
+    Los enlaces de BOL preview y de autorización de costos firman su payload con HMAC y tienen expiración. No funcionan después de su vencimiento ni si alguien manipula el token.
+  </Expandable>
+</ExpandableGroup>

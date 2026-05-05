@@ -1,0 +1,79 @@
+---
+title: Errores de timbrado SAT
+description: Catálogo de errores SAT más comunes en TMS Logística y cómo resolverlos. El sistema los detecta antes y durante el timbrado y te orienta sobre la causa.
+---
+
+## Cómo aparecen estos errores
+
+Cuando intentas timbrar una factura con Carta Porte y FacturAPI o el SAT detecta un problema, TMS muestra el código de error junto con una explicación accionable en la pre-factura.
+
+<Callout kind="info">
+  El sistema valida muchos de estos errores **antes** de enviar al SAT, evitando timbrados fallidos que cuentan como intento.
+</Callout>
+
+## Catálogo
+
+<ExpandableGroup>
+  <Expandable title="CP116 — RegimenesAduaneros" default-open="true">
+    **Causa.** Falta o sobra el nodo `RegimenesAduaneros`. Es obligatorio cuando `TranspInternac="Sí"` y prohibido cuando es "No".
+
+    **Solución.** Verifica que el tipo de servicio del embarque sea correcto (nacional vs. internacional). Si es internacional, debe tener régimen aduanero configurado.
+  </Expandable>
+  <Expandable title="CP143 — Colonia inválida">
+    **Causa.** El código de colonia no pertenece al código postal en el catálogo SAT.
+
+    **Solución.** Edita la ubicación de origen o destino y verifica que la colonia corresponda al código postal. También puedes dejar la colonia vacía para evitar el error.
+
+    [Ver detalle →](/help-center/troubleshooting/cp143-colonia)
+  </Expandable>
+  <Expandable title="CP147 — Localidad inválida">
+    **Causa.** El código de localidad no es válido para la combinación estado/municipio en el catálogo SAT.
+
+    **Solución.** Edita la ubicación y deja el campo de localidad vacío, o corrige el código usando el catálogo SAT `c_Localidad`.
+  </Expandable>
+  <Expandable title="CP149 — PesoBrutoTotal no coincide">
+    **Causa.** `PesoBrutoTotal` no es igual a la suma de `PesoEnKg` de todas las mercancías.
+
+    **Solución.** Edita el peso en los datos de Carta Porte. El total debe ser exactamente la suma de los pesos individuales.
+
+    [Ver detalle →](/help-center/troubleshooting/cp149-peso)
+  </Expandable>
+  <Expandable title="CP155 — MaterialPeligroso inválido">
+    **Causa.** El campo `MaterialPeligroso` no coincide con lo que el catálogo SAT espera para el código `BienesTransp` de la mercancía.
+
+    **Solución.** Edita los datos de Carta Porte. Si el código requiere omitir el campo, no lo incluyas. Si requiere "No" o "Sí", asegúrate de que sea correcto. También puedes subir un nuevo XML del proveedor con los datos corregidos.
+  </Expandable>
+  <Expandable title="CP170 — TipoMateria solo en internacional">
+    **Causa.** Se incluyó `TipoMateria` en un transporte nacional. Este campo solo aplica para transporte internacional.
+
+    **Solución.** Verifica que el embarque NO esté marcado como internacional si es doméstico. Si el XML del proveedor tiene `TipoMateria`, súbelo corregido.
+
+    [Ver detalle →](/help-center/troubleshooting/cp170-172-internacional)
+  </Expandable>
+  <Expandable title="CP171 — DescripcionMateria condicional">
+    **Causa.** Se incluyó `DescripcionMateria` cuando no aplica. Solo se permite cuando `TipoMateria="05"`.
+
+    **Solución.** Edita los datos de mercancía y elimina la descripción de materia, o cambia el `TipoMateria` a "05" si corresponde.
+  </Expandable>
+  <Expandable title="CP172 — DocumentacionAduanera solo en internacional">
+    **Causa.** Se incluyó `DocumentacionAduanera` (pedimento) en un transporte nacional. Solo aplica para internacional.
+
+    **Solución.** Verifica que el tipo de servicio sea correcto. Si es nacional, el XML no debe incluir pedimentos. Sube un XML corregido o usa Carta Porte Propia.
+
+    [Ver detalle →](/help-center/troubleshooting/cp170-172-internacional)
+  </Expandable>
+</ExpandableGroup>
+
+## Si el error que ves no está aquí
+
+<Steps>
+  <Step title="Anota el código completo">
+    Copia el código de error y el mensaje. Por ejemplo: `CFDI40156` o un mensaje de FacturAPI.
+  </Step>
+  <Step title="Revisa la bitácora de API">
+    Si tienes permiso, abre **Configuración → API Requests Log** y filtra por el embarque. Verás el payload enviado y la respuesta del SAT.
+  </Step>
+  <Step title="Reporta al administrador">
+    Comparte el código y el folio del embarque con el equipo de soporte interno. Ellos pueden revisar el log y, si es un caso recurrente, agregarlo al catálogo de errores traducidos.
+  </Step>
+</Steps>
