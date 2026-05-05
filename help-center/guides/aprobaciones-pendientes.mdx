@@ -1,0 +1,112 @@
+---
+title: Aprobar modificaciones de costo y gastos adicionales
+description: Cómo aprobar o rechazar las solicitudes pendientes desde la bandeja centralizada del sistema.
+---
+
+## Antes de empezar
+
+Necesitas uno de estos permisos según el tipo de solicitud:
+
+- **Modificaciones de costo** → permiso `embarques.aprobarCostos`.
+- **Gastos adicionales** → permiso `embarques.aprobarGastos`.
+
+Estos permisos están normalmente en los roles **Coordinador Operativo**, **Finanzas** y **Administrador**.
+
+<Callout kind="info">
+  El sistema **no permite que apruebes tu propia solicitud**, aunque tengas el permiso. Otra persona con el permiso debe revisarla.
+</Callout>
+
+## Modificaciones de costo
+
+Cuando un proveedor pide ajustar el costo pactado del embarque (cambio de precio, cambio de moneda, o ambos), un operador captura la solicitud y queda pendiente hasta que alguien la apruebe.
+
+### Cómo aprobar o rechazar
+
+<Steps>
+  <Step title="Abre la bandeja" icon="inbox">
+    Entra a **Configuración → Modificaciones de Costo Pendientes**. Verás la lista filtrada en **Pendiente** por defecto.
+  </Step>
+  <Step title="Filtra y busca" icon="search">
+    Usa el campo de búsqueda para filtrar por folio del embarque o solicitante. Cambia el filtro de estado a **Aprobado** o **Rechazado** si quieres consultar el histórico.
+  </Step>
+  <Step title="Revisa los detalles" icon="eye">
+    Cada renglón muestra el embarque, el solicitante, el tipo de cambio (precio, moneda o ambos), el valor anterior y el valor nuevo.
+  </Step>
+  <Step title="Aprobar o rechazar" icon="check">
+    Pulsa **Aprobar** o **Rechazar**. Se abre un modal para que captures un comentario.
+
+    - Si **apruebas**: el cambio se aplica al embarque automáticamente, se recalculan márgenes y comisiones, y queda registrado en el historial del embarque.
+    - Si **rechazas**: el comentario se guarda como motivo y la solicitud queda cerrada.
+  </Step>
+</Steps>
+
+### Cambios de moneda
+
+Cuando la solicitud cambia la moneda de facturación, además del precio:
+
+<Tabs>
+  <Tab title="Solo cambio de moneda" icon="dollar-sign">
+    Por ejemplo, de MXN a USD manteniendo el monto. Al aprobar, el comentario en historial registra: "Cambio de moneda de facturación: MXN → USD".
+  </Tab>
+  <Tab title="Cambio de moneda y precio" icon="repeat">
+    Por ejemplo, pasar de $50,000 MXN a $3,000 USD. Al aprobar, el historial registra ambos: nueva moneda y nuevo precio.
+  </Tab>
+</Tabs>
+
+## Gastos adicionales
+
+Conceptos extra que no estaban en el costo original del embarque: maniobras, almacenaje, demoras, detenciones, falsos fletes, etc.
+
+### Cómo aprobar o rechazar
+
+<Steps>
+  <Step title="Abre la bandeja" icon="inbox">
+    Entra a **Configuración → Gastos Adicionales Pendientes**. Listado filtrado a **Pendiente** por defecto.
+  </Step>
+  <Step title="Filtra por tipo si quieres" icon="filter">
+    Puedes filtrar por **tipo de gasto** (maniobras, almacenaje, etc.) o por embarque específico desde el buscador.
+  </Step>
+  <Step title="Revisa concepto y monto" icon="eye">
+    Cada renglón muestra el embarque, el concepto, el proveedor que cobra el gasto, el tipo de servicio, el monto y la moneda. También quién lo registró.
+  </Step>
+  <Step title="Aprobar o rechazar" icon="check">
+    - **Aprobar**: el gasto se marca con tu usuario y la fecha de aprobación. Queda incluido en el costo total del embarque y entra a la pre-factura cuando se timbre.
+    - **Rechazar**: pide capturar **motivo de rechazo** (obligatorio para el rechazo).
+
+    Cualquiera de las dos acciones queda en el historial del embarque.
+  </Step>
+</Steps>
+
+### Buenas prácticas al aprobar
+
+<ExpandableGroup>
+  <Expandable title="Verifica documentación de respaldo" default-open="true">
+    Si el gasto requiere comprobante (recibo de maniobra, ticket de almacenaje), revisa que esté adjunto al embarque antes de aprobar. Si no, rechaza y pide que lo suban.
+  </Expandable>
+  <Expandable title="Confirma con el cliente cuando aplique">
+    Si el gasto se trasladará al cliente en la factura, asegúrate de que el cliente lo haya autorizado por escrito o que esté contemplado en el contrato.
+  </Expandable>
+  <Expandable title="Compara con el catálogo de tarifas">
+    Si tu organización tiene tarifas estándar para maniobras o almacenaje, compara el monto solicitado contra el catálogo. Discrepancias significativas merecen rechazo o aclaración.
+  </Expandable>
+  <Expandable title="Comentario claro al rechazar">
+    El motivo de rechazo se le muestra al solicitante. Sé específico — "Falta foto de respaldo" o "Tarifa por encima del estándar" es mucho más útil que "No procede".
+  </Expandable>
+</ExpandableGroup>
+
+## Cómo te enteras de pendientes nuevos
+
+<Callout kind="info">
+  Cuando un operador captura una solicitud, los usuarios con el permiso correspondiente reciben una **notificación** en el [centro de notificaciones](/features/productividad). Filtra por tipo "Modificación de costo pendiente" o "Gasto adicional pendiente" para ver solo eso.
+</Callout>
+
+## Histórico de aprobaciones
+
+Toda decisión queda registrada en dos lugares:
+
+| Lugar | Qué guarda |
+|-------|-----------|
+| Historial del embarque | Acción (aprobado/rechazado), comentario, valor nuevo, usuario, fecha |
+| Activity Log | Registro auditable a nivel sistema, consultable por administradores |
+
+Esto permite reconstruir la historia completa de un embarque cuando hay disputas o auditorías internas.

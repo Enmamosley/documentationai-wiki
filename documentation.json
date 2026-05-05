@@ -84,6 +84,16 @@
                 "title": "Portales externos",
                 "path": "features/portales",
                 "icon": "external-link"
+              },
+              {
+                "title": "Dashboards por rol",
+                "path": "features/dashboards",
+                "icon": "layout-dashboard"
+              },
+              {
+                "title": "Productividad",
+                "path": "features/productividad",
+                "icon": "search"
               }
             ]
           }
@@ -168,6 +178,14 @@
               {
                 "title": "Operación de factoraje",
                 "path": "help-center/guides/factoraje"
+              },
+              {
+                "title": "Aprobar costos y gastos",
+                "path": "help-center/guides/aprobaciones-pendientes"
+              },
+              {
+                "title": "Generar BOL y carta de instrucciones",
+                "path": "help-center/guides/bol-carta-instrucciones"
               }
             ]
           }

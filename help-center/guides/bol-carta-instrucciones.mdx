@@ -1,0 +1,154 @@
+---
+title: Generar BOL y Carta de Instrucciones
+description: Cómo generar el Bill of Lading y la Carta de Instrucciones de un embarque, dos documentos esenciales que se entregan al proveedor antes de iniciar la operación.
+---
+
+## Diferencia entre BOL y Carta de Instrucciones
+
+<Columns cols={2}>
+  <Card title="Bill of Lading (BOL)" icon="file-badge">
+    Documento de transporte formal con número único, código QR, versión y firma HMAC. Se le entrega al chofer/proveedor para que lo presente al cargar.
+  </Card>
+  <Card title="Carta de Instrucciones" icon="file-text">
+    Documento operativo que detalla las instrucciones específicas del embarque (contactos, horarios, requisitos especiales). Acompaña al BOL.
+  </Card>
+</Columns>
+
+## Generar Bill of Lading
+
+### Antes de empezar
+
+El embarque debe tener al menos:
+
+- Cliente, proveedor, origen y destino capturados.
+- Mercancía con descripción y peso.
+- Unidad y chofer asignados (si ya se conocen).
+
+Necesitas el permiso `embarques.subirDocumentos` o ser el operador asignado.
+
+### Pasos
+
+<Steps>
+  <Step title="Abre el embarque" icon="truck">
+    Desde el listado de embarques, abre el detalle del embarque para el que vas a generar BOL.
+  </Step>
+  <Step title="Pulsa Generar BOL" icon="file-plus">
+    En la barra de acciones del detalle, haz clic en **Generar BOL**.
+  </Step>
+  <Step title="Revisa los datos" icon="eye">
+    El sistema **autocompleta** el BOL con los datos del embarque. Puedes sobrescribir campos específicos si necesitas (por ejemplo, ajustar el contacto en destino).
+  </Step>
+  <Step title="Confirma" icon="check">
+    Al confirmar, el sistema:
+
+    - Genera un **número de BOL** único.
+    - Crea un **PDF** con código QR para verificación.
+    - Guarda la versión 1 del documento.
+    - Devuelve el PDF para descarga inmediata.
+  </Step>
+  <Step title="Envía al proveedor" icon="send">
+    Desde el detalle del BOL, pulsa **Enviar al proveedor**. El job `EnviarBOLProveedorJob` envía el PDF por correo al transportista.
+  </Step>
+</Steps>
+
+### Versionado del BOL
+
+Si después de generar el BOL hay un cambio relevante (cambia el chofer, el vehículo, la fecha o el monto), el sistema permite **crear una nueva versión** sin perder la anterior.
+
+<Steps>
+  <Step title="Abre el BOL existente">
+    Desde el detalle del embarque, abre el BOL vigente.
+  </Step>
+  <Step title="Pulsa Nueva versión" icon="git-branch">
+    El sistema pide capturar **motivo del cambio** y los datos a actualizar.
+  </Step>
+  <Step title="Confirma" icon="check">
+    Se genera un PDF nuevo (v2, v3, etc.) y se conserva el histórico de versiones para trazabilidad.
+  </Step>
+</Steps>
+
+### Verificación con código QR
+
+<Callout kind="info">
+  El PDF del BOL incluye un **QR** que enlaza a una URL pública de verificación firmada con HMAC. Cualquiera con el QR puede confirmar que el BOL es auténtico, ver su versión vigente y descargarlo. Los enlaces tienen expiración para prevenir abuso.
+</Callout>
+
+## Generar Carta de Instrucciones
+
+### Cuándo usarla
+
+Cuando el proveedor necesita instrucciones específicas que no caben en el BOL: contactos en origen y destino, horarios de carga/descarga, requisitos de equipo, observaciones del cliente.
+
+### Pasos
+
+<Steps>
+  <Step title="Abre el embarque" icon="truck">
+    Ve al detalle del embarque desde el listado.
+  </Step>
+  <Step title="Pulsa Carta de Instrucciones" icon="file-text">
+    En la barra de acciones, haz clic en **Carta de Instrucciones**. Si el embarque tiene **varios proveedores**, elige el proveedor para el que generas la carta.
+  </Step>
+  <Step title="Descarga el PDF" icon="download">
+    El sistema genera el PDF al instante con los datos del embarque y los del proveedor seleccionado. Se descarga directamente.
+  </Step>
+</Steps>
+
+### Qué incluye el PDF
+
+<ExpandableGroup>
+  <Expandable title="Datos del embarque" default-open="true">
+    Folio, fechas comprometidas, descripción de mercancía, peso, valor declarado, referencia del cliente y orden de compra cuando aplica.
+  </Expandable>
+  <Expandable title="Origen y destino">
+    Direcciones completas, contactos en cada punto y notas de tracking si las hay.
+  </Expandable>
+  <Expandable title="Embarcador y consignatario">
+    Si están capturados, sus datos aparecen separados de los del cliente. Útil cuando quien manda y quien recibe son entidades distintas.
+  </Expandable>
+  <Expandable title="Datos del proveedor seleccionado">
+    Razón social del proveedor, RFC, CAAT y permiso SCT. Si hay varios proveedores en el embarque, solo aparecen los datos del seleccionado.
+  </Expandable>
+  <Expandable title="Unidad y chofer">
+    Si están asignados, placas de la unidad, datos del chofer y licencia.
+  </Expandable>
+  <Expandable title="Paradas">
+    Si el embarque tiene paradas intermedias, cada una se lista con su ubicación, fecha estimada y proveedor responsable de ese tramo.
+  </Expandable>
+  <Expandable title="Datos aduanales">
+    Para embarques internacionales: agente aduanal, pedimento, aduana de cruce.
+  </Expandable>
+</ExpandableGroup>
+
+### Multi-proveedor
+
+<Callout kind="info">
+  Cuando un embarque tiene **varios proveedores** (por ejemplo, uno hace el tramo nacional y otro el internacional), genera una **carta separada para cada uno**. El sistema admite generar la carta apuntando a un `embarque_proveedor_id` específico, lo que permite diferenciar cuando el mismo proveedor participa en varios tramos.
+</Callout>
+
+## Errores frecuentes
+
+<ExpandableGroup>
+  <Expandable title="No me deja generar el BOL" default-open="true">
+    El embarque puede tener datos faltantes mínimos (cliente, origen, destino, mercancía). Completa lo faltante en el detalle del embarque y reintenta.
+  </Expandable>
+  <Expandable title="El PDF de la carta sale con caracteres raros">
+    El sistema sanitiza UTF-8 al generar el PDF. Si aún así ves caracteres extraños, suele ser por copiar-pegar texto desde Word o correos. Reescribe el campo afectado y vuelve a generar.
+  </Expandable>
+  <Expandable title="No aparece la opción de Carta de Instrucciones">
+    Solo está disponible cuando el embarque tiene al menos un proveedor asignado.
+  </Expandable>
+</ExpandableGroup>
+
+## Después de entregar al proveedor
+
+<Columns cols={2}>
+  <Card title="Cambia el estado" icon="play" href="/features/embarques">
+    Cuando el proveedor inicie la carga, marca el embarque como **En tránsito** desde el timeline.
+  </Card>
+  <Card title="Captura tracking" icon="map-pin" href="/features/embarques">
+    Agrega notas de tracking en el detalle del embarque conforme avanza la operación.
+  </Card>
+  <Card title="Solicita POD físico" icon="package" href="/features/portales">
+    Si el cliente exige el POD original, márcalo como solicitado para iniciar el flujo.
+  </Card>
+</Columns>

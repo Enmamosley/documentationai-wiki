@@ -1,0 +1,116 @@
+---
+title: Productividad
+description: Buscador global y centro de notificaciones — herramientas transversales que aceleran el trabajo diario en Embarque.
+---
+
+## Buscador global
+
+Combinación de teclas: **Ctrl+K** en Windows/Linux o **⌘+K** en macOS desde cualquier pantalla.
+
+<Callout kind="info">
+  El buscador requiere mínimo **3 caracteres** para empezar a responder. Las búsquedas con menos caracteres no devuelven resultados.
+</Callout>
+
+### Qué busca
+
+<Columns cols={2}>
+  <Card title="Embarques" icon="truck">
+    Por folio, referencia del cliente o número de referencia.
+  </Card>
+  <Card title="Clientes" icon="user">
+    Por razón social, nombre comercial o RFC.
+  </Card>
+  <Card title="Proveedores" icon="building">
+    Por razón social, nombre comercial o RFC.
+  </Card>
+  <Card title="Facturas emitidas" icon="file-text">
+    Por UUID, folio o `serie-folio` (ej. `A-1234`).
+  </Card>
+  <Card title="Facturas recibidas" icon="receipt">
+    Las del proveedor, mismas claves de búsqueda que las emitidas.
+  </Card>
+</Columns>
+
+### Cómo se filtran los resultados
+
+<Callout kind="info">
+  El buscador respeta tus permisos. Aplica el alcance `accesiblePor($user)` a embarques y facturas, lo que significa que **solo ves lo que tu rol y asignaciones te permiten ver** — un vendedor solo encuentra embarques de sus clientes, etc.
+</Callout>
+
+Cada categoría devuelve hasta **5 resultados**. La búsqueda es insensible a mayúsculas/minúsculas y acepta coincidencias parciales.
+
+### Atajos del resultado
+
+<Tabs>
+  <Tab title="Click en resultado" icon="mouse-pointer">
+    Te lleva al detalle del registro encontrado.
+  </Tab>
+  <Tab title="Esc" icon="x">
+    Cierra el buscador sin navegar.
+  </Tab>
+</Tabs>
+
+## Centro de notificaciones
+
+El icono de campana en la barra superior abre el centro de notificaciones. Muestra avisos automáticos del sistema que requieren tu atención.
+
+### Tipos de notificación
+
+Las notificaciones tienen un **tipo** y un **nivel** (gravedad). Algunos ejemplos típicos:
+
+| Tipo | Cuándo se dispara |
+|------|-------------------|
+| Embarque retrasado | La fecha de entrega comprometida pasó sin marcar entregado |
+| Modificación de costo pendiente | Hay una solicitud que requiere tu autorización |
+| Gasto adicional pendiente | Hay un gasto que requiere aprobación |
+| Factura próxima a vencer | Una factura emitida se vence en los próximos días |
+| Pago vencido | Una factura emitida ya cruzó la fecha de vencimiento sin cobrarse |
+| POD físico recibido | El proveedor reporta haber enviado el POD original |
+| Documento subido | El proveedor subió POD, factura o Carta Porte |
+
+### Filtros del centro de notificaciones
+
+<ExpandableGroup>
+  <Expandable title="Por estado de lectura" default-open="true">
+    - **No leídas** (vista por defecto): solo las que aún no has visto.
+    - **Leídas**: las que ya marcaste como leídas.
+    - **Todas**: histórico completo.
+  </Expandable>
+  <Expandable title="Por tipo">
+    Filtra por uno de los tipos predefinidos para enfocarte en una clase de aviso (por ejemplo, solo modificaciones de costo).
+  </Expandable>
+  <Expandable title="Por nivel">
+    Distingue entre informativo, advertencia y crítico, para priorizar las notificaciones más urgentes.
+  </Expandable>
+</ExpandableGroup>
+
+### Acciones disponibles
+
+<Tabs>
+  <Tab title="Ir a la notificación" icon="external-link">
+    Click en una notificación te lleva al recurso relacionado (embarque, factura, etc.). Marca la notificación como leída automáticamente.
+  </Tab>
+  <Tab title="Marcar como leída" icon="check">
+    Marca una notificación específica como leída sin navegar.
+  </Tab>
+  <Tab title="Marcar todas como leídas" icon="check-square">
+    Limpia todas las notificaciones no leídas de una sola vez. Útil al inicio del día para empezar con bandeja limpia.
+  </Tab>
+  <Tab title="Limpiar filtros" icon="filter-x">
+    Vuelve al estado inicial (sin filtros, mostrando solo no leídas).
+  </Tab>
+</Tabs>
+
+<Callout kind="tip">
+  El **contador de no leídas** aparece como badge en el icono de campana y se actualiza en tiempo real cuando llegan nuevas notificaciones.
+</Callout>
+
+## Cuándo usar uno u otro
+
+| Situación | Herramienta |
+|-----------|-------------|
+| Necesitas encontrar un embarque por folio | Buscador global |
+| Buscar una factura por UUID | Buscador global |
+| Saber si tienes pendientes que aprobar | Centro de notificaciones |
+| Detectar embarques retrasados | Centro de notificaciones (filtra por tipo) |
+| Cliente pregunta por un envío específico | Buscador global |

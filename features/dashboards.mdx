@@ -1,0 +1,128 @@
+---
+title: Dashboards por rol
+description: Cada rol tiene un dashboard con métricas y widgets propios. Embarque expone 4 dashboards diferenciados además del general.
+---
+
+## Cómo se asigna el dashboard
+
+Al iniciar sesión, Embarque te lleva al dashboard que corresponde a tu rol principal. Si tu rol no tiene un dashboard especializado, ves el dashboard general.
+
+<Columns cols={2}>
+  <Card title="Administrador" icon="shield" href="#dashboard-administrador">
+    Visión global del sistema: usuarios, clientes, embarques, asignaciones huérfanas.
+  </Card>
+  <Card title="Operativo" icon="truck" href="#dashboard-operativo">
+    Foco en la ejecución diaria: embarques del día, próximas entregas, documentos pendientes.
+  </Card>
+  <Card title="Vendedor" icon="briefcase" href="#dashboard-vendedor">
+    KPIs comerciales: clientes asignados, facturación del mes, margen promedio, top clientes.
+  </Card>
+  <Card title="Customer Service" icon="headphones" href="#dashboard-customer-service">
+    Seguimiento posventa: embarques en tránsito, retrasos, embarques por confirmar.
+  </Card>
+</Columns>
+
+## Dashboard Administrador
+
+Pensado para roles **Administrador** y **Gerente Comercial**.
+
+<ExpandableGroup>
+  <Expandable title="KPIs principales" default-open="true">
+    | Métrica | Qué cuenta |
+    |---------|-----------|
+    | Total de usuarios | Usuarios registrados en el sistema |
+    | Total de clientes | Clientes activos en el catálogo |
+    | Total de embarques | Histórico completo |
+    | Embarques activos | Pendientes y en tránsito |
+  </Expandable>
+  <Expandable title="Distribución por rol">
+    Gráfica que muestra cuántos usuarios hay en cada rol (Administrador, Operador, Finanzas, etc.). Útil para detectar desbalances o roles sin titular.
+  </Expandable>
+  <Expandable title="Clientes sin asignación">
+    Tres contadores que detectan huecos en la operación:
+
+    - Clientes sin **vendedor** asignado.
+    - Clientes sin **customer service** asignado.
+    - Clientes sin **operador** activo.
+  </Expandable>
+  <Expandable title="Embarques recientes y por estado">
+    Listado de los 10 embarques más recientes con su cliente y proveedor.
+
+    Distribución de embarques por estado (pendiente, en tránsito, entregado, etc.) para ver dónde se concentra el volumen.
+  </Expandable>
+</ExpandableGroup>
+
+## Dashboard Operativo
+
+Para los roles **Operador** y **Coordinador Operativo**. Filtra automáticamente por los clientes asignados al usuario.
+
+<ExpandableGroup>
+  <Expandable title="KPIs del día" default-open="true">
+    - **Clientes asignados**: cuántos clientes operas.
+    - **Embarques activos**: pendientes y en tránsito de tus clientes.
+    - **Pendientes por documentar**: embarques entregados que aún no tienen POD o Carta Porte del proveedor.
+    - **En tránsito**: en este momento.
+  </Expandable>
+  <Expandable title="Embarques del día">
+    Lista de embarques con **fecha de recolección hoy** para que el operador sepa qué cargas está esperando que se levanten.
+  </Expandable>
+  <Expandable title="Próximas entregas (3 días)">
+    Embarques con fecha de entrega comprometida en los próximos 3 días. Ordenados por fecha de entrega para priorizar lo más cercano.
+  </Expandable>
+  <Expandable title="Pendientes de subir documentos">
+    Embarques en estado **Entregado** que aún tienen documentos faltantes. Para que el equipo documente lo entregado y avance a **Documentado**.
+  </Expandable>
+</ExpandableGroup>
+
+## Dashboard Vendedor
+
+Para el rol **Vendedor**. Solo muestra información de los clientes asignados como vendedor titular.
+
+<ExpandableGroup>
+  <Expandable title="KPIs del mes" default-open="true">
+    | Métrica | Cómo se calcula |
+    |---------|-----------------|
+    | Total de clientes | Clientes activos asignados como vendedor |
+    | Embarques del mes | Embarques creados este mes |
+    | Facturación del mes | Suma de `precio_cliente` de los embarques del mes |
+    | Margen promedio | Margen total / facturación total × 100, calculado por `CostosEmbarqueService` |
+  </Expandable>
+  <Expandable title="Embarques por estado del mes">
+    Distribución de los embarques del mes en cada estado del ciclo de vida. Útil para detectar cuellos de botella en la cadena.
+  </Expandable>
+  <Expandable title="Top 5 clientes por facturación">
+    Los 5 clientes con mayor facturación del mes. Permite enfocar la atención comercial en las cuentas grandes.
+  </Expandable>
+</ExpandableGroup>
+
+<Callout kind="info">
+  Las comisiones reales con penalizaciones por vencimiento se calculan en el [Reporte de Comisiones](/features/reportes), no en el dashboard.
+</Callout>
+
+## Dashboard Customer Service
+
+Para el rol **Customer Service**. Filtra por los clientes asignados al usuario como CS.
+
+<ExpandableGroup>
+  <Expandable title="KPIs de seguimiento" default-open="true">
+    - **Clientes activos**: cuántos clientes acompañas.
+    - **Embarques en proceso**: pendientes y en tránsito.
+    - **Por confirmar**: embarques en estado pendiente que necesitan acción.
+    - **Retrasados**: en tránsito o pendientes con fecha de entrega comprometida ya vencida.
+  </Expandable>
+  <Expandable title="Embarques en tránsito (tracking)">
+    Lista ordenada por fecha de entrega comprometida. El customer service puede contactar al proveedor o al cliente para anticipar problemas antes de que ocurran.
+  </Expandable>
+  <Expandable title="Embarques recientes (7 días)">
+    Los 10 embarques más recientes de tus clientes. Para mantener contexto de las operaciones nuevas.
+  </Expandable>
+  <Expandable title="Pendientes de confirmación">
+    Embarques en estado **Pendiente** de tus clientes. El CS verifica datos y confirma con el cliente antes de iniciar la operación.
+  </Expandable>
+</ExpandableGroup>
+
+## Cómo cambiar entre dashboards
+
+<Callout kind="tip">
+  Si tu usuario tiene varios roles asignados (ej. Administrador + Vendedor), Embarque te lleva al primer dashboard del rol principal. Puedes navegar manualmente a otros dashboards desde la URL: `/dashboard/general`, `/dashboard/operaciones`, `/dashboard/vendedor`, `/dashboard/operador`, `/dashboard/customer-service`.
+</Callout>
