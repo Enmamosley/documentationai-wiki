@@ -46,6 +46,11 @@
                 "icon": "truck"
               },
               {
+                "title": "Catálogos",
+                "path": "features/catalogos",
+                "icon": "database"
+              },
+              {
                 "title": "Facturación CFDI",
                 "path": "features/facturacion",
                 "icon": "file-text"

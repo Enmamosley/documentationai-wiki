@@ -1,0 +1,195 @@
+---
+title: Catálogos
+description: Maestros del sistema. Clientes, proveedores, consignatarios, embarcadores, choferes, unidades, destinos y agentes aduanales.
+---
+
+## Qué son los catálogos
+
+Los catálogos son los maestros que alimentan a todo el sistema. Antes de operar, deben estar dados de alta los actores principales: a quién facturas, quién transporta, quién entrega y quién recibe la mercancía.
+
+<Columns cols={2}>
+  <Card title="Clientes" icon="users" href="#clientes">
+    A quién Embarque le factura. Datos fiscales, retenciones, contactos.
+  </Card>
+  <Card title="Proveedores" icon="truck" href="#proveedores">
+    Transportistas que ejecutan los embarques. Datos fiscales, permiso SCT, portal externo.
+  </Card>
+  <Card title="Consignatarios" icon="package-check" href="#consignatarios">
+    Quién recibe la mercancía en el destino. Pertenecen a un cliente.
+  </Card>
+  <Card title="Embarcadores" icon="package" href="#embarcadores">
+    Quién entrega la mercancía en el origen. Pertenecen a un cliente.
+  </Card>
+</Columns>
+
+## Clientes
+
+Empresas o personas físicas a las que Embarque emite facturas.
+
+### Datos principales
+
+<ExpandableGroup>
+  <Expandable title="Datos fiscales" default-open="true">
+    Razón social, nombre comercial, RFC, régimen fiscal, tipo de persona (física o moral). Soporta clientes **extranjeros** con RFC genérico, número de registro tributario y país de residencia fiscal.
+  </Expandable>
+  <Expandable title="Retenciones aplicables">
+    Marca si el cliente retiene **ISR** o **IVA** y los porcentajes correspondientes. Estas tasas se aplican automáticamente al timbrar facturas para ese cliente.
+  </Expandable>
+  <Expandable title="Contactos">
+    Tres correos diferenciados para que la información llegue al área correcta:
+
+    - **Email general** para comunicación operativa.
+    - **Email de facturación** para envío de CFDI.
+    - **Email de cobranza** para recordatorios de pago.
+
+    Más datos de contacto comercial (nombre y teléfono) y dirección fiscal completa.
+  </Expandable>
+  <Expandable title="Asignaciones internas">
+    Cada cliente puede tener:
+
+    - **Vendedor** asignado (recibe comisiones).
+    - **Customer Service** asignado (seguimiento posventa).
+    - **Operador** asignado (operación del embarque).
+
+    Las asignaciones se guardan con historial. Quien tiene el permiso `clientes.view-all` ve todos; los demás ven solo los suyos.
+  </Expandable>
+</ExpandableGroup>
+
+### Documentos del cliente
+
+Cada cliente puede requerir documentos específicos para operar (ej. orden de compra firmada, contrato, formato de remisión propio). Esto se configura como **documentos requeridos** en el catálogo `DocumentoRequeridoCliente`. Los documentos cargados quedan en `ClienteDocumento`.
+
+### Permisos
+
+| Permiso | Función |
+|---------|---------|
+| `clientes.view` | Ver clientes asignados |
+| `clientes.view-all` | Ver todos los clientes |
+| `clientes.create` / `clientes.edit` / `clientes.delete` | CRUD |
+| `clientes.asignarVendedor` | Asignar vendedor al cliente |
+| `clientes.asignarCustomerService` | Asignar customer service |
+| `clientes.asignarOperador` | Asignar operador |
+
+## Proveedores
+
+Transportistas que ejecutan los embarques físicamente.
+
+### Datos principales
+
+<ExpandableGroup>
+  <Expandable title="Datos fiscales y operativos" default-open="true">
+    Razón social, nombre comercial, RFC, **CAAT** (Código Alfa-Numérico de Autotransporte) y **número de permiso SCT** cuando son autotransportistas. Soporta proveedores extranjeros con país de residencia y RFC genérico.
+  </Expandable>
+  <Expandable title="Aseguradora y póliza">
+    Aseguradora ambiental, número de póliza y vigencia. Estos datos se reflejan en la Carta Porte cuando aplica.
+  </Expandable>
+  <Expandable title="Retenciones">
+    Marca si Embarque debe aplicar retención de ISR al pagar al proveedor.
+  </Expandable>
+  <Expandable title="Acceso al portal">
+    Si el proveedor está activo en el portal externo (`portal_activo = true`), puede iniciar sesión en `/portal/proveedores` con su `email_portal`. Se rastrea su último acceso.
+  </Expandable>
+</ExpandableGroup>
+
+### Subcatálogos del proveedor
+
+<Columns cols={2}>
+  <Card title="Choferes" icon="user">
+    Cada chofer pertenece a un proveedor. Guarda RFC, CURP, NSS, licencia, foto y datos personales.
+  </Card>
+  <Card title="Unidades" icon="truck">
+    Cada unidad pertenece a un proveedor. Placas, configuración vehicular SAT, capacidad en kg y m³, marca, modelo, año.
+  </Card>
+  <Card title="Documentos" icon="file-text">
+    Documentos del proveedor (póliza, RFC, opinión de cumplimiento, etc.) en `ProveedorDocumento`.
+  </Card>
+  <Card title="Comisiones de factoraje" icon="banknote">
+    Override de comisiones cuando el proveedor negocia condiciones distintas con una empresa de factoraje.
+  </Card>
+</Columns>
+
+### Permisos
+
+| Permiso | Función |
+|---------|---------|
+| `proveedores.view` / `create` / `edit` / `delete` | CRUD |
+| `choferes.view` / `create` / `edit` | CRUD de choferes |
+| `unidades.view` / `create` / `edit` | CRUD de unidades |
+
+## Consignatarios
+
+El **consignatario** es quien recibe la mercancía en el destino. Es un dato obligatorio en la Carta Porte cuando difiere del cliente.
+
+<Callout kind="info">
+  Cada consignatario pertenece a un **cliente** (`cliente_id`). El mismo cliente puede tener múltiples consignatarios — por ejemplo, varias sucursales o plantas a las que recibe envíos.
+</Callout>
+
+### Datos principales
+
+- Nombre, RFC, email, teléfono.
+- Domicilio fiscal completo (calle, número exterior/interior, colonia, CP, ciudad, municipio, estado, país).
+- Códigos SAT del domicilio: `c_Estado`, `c_Municipio`, `c_Localidad`, `c_Colonia` para Carta Porte.
+
+### Cuándo se usa
+
+Al crear un embarque con destino que no es la sede principal del cliente, eliges al consignatario correspondiente. Sus datos se inyectan en la sección **Receptor** de la Carta Porte.
+
+### Permisos
+
+| Permiso | Función |
+|---------|---------|
+| `consignatarios.view` / `create` / `edit` / `delete` | CRUD |
+
+## Embarcadores
+
+El **embarcador** es quien entrega la mercancía en el origen. Cuando el cliente que paga la factura no es el mismo que físicamente despacha la mercancía, se captura un embarcador distinto.
+
+<Callout kind="info">
+  Cada embarcador pertenece a un **cliente** (`cliente_id`). Igual que los consignatarios, un cliente puede tener varios embarcadores (varias plantas o almacenes que despachan).
+</Callout>
+
+### Datos principales
+
+Los mismos campos que el consignatario: nombre, RFC, contacto, domicilio fiscal completo y códigos SAT del domicilio.
+
+### Cuándo se usa
+
+Al crear un embarque con origen distinto a la sede del cliente. Los datos del embarcador se reflejan en la Carta Porte como ubicación de origen.
+
+### Permisos
+
+| Permiso | Función |
+|---------|---------|
+| `embarcadores.view` / `create` / `edit` / `delete` | CRUD |
+
+## Catálogos auxiliares
+
+Hay otros maestros menos utilizados pero igualmente importantes:
+
+<ExpandableGroup>
+  <Expandable title="Destinos" default-open="false">
+    Catálogo de destinos frecuentes con su domicilio fiscal completo. Permite reutilizar ubicaciones sin recapturarlas en cada embarque. Permisos: `destinos.view/create/edit/delete`.
+  </Expandable>
+  <Expandable title="Agentes aduanales">
+    Para embarques internacionales. Cada agente aduanal guarda su patente, RFC y datos de contacto. Se asocia al embarque cuando hay cruce de aduana. Acceso desde **Configuración → Agentes Aduanales** con el permiso `agentes-aduanales.view`.
+  </Expandable>
+  <Expandable title="Tipos de unidad">
+    Catálogo SAT (`c_ConfigVehicular`) con las configuraciones permitidas: tractocamión, sencillo, pipa, etc. Se vincula a cada unidad del proveedor.
+  </Expandable>
+  <Expandable title="Tipos de servicio">
+    Tipos de servicio que Embarque ofrece (nacional, internacional, dedicado, etc.). Cada tipo define el **prefijo del folio** del embarque.
+  </Expandable>
+  <Expandable title="Tipos de documento">
+    Catálogo de documentos manejados en el sistema (POD, factura proveedor, carta porte, orden de compra, etc.). Se usa al subir archivos al embarque.
+  </Expandable>
+</ExpandableGroup>
+
+## Buenas prácticas
+
+<Callout kind="tip">
+  Carga los **datos fiscales completos** de los catálogos antes de crear embarques. Las correcciones después del timbrado son costosas: pueden requerir cancelar la factura y reemitirla.
+</Callout>
+
+<Callout kind="warning">
+  Los **códigos SAT del domicilio** (estado, municipio, localidad, colonia) son críticos para Carta Porte. Si están mal capturados, generan errores [CP143](/help-center/troubleshooting/cp143-colonia) y [CP147](/help-center/troubleshooting/errores-sat) al timbrar. Cuando dudes, deja la **localidad** y la **colonia** vacías — el SAT lo permite.
+</Callout>
