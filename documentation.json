@@ -182,5 +182,8 @@
     ]
   },
   "template": "atlas",
-  "title": "Embarque"
+  "title": "Embarque",
+  "logo-dark": "https://blob-cdn.documentation.ai/org-a902b632-a650-4486-b861-7e3289c20143/doc-7add0f2f-1cd8-4712-a2c8-bb814973f1a8/1777997556002-k9xakzjzn59-logo-CykS__2W_Z2uv5Xx.svg?fm=auto&auto=compress%2Cformat",
+  "logo-light": "https://blob-cdn.documentation.ai/org-a902b632-a650-4486-b861-7e3289c20143/doc-7add0f2f-1cd8-4712-a2c8-bb814973f1a8/1777997556002-k9xakzjzn59-logo-CykS__2W_Z2uv5Xx.svg?fm=auto&auto=compress%2Cformat",
+  "favicon": "https://blob-cdn.documentation.ai/org-a902b632-a650-4486-b861-7e3289c20143/doc-7add0f2f-1cd8-4712-a2c8-bb814973f1a8/1777997556002-k9xakzjzn59-logo-CykS__2W_Z2uv5Xx.svg?fm=auto&auto=compress%2Cformat"
 }
