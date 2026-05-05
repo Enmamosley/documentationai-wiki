@@ -1,0 +1,280 @@
+---
+title: Tutorial completo - Administrador
+description: Día a día del Administrador. Configuración inicial del sistema, razones sociales, roles, bitácoras y mantenimiento. Incluye una sección para Pricing.
+---
+
+## Para quién es esta guía
+
+Para el rol **Administrador**: el responsable técnico-operativo del sistema. Configuras lo que el resto del equipo usa, mantienes los catálogos críticos y diagnosticas problemas cuando aparecen.
+
+## Tus responsabilidades
+
+<Columns cols={2}>
+  <Card title="Configuración inicial" icon="settings">
+    Razones sociales emisoras, credenciales SAT, tipos de cambio, penalizaciones.
+  </Card>
+  <Card title="Usuarios y roles" icon="users">
+    Crear usuarios, asignar roles, ajustar permisos cuando se necesite.
+  </Card>
+  <Card title="Bitácoras" icon="terminal">
+    API logs, email logs, activity log. Diagnóstico de problemas.
+  </Card>
+  <Card title="Mantenimiento" icon="wrench">
+    Comandos artisan periódicos, importación de catálogos SAT, depuración.
+  </Card>
+</Columns>
+
+## Permisos que tienes
+
+<Callout kind="info">
+  Como Administrador tienes **todos los permisos** del sistema. Puedes ver y hacer cualquier cosa. Por eso la responsabilidad se vuelve principalmente de **disciplina y proceso** más que de límites técnicos.
+</Callout>
+
+## Setup inicial del sistema
+
+Si estás llegando a un Embarque recién instalado:
+
+<Steps>
+  <Step title="Configura el archivo .env" icon="file-text">
+    El instalador técnico debe configurar:
+
+    - `DB_*` — credenciales de base de datos.
+    - `FACTURAPI_SECRET_KEY` y `FACTURAPI_MODE` — sandbox para pruebas, live para producción.
+    - `FACTURAMA_USER` / `FACTURAMA_PASSWORD` — fallback de timbrado.
+    - `BANXICO_TOKEN` — para tipo de cambio automático.
+    - `EMPRESA_*` — datos del intermediario logístico.
+    - `MAIL_*` — configuración SMTP de salida.
+    - `SHOW_DEMO_LOGIN=false` en producción.
+  </Step>
+  <Step title="Importa catálogos SAT" icon="database">
+    Pídele al técnico ejecutar:
+    ```bash
+    php artisan sat:importar-codigos-postales
+    ```
+    Esto carga el catálogo `c_CodigoPostal` para validar Carta Porte sin pegarle al SAT.
+  </Step>
+  <Step title="Siembra roles y permisos" icon="shield">
+    ```bash
+    php artisan db:seed --class=RoleSeeder
+    ```
+    Crea los 8 roles base con sus permisos.
+  </Step>
+  <Step title="Crea las razones sociales emisoras" icon="building">
+    Configuración → Razones Sociales → **Nueva**.
+
+    Captura por cada entidad fiscal: RFC, razón social, régimen, código postal de expedición y credenciales del timbrador (FacturAPI o Facturama). Las credenciales se guardan **encriptadas**.
+  </Step>
+  <Step title="Crea usuarios iniciales" icon="user-plus">
+    Configuración → Usuarios. Da de alta a los miembros del equipo y asigna su rol. El sistema envía correo con contraseña inicial.
+  </Step>
+  <Step title="Carga catálogos comerciales" icon="list">
+    Da de alta:
+
+    - **Tipos de servicio** (con sus prefijos de folio).
+    - **Tipos de unidad** alineados con `c_ConfigVehicular`.
+    - **Tipos de documento** según lo que manejes.
+    - **Empresas de factoraje** si aplica.
+    - **Agentes aduanales** si operas internacional.
+  </Step>
+  <Step title="Verifica correo y queue" icon="check-circle">
+    Pídele al técnico verificar que el queue worker está corriendo (`php artisan queue:work`) y que el SMTP funcione enviando un correo de prueba.
+  </Step>
+</Steps>
+
+## Tu rutina diaria
+
+<Steps>
+  <Step title="Revisa el dashboard general" icon="layout-dashboard">
+    Estadísticas globales y huecos de asignación: clientes sin vendedor, sin customer service, sin operador.
+  </Step>
+  <Step title="Atiende notificaciones de errores" icon="alert-triangle">
+    Si hay errores recurrentes (timbrado, envío de correo, jobs fallidos), Sentry te avisa. Diagnóstica.
+  </Step>
+  <Step title="Revisa bitácoras si hay quejas" icon="terminal">
+    Configuración → API Requests Log si alguien reporta problema con FacturAPI/Facturama. Email Logs si hay reclamos de correos no recibidos.
+  </Step>
+  <Step title="Distribuye trabajo por demanda" icon="users">
+    Asigna operadores a clientes nuevos, ajusta permisos de usuarios cuando cambian de rol.
+  </Step>
+</Steps>
+
+## Tareas frecuentes
+
+### Razones sociales emisoras
+
+<ExpandableGroup>
+  <Expandable title="Crear razón social nueva" default-open="true">
+    Configuración → Razones Sociales → **Nueva**.
+
+    1. Datos fiscales: RFC, razón social, régimen, código postal de expedición.
+    2. Timbrador: marca `usa_facturapi` true/false. Captura las credenciales correspondientes.
+    3. **Activa** la razón social para que aparezca en el selector al crear embarques.
+
+    Las credenciales se guardan **encriptadas** en la base de datos.
+  </Expandable>
+  <Expandable title="Cambiar de sandbox a live">
+    Para pasar una razón social a producción, edítala y cambia `FACTURAPI_MODE` a `live`. Cuidado: a partir de ese momento se cobran timbres reales.
+  </Expandable>
+  <Expandable title="Rotar credenciales">
+    Edita la razón social y captura las credenciales nuevas. Las anteriores se sobrescriben encriptadas.
+  </Expandable>
+</ExpandableGroup>
+
+### Usuarios y roles
+
+<ExpandableGroup>
+  <Expandable title="Crear un usuario" default-open="true">
+    Configuración → Usuarios → **Nuevo**.
+
+    Captura nombre, correo, asigna **rol** y opcionalmente un **vendedor superior** o **gerente** para jerarquías.
+
+    El sistema envía correo con contraseña inicial al usuario.
+  </Expandable>
+  <Expandable title="Asignar permisos extra">
+    Si un usuario necesita un permiso que su rol no incluye:
+
+    1. Considera **cambiar su rol** si el permiso es estructural.
+    2. Si es un permiso ad hoc, asígnalo directamente al usuario desde su perfil.
+    3. Documenta por qué se lo asignaste para auditoría posterior.
+  </Expandable>
+  <Expandable title="Desactivar un usuario">
+    Cuando alguien deja la organización, desactívalo en lugar de borrarlo. Esto preserva el histórico de embarques creados, aprobaciones, etc.
+  </Expandable>
+</ExpandableGroup>
+
+### Bitácoras y diagnóstico
+
+<ExpandableGroup>
+  <Expandable title="API Requests Log" default-open="true">
+    Configuración → API Requests Log. Cada llamada a APIs externas (FacturAPI, Facturama, Banxico, SAT) queda registrada con:
+
+    - Endpoint y método.
+    - Status code y tiempo de respuesta.
+    - Payload enviado y respuesta recibida.
+
+    Útil cuando un timbrado falla y FacturAPI da un mensaje confuso. Aquí ves exactamente qué se envió.
+  </Expandable>
+  <Expandable title="Email Logs">
+    Configuración → Email Logs. Cada correo enviado por el sistema:
+
+    - Destinatario, asunto, adjuntos.
+    - Fecha y resultado (enviado, fallido).
+    - Error si falló.
+
+    Útil cuando un cliente dice "no me llegó la factura" — verificas si se envió y a qué dirección.
+  </Expandable>
+  <Expandable title="Activity Log">
+    Auditoría a nivel sistema. Registra cambios críticos: cancelaciones, aprobaciones, ediciones de datos sensibles. Consulta cuando hay dudas o auditorías.
+  </Expandable>
+</ExpandableGroup>
+
+### Mantenimiento periódico
+
+<ExpandableGroup>
+  <Expandable title="Importar catálogo SAT actualizado" default-open="true">
+    El SAT actualiza periódicamente sus catálogos (códigos postales, claves de producto, etc.). Re-importa cuando salga una versión nueva:
+    ```bash
+    php artisan sat:importar-codigos-postales
+    ```
+  </Expandable>
+  <Expandable title="Generar complementos de pago en lote">
+    Si detectas pagos PPD sin complemento (revisión periódica):
+    ```bash
+    php artisan complementos:generar-automaticos
+    ```
+    Es seguro re-ejecutar — omite los pagos que ya tienen complemento.
+  </Expandable>
+  <Expandable title="Verificar cancelaciones pendientes">
+    El comando programado lo hace automático, pero puedes correrlo manualmente:
+    ```bash
+    php artisan cancelaciones:verificar-pendientes
+    ```
+  </Expandable>
+  <Expandable title="Limpiar uploads temporales">
+    Archivos subidos pero no asociados quedan en storage temporal. Limpieza periódica:
+    ```bash
+    php artisan uploads:clean-temp
+    ```
+  </Expandable>
+  <Expandable title="Habilitar portal a un proveedor">
+    Activa el portal externo para un proveedor:
+    ```bash
+    php artisan portal:habilitar-proveedor {proveedor_id}
+    ```
+    Genera credenciales y las envía por correo al contacto del proveedor.
+  </Expandable>
+</ExpandableGroup>
+
+## Errores y problemas frecuentes
+
+<ExpandableGroup>
+  <Expandable title="FacturAPI rechaza un timbrado con error genérico" default-open="true">
+    1. API Requests Log → filtra por el embarque.
+    2. Revisa el payload enviado y la respuesta.
+    3. Si el error es de catálogo SAT (CP1xx), sigue [Errores de timbrado SAT](/help-center/troubleshooting/errores-sat).
+    4. Si es algo nuevo, contacta a soporte de FacturAPI con el log.
+  </Expandable>
+  <Expandable title="Correo de cliente reportado no recibido">
+    Email Logs → busca por destinatario o asunto. Si dice "enviado", probablemente está en spam del cliente. Si dice "fallido", revisa el error.
+  </Expandable>
+  <Expandable title="Queue worker caído">
+    Síntoma: complementos no se generan, BOLs no se envían, status SAT no se actualiza. Pide al técnico verificar `php artisan queue:work` y reiniciar si es necesario.
+  </Expandable>
+  <Expandable title="Banxico no responde">
+    Sin tipo de cambio del día, los embarques en USD usan el último valor. Captura manual desde Configuración → Tipos de Cambio si Banxico tarda en responder.
+  </Expandable>
+</ExpandableGroup>
+
+---
+
+## Sección para Pricing
+
+El rol **Pricing** se enfoca en el ecosistema de proveedores: gestión de catálogo, agentes aduanales, empresas de factoraje y reportes de proveedores.
+
+### Lo que tienes
+
+| Permiso | Para qué |
+|---------|----------|
+| `proveedores.view` / `create` / `edit` / `delete` | CRUD completo de proveedores |
+| `documentos.subirFacturaProveedor` / `subirCartaPorteProveedor` | Cargar documentos del proveedor |
+| `agentes-aduanales.view` / `create` / `edit` / `delete` | CRUD completo de agentes aduanales |
+| `factoraje.view` / `create` / `edit` / `delete` / `empresas` | CRUD de operaciones y empresas de factoraje |
+| `reportes.proveedores` | Reportes específicos de proveedores |
+
+### Tus tareas
+
+<ExpandableGroup>
+  <Expandable title="Onboarding de proveedor nuevo" default-open="true">
+    Sigue [Alta de proveedor nuevo](/tutoriales/alta-proveedor). Cubre captura, choferes, unidades, activación de portal y primera operación.
+  </Expandable>
+  <Expandable title="Mantener documentos al día">
+    Cada proveedor debe tener su:
+
+    - Constancia fiscal vigente.
+    - Póliza de seguro vigente.
+    - Permiso SCT vigente (si es autotransportista).
+    - Opinión de cumplimiento SAT.
+
+    Configura recordatorios cuando se acerquen vencimientos.
+  </Expandable>
+  <Expandable title="Configurar empresas de factoraje">
+    Configuración → Empresas de Factoraje. Captura RFC, comisiones por defecto, días de crédito y datos bancarios. Crea el usuario del portal externo.
+  </Expandable>
+  <Expandable title="Mantener agentes aduanales">
+    Para embarques internacionales. Cada agente con su patente, RFC y datos de contacto.
+  </Expandable>
+  <Expandable title="Reportes de proveedores">
+    Reportes filtrados por proveedor: volumen, retrasos, incidentes. Útiles para evaluar relaciones comerciales.
+  </Expandable>
+</ExpandableGroup>
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Alta de proveedor nuevo" icon="building" href="/tutoriales/alta-proveedor" horizontal>
+    Flujo completo de onboarding de un proveedor.
+  </Card>
+  <Card title="Tutorial de Finanzas" icon="dollar-sign" href="/tutoriales/finanzas" horizontal>
+    Para entender qué espera Finanzas de los catálogos que mantienes.
+  </Card>
+</Columns>

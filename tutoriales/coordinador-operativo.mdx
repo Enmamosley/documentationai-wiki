@@ -1,0 +1,184 @@
+---
+title: Tutorial completo - Coordinador Operativo
+description: Día a día del Coordinador Operativo. Hace todo lo del Operador, más aprobación de modificaciones de costo, gastos adicionales y supervisión del equipo operativo.
+---
+
+## Para quién es esta guía
+
+Para el rol **Coordinador Operativo**: el supervisor del equipo de operadores. Captura sus propios embarques cuando hace falta, y autoriza las decisiones que el operador no puede tomar solo.
+
+<Callout kind="info">
+  El Coordinador Operativo es un Operador con superpoderes. Si aún no leíste el [Tutorial de Operador](/tutoriales/operador), comienza ahí — esta guía solo cubre lo **adicional**.
+</Callout>
+
+## Lo que tienes además del operador
+
+<Columns cols={2}>
+  <Card title="Aprobar modificaciones de costo" icon="check-circle">
+    Permiso `embarques.aprobarCostos`. Eres el filtro entre lo que el proveedor pide y lo que se aplica.
+  </Card>
+  <Card title="Aprobar gastos adicionales" icon="receipt">
+    Permiso `embarques.aprobarGastos`. Maniobras, almacenaje, demoras y otros conceptos extra.
+  </Card>
+  <Card title="Ver todos los embarques" icon="eye">
+    Permiso `embarques.view-all`. No estás limitado a clientes asignados.
+  </Card>
+  <Card title="Asignar operadores a clientes" icon="users">
+    Permiso `clientes.asignarOperador`. Distribuyes la carga del equipo.
+  </Card>
+</Columns>
+
+## Tu rutina diaria
+
+<Steps>
+  <Step title="Revisa la bandeja de aprobaciones" icon="inbox">
+    Tu primera parada del día son las dos bandejas:
+
+    - **Configuración → Modificaciones de Costo Pendientes**
+    - **Configuración → Gastos Adicionales Pendientes**
+
+    Resuelve lo que esté pendiente antes de que se acumule.
+  </Step>
+  <Step title="Atiende notificaciones" icon="bell">
+    Las solicitudes nuevas llegan al [centro de notificaciones](/features/productividad). Filtra por tipo "Modificación de costo pendiente" o "Gasto adicional pendiente".
+  </Step>
+  <Step title="Supervisa el dashboard operativo" icon="layout-dashboard">
+    Como ves todos los embarques, tu dashboard muestra el panorama completo: pendientes por documentar, próximas entregas, retrasos.
+  </Step>
+  <Step title="Distribuye trabajo" icon="users">
+    Si un operador está saturado o un cliente nuevo necesita asignación, redistribuye desde **Catálogo → Clientes → Asignar operador**.
+  </Step>
+  <Step title="Cubre la operación cuando hace falta" icon="truck">
+    Si un operador está fuera, capturas y atiendes embarques tú mismo, igual que un operador.
+  </Step>
+</Steps>
+
+## Aprobar modificaciones de costo
+
+<Callout kind="info">
+  El sistema **te impide aprobar tu propia solicitud**, aunque tengas el permiso. Si tú la capturaste, otra persona con el permiso debe revisarla.
+</Callout>
+
+Sigue [Aprobar costos y gastos](/help-center/guides/aprobaciones-pendientes). Resumen del flujo:
+
+<Steps>
+  <Step title="Abre la bandeja" icon="inbox">
+    Configuración → Modificaciones de Costo Pendientes.
+  </Step>
+  <Step title="Revisa cada solicitud" icon="eye">
+    Embarque, solicitante, tipo (precio, moneda o ambos), valor anterior y nuevo.
+  </Step>
+  <Step title="Decide y comenta" icon="message-square">
+    Aprueba si la solicitud es válida y los datos cuadran. Rechaza con comentario claro si hay un problema.
+  </Step>
+  <Step title="El sistema aplica" icon="zap">
+    Al aprobar, el costo se actualiza automáticamente y se registra en el historial del embarque.
+  </Step>
+</Steps>
+
+### Criterios para aprobar o rechazar
+
+<ExpandableGroup>
+  <Expandable title="Aprobar cuando..." default-open="true">
+    - El cambio tiene **soporte** (correo del proveedor, comprobante de un imprevisto).
+    - El nuevo costo está dentro del **rango razonable** para la ruta y la mercancía.
+    - El operador agregó **comentario** explicando el motivo.
+    - El **margen** del embarque sigue siendo aceptable después del cambio.
+  </Expandable>
+  <Expandable title="Rechazar cuando...">
+    - Falta soporte documental.
+    - El nuevo costo está muy por encima del estándar de la ruta.
+    - El comentario es genérico ("ajuste solicitado") sin detalle.
+    - El cambio dejaría el embarque con margen negativo sin justificación.
+    - Es un cambio que debería discutirse comercialmente antes (ej. el cliente debería absorberlo).
+  </Expandable>
+</ExpandableGroup>
+
+## Aprobar gastos adicionales
+
+Mismo flujo, pero para conceptos como maniobras, almacenaje, demoras.
+
+### Tipos comunes de gastos
+
+| Concepto | Cuándo aplica |
+|----------|---------------|
+| Maniobras | Carga/descarga manual no incluida en tarifa |
+| Almacenaje | Proveedor o tercero almacena por demora |
+| Demora | Tiempo de espera del transportista |
+| Falso flete | Viaje cancelado por el cliente con costo |
+| Estancia | Tiempo extra del vehículo en aduana o en cliente |
+| Combustible extra | Desvíos no previstos |
+
+### Cuidados específicos al aprobar gastos
+
+<Callout kind="warning">
+  Verifica si el gasto **se traslada al cliente** o **lo absorbe Embarque**. Si se traslada, asegúrate de que el cliente lo haya autorizado por escrito. Si lo absorbe Embarque, verifica que el margen sigue positivo.
+</Callout>
+
+<ExpandableGroup>
+  <Expandable title="Tope automático para gastos pequeños" default-open="false">
+    Algunos conceptos chicos pueden tener auto-aprobación si tu organización lo configuró. Para los demás, tu firma es obligatoria.
+  </Expandable>
+  <Expandable title="Comprobante adjunto">
+    Para gastos sobre cierto monto, exige que el operador adjunte el comprobante (recibo, ticket) antes de aprobar.
+  </Expandable>
+</ExpandableGroup>
+
+## Asignar operadores a clientes
+
+Cuando un cliente nuevo entra al catálogo o cambias la distribución de trabajo:
+
+<Steps>
+  <Step title="Abre el cliente" icon="user">
+    Catálogo → Clientes → abre el cliente objetivo.
+  </Step>
+  <Step title="Asigna operador" icon="user-plus">
+    En la sección de asignaciones, agrega al operador (o varios). El sistema mantiene el historial de asignaciones.
+  </Step>
+  <Step title="El operador ve el cliente" icon="check">
+    Desde ese momento, el operador asignado ve los embarques de ese cliente en su dashboard y puede crearle embarques nuevos.
+  </Step>
+</Steps>
+
+## Coordinación con otros equipos
+
+| Con quién | De qué hablan |
+|-----------|---------------|
+| **Vendedor** | Capacidad operativa para tomar nuevos clientes; rentabilidad de las cuentas que trae |
+| **Customer Service** | Quejas del cliente, retrasos, comunicación |
+| **Finanzas** | Embarques listos para facturar; problemas de cobro que afectan a operación |
+| **Administrador** | Permisos del equipo, cambios de configuración |
+
+## Métricas que vigilas
+
+| Métrica | Para qué |
+|---------|----------|
+| Tiempo promedio de aprobación de costos | Que no se acumulen pendientes que paralicen embarques |
+| % de gastos rechazados | Detectar si el equipo está pidiendo lo que no procede |
+| Embarques sin documentar > 3 días | Cuello de botella entre operación y facturación |
+| Embarques retrasados | Para coordinar con Customer Service y proveedores |
+
+## Errores comunes
+
+<ExpandableGroup>
+  <Expandable title="Aprobar sin leer comentario ni soporte" default-open="true">
+    Genera ruido financiero después: márgenes negativos, ajustes contables, discusiones con el cliente.
+  </Expandable>
+  <Expandable title="Rechazar sin comentario claro">
+    El operador no sabe qué corregir y vuelve a enviar lo mismo. Sé específico al rechazar.
+  </Expandable>
+  <Expandable title="Olvidar aprobaciones pendientes">
+    Las solicitudes acumuladas frenan facturación y operación. Revisa la bandeja todos los días.
+  </Expandable>
+</ExpandableGroup>
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Embarque completo end-to-end" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    Cómo encaja tu rol en el flujo completo del embarque.
+  </Card>
+  <Card title="Tutorial de Finanzas" icon="dollar-sign" href="/tutoriales/finanzas" horizontal>
+    Lo que pasa con tus aprobaciones cuando llega la facturación.
+  </Card>
+</Columns>

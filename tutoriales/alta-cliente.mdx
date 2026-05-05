@@ -1,0 +1,229 @@
+---
+title: Alta de cliente nuevo (onboarding completo)
+description: Flujo completo desde la captura del cliente hasta su primer embarque facturado y pagado, incluyendo asignaciones internas y configuración de retenciones.
+---
+
+## Cuándo usar esta guía
+
+Cuando un nuevo cliente firma o confirma su primera operación. Esta guía cubre el onboarding completo, no solo el alta en catálogo.
+
+## Quiénes participan
+
+<Columns cols={2}>
+  <Card title="Vendedor" icon="briefcase">
+    Captura los datos comerciales y crea el primer embarque.
+  </Card>
+  <Card title="Gerente Comercial / Admin" icon="shield">
+    Asigna customer service y operador al cliente.
+  </Card>
+  <Card title="Customer Service" icon="headphones">
+    Acompaña al cliente desde el primer embarque.
+  </Card>
+  <Card title="Finanzas" icon="dollar-sign">
+    Recibe el embarque listo y emite la primera factura.
+  </Card>
+</Columns>
+
+## Fase 1 — Captura del cliente
+
+**Quién:** Vendedor (o Administrador).
+
+<Steps>
+  <Step title="Recibe los datos fiscales del cliente" icon="file-text">
+    Antes de capturar nada, asegúrate de tener:
+
+    - Constancia de Situación Fiscal del SAT (PDF emitido por el cliente).
+    - Confirmación de **régimen fiscal** y **tipo de persona** (física o moral).
+    - Si retiene IVA o ISR, los **porcentajes**.
+    - Datos de contacto comercial, de facturación y de cobranza (idealmente con correos diferenciados).
+  </Step>
+  <Step title="Crea el cliente" icon="user-plus">
+    Catálogo → Clientes → **Nuevo cliente**. Captura:
+
+    - **Razón social** y **nombre comercial**.
+    - **RFC**, **régimen fiscal**, **tipo de persona**.
+    - **Dirección fiscal completa**: calle, número, colonia, CP, ciudad, estado, país.
+    - **Email general**, **email de facturación**, **email de cobranza**.
+    - **Contacto comercial**: nombre y teléfono.
+
+    <Callout kind="info">
+      Si el cliente es extranjero, marca **es_extranjero = true**, captura su número de registro tributario y país de residencia. Usa el RFC genérico `XEXX010101000`.
+    </Callout>
+  </Step>
+  <Step title="Configura retenciones" icon="percent">
+    Si el cliente retiene impuestos:
+
+    - Marca **aplica_retencion_isr** y captura el porcentaje.
+    - Marca **aplica_retencion_iva** y captura el porcentaje.
+
+    Estas tasas se aplicarán automáticamente al timbrar facturas para este cliente.
+  </Step>
+  <Step title="Guarda" icon="save">
+    El cliente queda en el catálogo. Aparece en buscador global y en el selector de embarques.
+  </Step>
+</Steps>
+
+## Fase 2 — Asignaciones internas
+
+**Quién:** Gerente Comercial o Administrador.
+
+<Steps>
+  <Step title="Asigna vendedor" icon="briefcase">
+    En el detalle del cliente, agrega al **vendedor titular**. Este verá el cliente y los embarques en su dashboard, y recibirá comisiones cuando las facturas se cobren.
+  </Step>
+  <Step title="Asigna customer service" icon="headphones">
+    Agrega al **customer service** que dará seguimiento posventa. Verá los embarques del cliente en su dashboard.
+  </Step>
+  <Step title="Asigna operador" icon="truck">
+    Agrega al **operador** que capturará y acompañará operativamente los embarques del cliente.
+
+    Un cliente puede tener **varios operadores** (por ejemplo, uno principal y uno de respaldo).
+  </Step>
+</Steps>
+
+<Callout kind="info">
+  Las asignaciones quedan en `historial_asignacion_operadores` para auditoría. Cada cambio queda registrado.
+</Callout>
+
+## Fase 3 — Documentos requeridos
+
+**Quién:** Vendedor o Administrador.
+
+Si el cliente exige documentos específicos para operar (orden de compra firmada, contrato, formato de remisión propio, etc.):
+
+<Steps>
+  <Step title="Configura documentos requeridos" icon="list">
+    En el detalle del cliente, sección **Documentos requeridos**, agrega los tipos de documento que el cliente exige.
+  </Step>
+  <Step title="Carga los documentos del cliente" icon="upload">
+    En la sección **Documentos del cliente**, sube los archivos correspondientes (constancia fiscal, contrato firmado, etc.). Quedan asociados al cliente para consulta posterior.
+  </Step>
+</Steps>
+
+## Fase 4 — Captura del primer embarque
+
+**Quién:** Vendedor u Operador asignado.
+
+<Steps>
+  <Step title="Crea el embarque" icon="plus">
+    Sigue [Crear un embarque](/help-center/guides/crear-embarque). En el selector de cliente aparecerá el cliente recién dado de alta.
+  </Step>
+  <Step title="Selecciona razón social emisora" icon="building">
+    Si tu organización maneja varias razones sociales, elige la correspondiente. Esto define qué credenciales SAT se usarán al timbrar.
+  </Step>
+  <Step title="Configura impuestos" icon="percent">
+    El sistema sugiere las tasas de retención del cliente capturadas en el alta. Verifica que sean correctas para este embarque específico.
+  </Step>
+  <Step title="Asigna proveedor y guarda" icon="users">
+    Igual que cualquier embarque normal. El embarque queda en **Pendiente**.
+  </Step>
+</Steps>
+
+## Fase 5 — Operación y entrega
+
+**Quién:** Operador y Customer Service.
+
+<Steps>
+  <Step title="Genera y envía documentos al proveedor" icon="send">
+    BOL y Carta de Instrucciones. Sigue [Generar BOL y carta de instrucciones](/help-center/guides/bol-carta-instrucciones).
+  </Step>
+  <Step title="Cubre el ciclo operativo" icon="play">
+    Cambio de estados (En tránsito → Entregado), tracking, atención de retrasos. Sigue [Embarque nacional completo](/tutoriales/embarque-completo).
+  </Step>
+  <Step title="Documenta" icon="upload">
+    POD, factura del proveedor, Carta Porte del proveedor. Embarque pasa a **Documentado** cuando todo está listo.
+  </Step>
+</Steps>
+
+## Fase 6 — Primera factura
+
+**Quién:** Finanzas.
+
+<Steps>
+  <Step title="Verifica datos del cliente" icon="search">
+    Como es la primera factura, **revisa todo**: razón social, RFC, régimen, dirección. Errores aquí obligan a cancelar y reemitir.
+  </Step>
+  <Step title="Timbra" icon="zap">
+    Sigue [Timbrar factura con Carta Porte](/help-center/guides/timbrar-factura). El sistema valida antes de enviar al SAT.
+  </Step>
+  <Step title="Envía al cliente" icon="send">
+    Verifica que llegue al **email de facturación** capturado en el alta. Si el cliente reporta no recibirla, revisa **Email Logs** en configuración.
+  </Step>
+  <Step title="Registra recepción" icon="check">
+    Confirma con el cliente que recibió la factura y los datos están correctos. Si hay errores fiscales, cancela y reemite ahora — antes de que se cobre.
+  </Step>
+</Steps>
+
+## Fase 7 — Primera cobranza
+
+**Quién:** Finanzas y Vendedor.
+
+<Steps>
+  <Step title="Da seguimiento al pago" icon="clock">
+    Antes del vencimiento, el vendedor o el equipo de cobranza llama al cliente para confirmar fecha de pago.
+  </Step>
+  <Step title="Aplica el pago" icon="dollar-sign">
+    Cuando tesorería confirma transferencia, sigue [Registrar un pago](/help-center/guides/registrar-pago).
+  </Step>
+  <Step title="Genera complemento si aplica" icon="receipt">
+    Si la factura es PPD, emite el complemento siguiendo [Generar complemento de pago](/help-center/guides/complemento-pago).
+  </Step>
+</Steps>
+
+## Checklist final del onboarding
+
+Antes de considerar al cliente "completamente onboardeado":
+
+<ExpandableGroup>
+  <Expandable title="Datos fiscales validados" default-open="true">
+    - [ ] Constancia de Situación Fiscal recibida y archivada.
+    - [ ] RFC, régimen y dirección coinciden con la constancia.
+    - [ ] Retenciones (si aplican) configuradas.
+    - [ ] Email de facturación verificado (la primera factura llegó bien).
+  </Expandable>
+  <Expandable title="Asignaciones internas">
+    - [ ] Vendedor titular asignado.
+    - [ ] Customer service asignado.
+    - [ ] Al menos un operador asignado.
+  </Expandable>
+  <Expandable title="Documentos del cliente">
+    - [ ] Constancia fiscal cargada.
+    - [ ] Contrato o acuerdo comercial cargado.
+    - [ ] Documentos requeridos configurados (si aplican).
+  </Expandable>
+  <Expandable title="Primer ciclo cerrado">
+    - [ ] Primer embarque entregado.
+    - [ ] Primera factura emitida y aceptada por SAT.
+    - [ ] Primera factura recibida y reconocida por el cliente.
+    - [ ] Primer pago aplicado.
+    - [ ] Complemento de pago emitido (si PPD).
+  </Expandable>
+</ExpandableGroup>
+
+## Errores comunes en el onboarding
+
+<ExpandableGroup>
+  <Expandable title="Captura de datos fiscales sin verificar contra constancia" default-open="true">
+    El cliente puede dar datos verbalmente que no coinciden con su CSF actualizada. Siempre pide la CSF y captura desde ahí.
+  </Expandable>
+  <Expandable title="Olvidar configurar retenciones">
+    Si el cliente retiene IVA o ISR y no lo configuras, las facturas saldrán sin retenciones y al cobrar habrá diferencia. Verifica con el cliente al alta.
+  </Expandable>
+  <Expandable title="Asignar todo al mismo vendedor por defecto">
+    Si todos los clientes nuevos terminan con el mismo vendedor, el sistema queda con sesgos. Distribuye con criterio.
+  </Expandable>
+  <Expandable title="No cargar la CSF del cliente">
+    Cuando hay disputas o auditorías, no tener la CSF documentada es un problema. Cárgala siempre.
+  </Expandable>
+</ExpandableGroup>
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Embarque completo" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    Detalle del flujo end-to-end del embarque que acabas de crear.
+  </Card>
+  <Card title="Tutorial de Vendedor" icon="briefcase" href="/tutoriales/vendedor" horizontal>
+    Tu rutina diaria con el cliente ya en operación.
+  </Card>
+</Columns>

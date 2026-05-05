@@ -1,0 +1,182 @@
+---
+title: Tutorial completo - Customer Service
+description: Día a día del Customer Service. Acompañar al cliente posventa, atender retrasos, gestionar POD físico y mantener comunicación.
+---
+
+## Para quién es esta guía
+
+Para el rol **Customer Service**: la cara del posventa con el cliente. Tu meta es que el cliente esté informado, atendido cuando hay problemas, y satisfecho con la operación.
+
+## Lo que ves y lo que cuidas
+
+<Callout kind="info">
+  Como Customer Service, **solo ves los clientes asignados a ti**. Tu vista está enfocada en el seguimiento, no en la captura de embarques.
+</Callout>
+
+<Columns cols={2}>
+  <Card title="Tus clientes" icon="users">
+    Solo los clientes a los que estás asignado como customer service.
+  </Card>
+  <Card title="Tracking activo" icon="map-pin">
+    Embarques en tránsito de tus clientes para seguimiento en vivo.
+  </Card>
+  <Card title="Retrasos" icon="alert-triangle">
+    Embarques que cruzaron su fecha de entrega comprometida.
+  </Card>
+  <Card title="Notas de tracking" icon="message-square">
+    Historial de comunicaciones del embarque visibles para el cliente.
+  </Card>
+</Columns>
+
+## Permisos que tienes
+
+| Permiso | Para qué |
+|---------|----------|
+| `clientes.view` | Ver tus clientes asignados |
+| `embarques.viewOwn` | Ver embarques de tus clientes |
+| `embarques.viewTimeline` | Ver línea de tiempo del embarque |
+| `documentos.view` | Ver documentos del embarque |
+| `embarques.tracking` | Capturar notas de tracking |
+
+## Tu rutina diaria
+
+<Steps>
+  <Step title="Revisa tu dashboard" icon="layout-dashboard">
+    Tu dashboard de Customer Service te muestra:
+
+    - **Embarques en proceso**: pendientes y en tránsito.
+    - **Por confirmar**: embarques pendientes que necesitan acción del cliente.
+    - **Retrasados**: con fecha de entrega comprometida vencida.
+    - **Embarques recientes (7 días)**: actividad nueva.
+  </Step>
+  <Step title="Atiende lo retrasado primero" icon="alert-triangle">
+    Empieza por los embarques retrasados. Llama al proveedor, captura nota de tracking explicando la situación, avisa al cliente proactivamente.
+  </Step>
+  <Step title="Haz tracking activo de embarques en tránsito" icon="map-pin">
+    Para tus cuentas grandes o sensibles, llama al proveedor para confirmar avances. Captura **notas de tracking** que el cliente pueda leer.
+  </Step>
+  <Step title="Confirma embarques pendientes" icon="check-circle">
+    Embarques en estado **Pendiente** suelen necesitar verificación con el cliente (datos correctos, fecha de recolección, contactos en destino).
+  </Step>
+  <Step title="Atiende solicitudes del cliente" icon="phone">
+    Llamadas, correos, dudas, cambios de último minuto. Coordina con Operador para que se reflejen en el sistema.
+  </Step>
+</Steps>
+
+## Tareas frecuentes
+
+<ExpandableGroup>
+  <Expandable title="Capturar nota de tracking" default-open="true">
+    En el detalle del embarque, sección **Tracking**, agrega una nota con el estado actual.
+
+    Las notas son **visibles para el cliente**. Escríbelas como las leerías tú: claras, profesionales, sin culpas innecesarias.
+
+    Ejemplo bueno: "Unidad detenida por revisión sanitaria en aduana de Nuevo Laredo. Tiempo estimado de liberación: 4 horas. Damos seguimiento."
+
+    Ejemplo malo: "El proveedor se tardó en avisar."
+  </Expandable>
+  <Expandable title="Atender un retraso">
+    Cuando un embarque cruza la fecha comprometida:
+
+    1. Llama al proveedor para entender la causa.
+    2. Llama al cliente **antes** de que él te llame. Avisa el retraso y la nueva fecha estimada.
+    3. Captura nota de tracking con la causa y la nueva fecha.
+    4. Si aplica, marca el embarque con `tiene_retraso` y captura motivo, responsable y plan de acción desde la edición del embarque.
+  </Expandable>
+  <Expandable title="Gestionar POD físico">
+    Cuando el cliente exige el POD original (en papel firmado), el flujo:
+
+    1. Marca el embarque como **POD físico solicitado** desde el detalle.
+    2. El proveedor lo envía por mensajería y captura fecha y guía en su portal.
+    3. Cuando llega físicamente a Embarque, marca **POD físico recibido**.
+    4. Avisa al cliente que el documento está disponible para retirarlo o reenvíaselo.
+  </Expandable>
+  <Expandable title="Generar estado de cuenta para el cliente">
+    Reportes → Estado de Cuenta del Cliente. Selecciona el cliente, descarga el PDF y envíaselo. Es útil cuando el cliente pide conciliar facturas.
+  </Expandable>
+  <Expandable title="Reenviar una factura al cliente">
+    Si el cliente dice que no recibió o quiere otra copia, pide a Finanzas que la **reenvíe** desde **Cuentas por Cobrar → detalle de factura → Reenviar**. Confirma la dirección de correo.
+  </Expandable>
+  <Expandable title="Coordinar cambios solicitados por el cliente">
+    Si el cliente pide cambios (cambio de destino, fecha, datos de facturación):
+
+    - **Antes de timbrar**: pasa el caso al Operador para que ajuste el embarque.
+    - **Después de timbrado**: coordina con Finanzas. Cambios fiscales obligan a cancelar y reemitir la factura.
+  </Expandable>
+</ExpandableGroup>
+
+## Plantillas de comunicación
+
+<Tabs>
+  <Tab title="Aviso de retraso" icon="alert-triangle">
+    > Estimado [cliente],
+    >
+    > Te informamos que el embarque con folio [folio] presenta un retraso por [causa breve]. Nueva fecha estimada de entrega: [fecha].
+    >
+    > Estamos en contacto continuo con el transportista. Te avisaremos cuando se confirme la entrega.
+    >
+    > Quedamos a tus órdenes.
+  </Tab>
+  <Tab title="Confirmación de entrega" icon="check-circle">
+    > Estimado [cliente],
+    >
+    > Confirmamos la entrega exitosa del embarque [folio] el día [fecha].
+    >
+    > El POD digital ya está disponible en [enlace o adjunto]. [Si aplica:] El POD físico está en camino por mensajería con guía [número].
+    >
+    > Quedamos a tus órdenes.
+  </Tab>
+  <Tab title="Solicitud de información" icon="message-square">
+    > Estimado [cliente],
+    >
+    > Para procesar tu embarque al destino [destino] requerimos los siguientes datos: [lista corta].
+    >
+    > Quedamos atentos a tu respuesta para coordinar la recolección.
+  </Tab>
+</Tabs>
+
+## Coordinación con otros equipos
+
+| Con quién | De qué hablan |
+|-----------|---------------|
+| **Operador** | Cambios solicitados por el cliente, fechas, contactos |
+| **Vendedor** | Quejas o necesidades especiales que requieren atención comercial |
+| **Finanzas** | Reenvíos de factura, dudas de cobro, complementos |
+| **Coordinador Operativo** | Escalamiento de retrasos críticos o quejas formales |
+
+## Errores comunes
+
+<ExpandableGroup>
+  <Expandable title="Esperar a que el cliente reclame el retraso" default-open="true">
+    Adelantarte al cliente es la diferencia entre un cliente molesto y uno informado. Avisa proactivamente.
+  </Expandable>
+  <Expandable title="Notas de tracking con tono inapropiado">
+    Las notas las lee el cliente. Evita culpas, jerga interna o lenguaje informal.
+  </Expandable>
+  <Expandable title="No documentar la comunicación">
+    Si llamas al cliente, captura una nota de tracking corta. Sin registro, el equipo no sabe qué pasó y se duplican esfuerzos.
+  </Expandable>
+  <Expandable title="No marcar el POD físico">
+    Si no se rastrea el POD físico, se pierde. Marca cada paso del flujo (solicitado, enviado, recibido).
+  </Expandable>
+</ExpandableGroup>
+
+## Métricas que te miden
+
+| Métrica | Para qué |
+|---------|----------|
+| Tiempo promedio de respuesta al cliente | Calidad del servicio |
+| Embarques con notas de tracking | Comunicación documentada |
+| Retrasos comunicados antes de que el cliente pregunte | Proactividad |
+| NPS o encuestas posventa | Si tu organización las hace, son tu mejor termómetro |
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Embarque completo end-to-end" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    Entiende el flujo completo para anticipar problemas.
+  </Card>
+  <Card title="Tutorial de Operador" icon="truck" href="/tutoriales/operador" horizontal>
+    Para entender qué pasa antes de que llegue a tu seguimiento.
+  </Card>
+</Columns>

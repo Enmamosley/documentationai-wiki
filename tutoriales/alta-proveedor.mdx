@@ -1,0 +1,295 @@
+---
+title: Alta de proveedor nuevo (onboarding completo)
+description: Flujo completo desde la captura del proveedor en el catálogo hasta su primera operación, incluyendo choferes, unidades, activación del portal externo y configuración de factoraje.
+---
+
+## Cuándo usar esta guía
+
+Cuando un nuevo proveedor de transporte se incorpora al ecosistema de Embarque. Esta guía cubre la captura completa, sus subcatálogos, y la primera operación.
+
+## Quiénes participan
+
+<Columns cols={2}>
+  <Card title="Pricing" icon="building">
+    Captura el proveedor y sus subcatálogos (choferes, unidades).
+  </Card>
+  <Card title="Administrador" icon="shield">
+    Activa el portal externo del proveedor.
+  </Card>
+  <Card title="Operador" icon="truck">
+    Asigna al proveedor en el primer embarque y opera el flujo.
+  </Card>
+  <Card title="Finanzas" icon="dollar-sign">
+    Recibe la primera factura del proveedor y procesa el primer pago.
+  </Card>
+</Columns>
+
+## Documentos que necesitas del proveedor
+
+Antes de capturar nada:
+
+| Documento | Para qué |
+|-----------|----------|
+| Constancia de Situación Fiscal SAT | Verificar RFC y régimen fiscal |
+| Permiso SCT | Si es autotransportista de carga |
+| Carta de aseguradora con póliza ambiental | Para Carta Porte y trazabilidad |
+| Acta constitutiva o identificación | Validación legal |
+| CAAT (Código Alfa-Numérico de Autotransporte) | Identificador SCT obligatorio en Carta Porte |
+| Datos bancarios | Para pagos |
+| Contrato firmado | Términos comerciales |
+
+## Fase 1 — Captura del proveedor
+
+**Quién:** Pricing o Administrador.
+
+<Steps>
+  <Step title="Crea el proveedor" icon="user-plus">
+    Catálogo → Proveedores → **Nuevo proveedor**. Captura:
+
+    - **Razón social** y **nombre comercial**.
+    - **RFC**, **régimen fiscal**, **tipo de persona** (física o moral).
+    - **CAAT** y **número de permiso SCT** si es autotransportista.
+    - Marca **es_autotransportista = true** si aplica.
+    - Datos de contacto: email general, email de operaciones.
+    - Dirección fiscal completa.
+  </Step>
+  <Step title="Captura datos de seguro" icon="shield">
+    - **Aseguradora ambiental** (nombre).
+    - **Número de póliza**.
+    - **Vigencia de la póliza**.
+
+    Estos datos se reflejan en la Carta Porte cuando el proveedor opera embarques.
+  </Step>
+  <Step title="Configura retenciones" icon="percent">
+    Marca **aplicar_retencion_isr** si Embarque debe retenerle ISR al pagarle.
+
+    El régimen del proveedor (persona física vs. moral, actividad empresarial vs. honorarios) determina las tasas correctas.
+  </Step>
+  <Step title="Sube documentos del proveedor" icon="upload">
+    En la sección **Documentos del proveedor**, sube:
+
+    - Constancia fiscal.
+    - Permiso SCT.
+    - Póliza de seguro vigente.
+    - Acta constitutiva.
+    - Opinión de cumplimiento del SAT.
+
+    Los archivos quedan asociados al proveedor para consultas y auditorías.
+  </Step>
+</Steps>
+
+## Fase 2 — Captura de unidades
+
+**Quién:** Pricing o Operador.
+
+<Steps>
+  <Step title="Crea cada unidad del proveedor" icon="truck">
+    Desde el detalle del proveedor, sección **Unidades**, agrega cada vehículo:
+
+    - **Tipo de unidad** (del catálogo SAT `c_ConfigVehicular`).
+    - **Número económico** interno.
+    - **Placas**.
+    - **Marca**, **modelo**, **año**.
+    - **Capacidad en kg** y **m³**.
+    - **Peso bruto vehicular**.
+    - **Configuración vehicular SAT**.
+    - **Número de serie**, **color**.
+  </Step>
+  <Step title="Asocia documentos de la unidad" icon="file-text">
+    Tarjeta de circulación, póliza individual si aplica, fotos. Carga lo necesario para auditoría.
+  </Step>
+</Steps>
+
+<Callout kind="info">
+  Si el proveedor opera con **flota grande**, captura solo las unidades que más usarán para Embarque. Las puedes agregar conforme se necesiten.
+</Callout>
+
+## Fase 3 — Captura de choferes
+
+**Quién:** Pricing.
+
+<Steps>
+  <Step title="Crea cada chofer" icon="user">
+    Desde el detalle del proveedor, sección **Choferes**, agrega:
+
+    - **Nombres**, apellidos paterno y materno.
+    - **RFC**, **CURP**, **NSS**.
+    - **Fecha de nacimiento**.
+    - **Teléfono celular**, **email**.
+    - **Foto**.
+    - **Número de licencia** y **vigencia**.
+  </Step>
+  <Step title="Verifica vigencia de licencia" icon="calendar">
+    Las licencias federales tienen vigencia. Configura un seguimiento para renovaciones.
+  </Step>
+</Steps>
+
+## Fase 4 — Activar portal externo
+
+**Quién:** Administrador.
+
+Si el proveedor va a operar regularmente, activa su acceso al portal para que pueda subir PODs, ver embarques y consultar pagos.
+
+<Steps>
+  <Step title="Captura email del portal" icon="mail">
+    En el detalle del proveedor, sección **Portal**, captura **email_portal** (puede ser distinto al email general).
+  </Step>
+  <Step title="Activa el portal" icon="check">
+    Marca **portal_activo = true** o ejecuta:
+    ```bash
+    php artisan portal:habilitar-proveedor {proveedor_id}
+    ```
+  </Step>
+  <Step title="El proveedor recibe credenciales" icon="send">
+    El sistema envía un correo al **email_portal** con la URL `/portal/proveedores/login` y la contraseña inicial.
+  </Step>
+  <Step title="Verifica primer acceso" icon="check-circle">
+    Pídele al proveedor que pruebe el portal y cambie su contraseña en el primer acceso. El sistema rastrea **ultimo_acceso_portal**.
+  </Step>
+</Steps>
+
+[Detalle del portal de proveedores →](/features/portales)
+
+## Fase 5 — Configurar factoraje (si aplica)
+
+**Quién:** Pricing o Administrador.
+
+Si el proveedor pactó cobrar vía empresa de factoraje:
+
+<Steps>
+  <Step title="Asegúrate de que la empresa de factoraje exista" icon="building">
+    Configuración → Empresas de Factoraje. Si no está, captúrala con sus datos fiscales, comisiones y días de crédito.
+  </Step>
+  <Step title="Captura override de comisiones" icon="percent">
+    Si negociaste con este proveedor comisiones distintas a las default de la empresa, captúralas en el detalle del proveedor para esta empresa de factoraje específica.
+  </Step>
+  <Step title="Define días de crédito" icon="calendar">
+    - Días de crédito al **proveedor** (default 5).
+    - Días de crédito a **Embarque** desde la empresa de factoraje (default 60).
+  </Step>
+</Steps>
+
+## Fase 6 — Primera operación
+
+**Quién:** Operador.
+
+<Steps>
+  <Step title="Asigna el proveedor a un embarque" icon="users">
+    En el detalle del embarque, agrega al proveedor recién dado de alta. Captura tarifa, comisión y, si aplica, marca pagar con factoraje.
+  </Step>
+  <Step title="Selecciona unidad y chofer" icon="truck">
+    Si ya conoces qué unidad y chofer cubrirán el viaje, selecciónalos del catálogo del proveedor. Si no, déjalo en blanco — se llena después.
+  </Step>
+  <Step title="Genera Carta de Instrucciones" icon="file-text">
+    Sigue [Generar BOL y carta de instrucciones](/help-center/guides/bol-carta-instrucciones). Envíala al proveedor por correo o desde el portal.
+  </Step>
+</Steps>
+
+## Fase 7 — Primera factura recibida
+
+**Quién:** El proveedor (sube su factura) y Operador o Finanzas (la recibe).
+
+<Steps>
+  <Step title="El proveedor sube su CFDI" icon="upload">
+    Desde su portal externo, el proveedor sube el XML de la factura que emitió a Embarque. El sistema extrae UUID, monto, fecha y método de pago.
+  </Step>
+  <Step title="Verifica datos extraídos" icon="search">
+    El operador o Finanzas verifica:
+
+    - RFC del emisor coincide con el proveedor.
+    - Monto coincide con el costo pactado (o las diferencias están justificadas como gastos adicionales).
+    - Método de pago (PUE o PPD) es el esperado.
+  </Step>
+  <Step title="La factura aparece en CxP" icon="receipt">
+    Automáticamente se crea la factura recibida en **Cuentas por Pagar**, lista para pagarse cuando se cumpla el plazo.
+  </Step>
+</Steps>
+
+## Fase 8 — Primer pago al proveedor
+
+**Quién:** Finanzas.
+
+<Tabs>
+  <Tab title="Pago directo" icon="banknote">
+    <Steps>
+      <Step title="Cumplir plazo de crédito">
+        Al llegar la fecha pactada, Finanzas procesa el pago.
+      </Step>
+      <Step title="Registrar pago en CxP">
+        Cuentas por Pagar → factura recibida → **Registrar pago**. Aplica retenciones según el régimen del proveedor.
+      </Step>
+      <Step title="Generar comprobante">
+        El sistema produce el PDF de comprobante de pago para el proveedor.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Vía factoraje" icon="layers">
+    <Steps>
+      <Step title="Empresa de factoraje paga al proveedor">
+        Desde el portal externo, la empresa de factoraje registra el pago al proveedor. Estado de la operación pasa a `pagado_proveedor`.
+      </Step>
+      <Step title="Embarque paga a la empresa">
+        Al cumplirse el plazo de crédito hacia la empresa, Finanzas procesa el pago.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Checklist final del onboarding del proveedor
+
+<ExpandableGroup>
+  <Expandable title="Datos del proveedor" default-open="true">
+    - [ ] Constancia de Situación Fiscal recibida y cargada.
+    - [ ] CAAT y permiso SCT capturados (si autotransportista).
+    - [ ] Datos de aseguradora y póliza al día.
+    - [ ] Retenciones configuradas según régimen.
+  </Expandable>
+  <Expandable title="Subcatálogos">
+    - [ ] Al menos una unidad capturada.
+    - [ ] Al menos un chofer capturado con licencia vigente.
+    - [ ] Documentos de unidad y chofer cargados.
+  </Expandable>
+  <Expandable title="Portal y operación">
+    - [ ] Portal externo activo.
+    - [ ] Proveedor accedió al menos una vez al portal y cambió contraseña.
+    - [ ] Primera operación entregada con POD subido.
+    - [ ] Primera factura recibida cargada y validada.
+    - [ ] Primer pago procesado.
+  </Expandable>
+  <Expandable title="Factoraje (si aplica)">
+    - [ ] Empresa de factoraje existe en el sistema.
+    - [ ] Override de comisiones configurado.
+    - [ ] Primera operación de factoraje completada exitosamente.
+  </Expandable>
+</ExpandableGroup>
+
+## Errores comunes
+
+<ExpandableGroup>
+  <Expandable title="Olvidar capturar el CAAT y permiso SCT" default-open="true">
+    Sin estos datos, las Carta Porte que el proveedor opere quedan incompletas. Capturarlos al alta evita problemas a futuro.
+  </Expandable>
+  <Expandable title="Activar portal sin verificar email">
+    Si el email del portal está mal capturado, el proveedor nunca recibe credenciales. Verifica antes de activar.
+  </Expandable>
+  <Expandable title="Capturar choferes sin foto ni licencia vigente">
+    Para Carta Porte se requiere RFC y licencia. Sin foto el operador no puede identificarlo en el portal. Captura completo desde el alta.
+  </Expandable>
+  <Expandable title="No actualizar pólizas vencidas">
+    Si la póliza del proveedor venció y operó un embarque, hay riesgo legal y fiscal. Configura recordatorios de vencimientos.
+  </Expandable>
+  <Expandable title="Configurar retenciones de ISR genéricas">
+    El régimen del proveedor importa: persona física con actividad empresarial, persona física honorarios, persona moral, RIF, etc. Cada uno tiene tasa de retención distinta.
+  </Expandable>
+</ExpandableGroup>
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Tutorial de Pricing" icon="building" href="/tutoriales/administrador" horizontal>
+    Tu rutina diaria manteniendo el catálogo de proveedores.
+  </Card>
+  <Card title="Embarque completo" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    El flujo end-to-end donde participa el proveedor recién dado de alta.
+  </Card>
+</Columns>

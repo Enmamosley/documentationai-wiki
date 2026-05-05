@@ -1,0 +1,225 @@
+---
+title: Tutorial completo - Finanzas
+description: Día a día del rol Finanzas. Facturación, cobranza, complementos de pago, cuentas por pagar y cierre de mes.
+---
+
+## Para quién es esta guía
+
+Para el rol **Finanzas**: el equipo que convierte la operación entregada en dinero. Factura a clientes, cobra, paga a proveedores y cierra el ciclo financiero de cada embarque.
+
+## Lo que tienes a tu cargo
+
+<Columns cols={2}>
+  <Card title="Facturación" icon="file-text">
+    Emitir CFDI con Carta Porte 3.1, notas de crédito, cancelaciones.
+  </Card>
+  <Card title="Cuentas por Cobrar" icon="dollar-sign">
+    Aplicar pagos, generar complementos, dar seguimiento al aging.
+  </Card>
+  <Card title="Cuentas por Pagar" icon="credit-card">
+    Pagar a proveedores con sus retenciones y comprobantes.
+  </Card>
+  <Card title="Reportes financieros" icon="bar-chart-3">
+    Cobranza mensual, cartera, facturación diaria, utilidades, comisiones.
+  </Card>
+</Columns>
+
+## Permisos que tienes
+
+| Permiso | Para qué |
+|---------|----------|
+| `facturas.create` / `cancel` / `download` / `viewXML` / `reenviar` / `consultarSAT` / `notaCredito` | Ciclo completo de facturación |
+| `facturacion.send` | Enviar facturas al cliente por correo |
+| `cxc.view` / `registrarPago` / `editarPago` / `eliminarPago` / `viewReportes` / `exportar` | Cobranza |
+| `cxp.view` / `registrarPago` / `viewReportes` / `exportar` | Cuentas por pagar |
+| `complementos.view` / `create` / `cancel` | Complementos de pago |
+| `embarques.view-all` / `view-precios` | Ver todos los embarques con márgenes |
+
+## Tu rutina diaria
+
+<Steps>
+  <Step title="Revisa el dashboard general" icon="layout-dashboard">
+    Como tienes acceso a todo, ves:
+
+    - Total de embarques activos.
+    - Facturas emitidas hoy.
+    - Pagos recibidos hoy.
+  </Step>
+  <Step title="Atiende reporte 'Pendientes por Facturar'" icon="file-plus">
+    Embarques en estado **Documentado** que esperan ser facturados. Es tu trabajo principal del día.
+  </Step>
+  <Step title="Aplica pagos del día" icon="dollar-sign">
+    Conforme tesorería confirma transferencias recibidas, aplica los pagos a las facturas correspondientes.
+  </Step>
+  <Step title="Genera complementos pendientes" icon="receipt">
+    Los pagos a facturas PPD requieren complemento. Si los aplicaste sin generar complemento, hazlo en cuanto puedas.
+  </Step>
+  <Step title="Revisa cancelaciones en proceso" icon="clock">
+    Cancelaciones pendientes de aceptación SAT. El sistema consulta automáticamente, pero conviene verificar.
+  </Step>
+  <Step title="Atiende cuentas por pagar" icon="credit-card">
+    Procesa pagos a proveedores cuyas facturas estén autorizadas y dentro de su plazo.
+  </Step>
+</Steps>
+
+## Tareas frecuentes
+
+### Facturación
+
+<ExpandableGroup>
+  <Expandable title="Timbrar una factura con Carta Porte" default-open="true">
+    Sigue [Timbrar factura con Carta Porte](/help-center/guides/timbrar-factura). Resumen:
+
+    1. Abre el embarque, ve a **Pre-factura**.
+    2. Revisa conceptos, Carta Porte, impuestos.
+    3. Valida (el sistema lo hace automático).
+    4. Timbra. Se descargan PDF y XML.
+    5. Envía al cliente.
+  </Expandable>
+  <Expandable title="Generar nota de crédito">
+    Cuando el cliente devuelve parte del monto o se requiere ajuste:
+
+    1. Abre la factura emitida en **Cuentas por Cobrar**.
+    2. Pulsa **Generar nota de crédito**.
+    3. Captura monto y motivo. Se emite CFDI tipo "E" referenciando la factura.
+    4. El saldo de la factura se reduce proporcionalmente.
+  </Expandable>
+  <Expandable title="Cancelar una factura">
+    Sigue [Cancelar una factura](/help-center/faq/cancelar-factura).
+
+    **Importante**: si la factura tiene complementos de pago timbrados, cancela primero los complementos. El sistema valida la dependencia.
+  </Expandable>
+  <Expandable title="Reenviar factura al cliente">
+    Cuentas por Cobrar → detalle de factura → **Reenviar**. Útil cuando el cliente reporta que no la recibió.
+  </Expandable>
+  <Expandable title="Resolver errores de timbrado">
+    Sigue [Errores de timbrado SAT](/help-center/troubleshooting/errores-sat). El sistema traduce CP116, CP143, CP147, CP149, CP155, CP170, CP171, CP172.
+  </Expandable>
+</ExpandableGroup>
+
+### Cobranza
+
+<ExpandableGroup>
+  <Expandable title="Aplicar un pago individual">
+    Sigue [Registrar un pago](/help-center/guides/registrar-pago). Cuidados:
+
+    - **Moneda**: si difiere de la factura, captura el tipo de cambio aplicable.
+    - **Retenciones**: el sistema descuenta automáticamente según las tasas configuradas en el embarque.
+    - **Forma de pago**: del catálogo SAT (transferencia, cheque, efectivo, tarjeta, etc.).
+  </Expandable>
+  <Expandable title="Aplicar un pago múltiple">
+    Cuando el cliente paga varias facturas con una sola transferencia. El sistema distribuye **FIFO** (cubre primero las más antiguas).
+  </Expandable>
+  <Expandable title="Generar complemento de pago">
+    Sigue [Generar complemento de pago](/help-center/guides/complemento-pago). Para facturas **PPD**, es obligatorio cada vez que recibes un abono.
+  </Expandable>
+  <Expandable title="Empujar facturas vencidas">
+    Reportes → Facturas Vencidas. Filtra por aging y por cliente. Coordina con el vendedor del cliente para cobranza activa.
+  </Expandable>
+  <Expandable title="Generar estado de cuenta">
+    Reportes → Estado de Cuenta del Cliente. Genera el PDF y envíaselo al cliente para conciliación.
+  </Expandable>
+</ExpandableGroup>
+
+### Cuentas por Pagar
+
+<ExpandableGroup>
+  <Expandable title="Recibir factura del proveedor">
+    El proveedor sube su XML al embarque desde el portal de proveedores. Aparece automáticamente en **Cuentas por Pagar** lista para pagar.
+
+    Si el proveedor no usa portal, súbelo tú desde el detalle del embarque.
+  </Expandable>
+  <Expandable title="Registrar un pago a proveedor">
+    Cuentas por Pagar → detalle de factura recibida → **Registrar pago**.
+
+    - **Monto**: el sistema sugiere el saldo con retenciones descontadas.
+    - **Retenciones**: ajusta si el caso lo requiere.
+    - **Forma de pago**, **cuenta bancaria**, **referencia**.
+
+    Al guardar, se genera el **comprobante de pago** en PDF para el proveedor.
+  </Expandable>
+  <Expandable title="Coordinar pagos vía factoraje">
+    Para facturas marcadas como factoraje, el flujo no lo manejas directamente: la **empresa de factoraje** paga al proveedor desde su portal externo. Tú pagarás a la empresa de factoraje cuando se cumpla el plazo de crédito de Embarque.
+  </Expandable>
+</ExpandableGroup>
+
+## Cierre de mes
+
+Procesos al cerrar mes que conviene tener listos.
+
+<Steps>
+  <Step title="Verifica facturación del mes" icon="bar-chart-3">
+    Reportes → Facturación Diaria. Compara con tu proyección o las metas del mes.
+  </Step>
+  <Step title="Verifica cobranza del mes" icon="dollar-sign">
+    Reportes → Cobranza Mensual. Revisa por cliente y moneda.
+  </Step>
+  <Step title="Genera complementos pendientes en lote" icon="receipt">
+    Pide al administrador correr `complementos:generar-automaticos`. Genera complementos para pagos PPD que aún no los tengan.
+  </Step>
+  <Step title="Cierra cuentas por pagar" icon="credit-card">
+    Procesa los pagos a proveedores que ya tengan plazo cumplido. Reportes → CxP exportable a Excel.
+  </Step>
+  <Step title="Reportes finales" icon="file-text">
+    Genera para revisión:
+
+    - **Cartera de Clientes** (estado del aging).
+    - **Consolidado Mensual** (resumen ejecutivo).
+    - **Utilidades** (margen por embarque).
+    - **Comisiones de Vendedores** (para liquidación interna).
+  </Step>
+  <Step title="Concilia retenciones del mes" icon="percent">
+    Si tu organización lo requiere, exporta retenciones emitidas y recibidas para la declaración del mes.
+  </Step>
+</Steps>
+
+## Coordinación con otros equipos
+
+| Con quién | De qué hablan |
+|-----------|---------------|
+| **Operador** | Embarques listos para facturar; problemas con factura del proveedor |
+| **Coordinador Operativo** | Aprobaciones de costo y gastos que afectan facturación |
+| **Vendedor** | Cobranza vencida de sus clientes |
+| **Customer Service** | Reenvíos de factura, conciliaciones, dudas del cliente |
+| **Administrador** | Configuración de razones sociales, credenciales SAT, bitácoras |
+
+## Errores comunes
+
+<ExpandableGroup>
+  <Expandable title="Olvidar generar complemento de pago" default-open="true">
+    Pago aplicado en factura PPD sin complemento = problema fiscal. Genera el complemento en el momento o usa el comando en lote para alcanzar pendientes.
+  </Expandable>
+  <Expandable title="Cancelar factura con complemento vigente">
+    El sistema lo bloquea. Cancela primero el complemento.
+  </Expandable>
+  <Expandable title="Aplicar pago con tipo de cambio equivocado">
+    Si el cliente pagó en USD una factura en MXN, captura el tipo de cambio del día del pago (no el de la factura).
+  </Expandable>
+  <Expandable title="Pagar a proveedor sin verificar retenciones">
+    Si el proveedor es persona física sin actividad empresarial o tiene régimen especial, las retenciones de ISR son distintas. Verifica antes de pagar.
+  </Expandable>
+  <Expandable title="No revisar estatus SAT de cancelaciones">
+    Cancelaciones pendientes de aceptación pueden quedar abiertas. Revisa el listado periódicamente o confía en el comando programado de verificación.
+  </Expandable>
+</ExpandableGroup>
+
+## Métricas que te miden
+
+| Métrica | Reporte |
+|---------|---------|
+| Días desde Documentado hasta Facturado | Pendientes por Facturar |
+| % de facturas enviadas el mismo día de timbrado | Facturas Sin Enviar |
+| DSO (días promedio de cobro) | Cartera de Clientes / Cobranza Mensual |
+| % de complementos generados a tiempo | Listado de complementos |
+| % de pagos a proveedor en plazo | CxP exportable |
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Embarque completo end-to-end" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    Entiende lo que pasó antes de que llegue a tu bandeja.
+  </Card>
+  <Card title="Catálogo de errores SAT" icon="alert-triangle" href="/help-center/troubleshooting/errores-sat" horizontal>
+    Tu referencia rápida cuando algo falla al timbrar.
+  </Card>
+</Columns>

@@ -1,0 +1,190 @@
+---
+title: Tutorial completo - Vendedor
+description: Día a día del Vendedor. Captar clientes, crear embarques propios, dar seguimiento comercial y consultar comisiones. Incluye una sección para Gerente Comercial.
+---
+
+## Para quién es esta guía
+
+Para el rol **Vendedor**: el comercial que abre y cuida cuentas. Tu meta es traer y mantener clientes, asegurando que su operación se ejecute bien y que su cobranza esté al día.
+
+## Lo que tienes y lo que ves
+
+<Callout kind="info">
+  Como vendedor, **solo ves los clientes asignados a ti** (eres su vendedor titular). No ves clientes de otros vendedores.
+</Callout>
+
+<Columns cols={2}>
+  <Card title="Tus clientes" icon="users">
+    Catálogo de clientes filtrado por los que tienes asignados.
+  </Card>
+  <Card title="Tus embarques" icon="truck">
+    Embarques de tus clientes. Puedes crearlos directamente.
+  </Card>
+  <Card title="Tus comisiones" icon="dollar-sign">
+    Reporte de comisiones devengadas y pendientes con penalizaciones.
+  </Card>
+  <Card title="Tu dashboard" icon="layout-dashboard">
+    KPIs comerciales del mes: facturación, margen promedio, top 5 clientes.
+  </Card>
+</Columns>
+
+## Permisos que tienes
+
+| Permiso | Para qué |
+|---------|----------|
+| `clientes.view` / `create` / `edit` | Gestionar tus clientes |
+| `clientes.asignarVendedor` | Auto-asignarte como vendedor del cliente |
+| `embarques.create` / `edit` / `viewOwn` | Crear y editar embarques de tus clientes |
+| `cxc.view` | Ver cobranza de tus clientes |
+| `reportes.comisionesPersonal` | Ver tu reporte de comisiones |
+
+## Tu rutina diaria
+
+<Steps>
+  <Step title="Revisa tu dashboard" icon="layout-dashboard">
+    KPIs del mes para tomar el pulso comercial:
+
+    - **Embarques del mes**: cuántos cerraste.
+    - **Facturación del mes**: monto total facturado.
+    - **Margen promedio**: rentabilidad combinada.
+    - **Top 5 clientes**: tus cuentas grandes.
+  </Step>
+  <Step title="Atiende prospectos y clientes" icon="phone">
+    Responde solicitudes de cotización, prepara propuestas, da seguimiento a leads.
+  </Step>
+  <Step title="Captura embarques nuevos" icon="plus">
+    Cuando un cliente confirma un envío, crea el embarque desde **Embarques → Nuevo embarque**. Marca la tarifa pactada como precio al cliente.
+  </Step>
+  <Step title="Revisa cobranza de tus cuentas" icon="dollar-sign">
+    Detecta facturas vencidas tuyas y empuja la cobranza. Tus comisiones dependen de que cobren a tiempo.
+  </Step>
+  <Step title="Consulta comisiones pendientes" icon="bar-chart-3">
+    Una vez al mes (o cuando quieras), revisa tu reporte de comisiones para confirmar que las facturas pagadas se reflejen y las penalizaciones sean correctas.
+  </Step>
+</Steps>
+
+## Tareas frecuentes
+
+<ExpandableGroup>
+  <Expandable title="Captar un cliente nuevo" default-open="true">
+    Sigue [Alta de cliente nuevo](/tutoriales/alta-cliente). Cubre captura, asignaciones, primer embarque y primera factura.
+
+    **Asegúrate** de capturar:
+
+    - Datos fiscales completos (RFC, régimen, dirección).
+    - Tres contactos diferenciados (general, facturación, cobranza).
+    - Si el cliente retiene IVA o ISR y los porcentajes.
+  </Expandable>
+  <Expandable title="Cotizar un embarque">
+    Embarque no tiene módulo de cotización formal. Si tu organización usa una herramienta separada para cotizar, captura el embarque solo cuando el cliente confirme. Documenta el precio pactado en el campo `precio_cliente`.
+  </Expandable>
+  <Expandable title="Crear embarque para tu cliente">
+    Sigue [Crear un embarque](/help-center/guides/crear-embarque). En **Cliente** solo verás los tuyos.
+
+    Al guardar, se asigna automáticamente al operador correspondiente del cliente.
+  </Expandable>
+  <Expandable title="Ver el estado de cuenta de un cliente">
+    Desde el detalle del cliente, abre **Estado de cuenta**. Verás todas las facturas pendientes con días vencidos y saldo total. Puedes descargarlo como PDF para enviárselo al cliente.
+  </Expandable>
+  <Expandable title="Consultar tus comisiones">
+    Reportes → Comisiones de Vendedores. Verás dos tabs:
+
+    - **Comisionables**: facturas ya cobradas, listas para que te paguen comisión.
+    - **Pendientes de comisionar**: facturas emitidas pero aún no cobradas.
+
+    Las facturas vencidas tienen **penalización escalonada**: 10% (1-30 días vencidas), 25% (31-60), 50% (61-90), 100% (más de 90).
+  </Expandable>
+  <Expandable title="Pedir cambios en datos del cliente">
+    Como vendedor puedes editar datos comerciales. Para datos fiscales o asignaciones que dependan de otros roles (operador, customer service), pide al administrador o al gerente comercial.
+  </Expandable>
+</ExpandableGroup>
+
+## Cómo evitar que te penalicen comisiones
+
+<Callout kind="warning">
+  Tu comisión se penaliza si la factura se vence sin cobrarse. Las penalizaciones son escalonadas y, pasando 90 días, **pierdes la comisión completa**. Cuidar la cobranza no es opcional.
+</Callout>
+
+<Steps>
+  <Step title="Verifica datos del cliente al alta" icon="check">
+    Email de facturación correcto, condiciones de pago, persona de cobranza identificada.
+  </Step>
+  <Step title="Asegúrate de que reciba la factura" icon="send">
+    Coordina con Finanzas que se envíe el día del timbrado y verifica recepción.
+  </Step>
+  <Step title="Da seguimiento antes del vencimiento" icon="clock">
+    No esperes a que se venza. Llama 5 días antes y confirma fecha de pago.
+  </Step>
+  <Step title="Empuja activamente facturas vencidas" icon="alert-triangle">
+    Coordina con el equipo de cobranza de Finanzas. Cada día vencido reduce tu comisión.
+  </Step>
+</Steps>
+
+## Coordinación con otros equipos
+
+| Con quién | De qué hablan |
+|-----------|---------------|
+| **Operador** | Capacidad para nuevos embarques, alertas de operación |
+| **Customer Service** | Quejas o necesidades especiales del cliente |
+| **Finanzas** | Cobranza de tus clientes, complementos pendientes |
+| **Pricing** | Tarifas estándar para cotizar |
+| **Gerente Comercial** | Pipeline, metas, supervisión |
+
+## Métricas que te miden
+
+| Métrica | Reporte |
+|---------|---------|
+| Facturación del mes | Tu dashboard |
+| Margen promedio de tu cartera | Tu dashboard |
+| Comisiones devengadas | Comisiones de Vendedores |
+| Días vencidos promedio de tus facturas | Cartera de Clientes (filtra por ti) |
+
+---
+
+## Sección para Gerente Comercial
+
+El **Gerente Comercial** supervisa al equipo de vendedores. Si ese es tu rol, además de todo lo de arriba aplicado a tu propia cartera (si la tienes), tienes acceso a más:
+
+### Lo que tienes adicionalmente
+
+| Permiso | Para qué |
+|---------|----------|
+| `clientes.view-all` | Ver **todos los clientes** sin filtro de vendedor |
+| `embarques.view-all` | Ver todos los embarques |
+| `embarques.view-precios` | Ver precios y márgenes |
+| `embarques.aprobarCostos` | Autorizar modificaciones de costo |
+| `clientes.asignarVendedor` / `asignarCustomerService` / `asignarOperador` | Distribuir cuentas en el equipo |
+| `cxc.viewReportes` / `cxp.viewReportes` | Ver reportes financieros |
+| `reportes.comisionesPersonal` | Ver comisiones de **todo el equipo** |
+| `auditoria.view` | Ver el activity log |
+
+### Tus tareas adicionales
+
+<ExpandableGroup>
+  <Expandable title="Distribuir cuentas en el equipo" default-open="true">
+    Catálogo → Clientes. Asigna o reasigna vendedor, customer service y operador según la carga del equipo y las relaciones existentes.
+  </Expandable>
+  <Expandable title="Supervisar pipeline y resultados">
+    Dashboard general te muestra el panorama. Reportes financieros te dan el detalle: cobranza mensual, cartera de clientes, utilidades.
+  </Expandable>
+  <Expandable title="Aprobar modificaciones de costo">
+    Si Coordinador Operativo está saturado o ausente, tú también puedes autorizar. Sigue [Aprobar costos y gastos](/help-center/guides/aprobaciones-pendientes).
+  </Expandable>
+  <Expandable title="Revisar comisiones del equipo">
+    Reportes → Comisiones de Vendedores. Ves a todos los vendedores. Útil para revisiones mensuales o cierres.
+  </Expandable>
+  <Expandable title="Auditar acciones críticas">
+    Configuración → API Requests Log y Email Logs (si tienes acceso). Para verificar comportamientos sospechosos o problemas de envío de facturas.
+  </Expandable>
+</ExpandableGroup>
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Alta de cliente nuevo" icon="user-plus" href="/tutoriales/alta-cliente" horizontal>
+    Flujo completo desde captura hasta primer embarque.
+  </Card>
+  <Card title="Embarque completo end-to-end" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    Cómo se ejecuta lo que vendes.
+  </Card>
+</Columns>

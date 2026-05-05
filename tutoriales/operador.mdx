@@ -1,0 +1,175 @@
+---
+title: Tutorial completo - Operador
+description: Día a día del Operador en Embarque. Captura embarques, asigna proveedor, da seguimiento, sube documentos y prepara para facturar.
+---
+
+## Para quién es esta guía
+
+Para el rol **Operador**: el equipo que recibe pedidos del cliente, captura los embarques, los acompaña en operación y los entrega documentados al equipo de Finanzas para facturar.
+
+## Tus responsabilidades
+
+<Columns cols={2}>
+  <Card title="Capturar embarques" icon="plus">
+    Dar de alta nuevas órdenes de transporte con todos sus datos.
+  </Card>
+  <Card title="Asignar proveedor" icon="users">
+    Seleccionar al transportista, capturar tarifa y comisión.
+  </Card>
+  <Card title="Dar seguimiento" icon="map-pin">
+    Cambiar estados, capturar notas de tracking, atender retrasos.
+  </Card>
+  <Card title="Documentar" icon="file-check">
+    Subir POD, factura y Carta Porte del proveedor para preparar la facturación.
+  </Card>
+</Columns>
+
+## Permisos que tienes
+
+| Permiso | Para qué |
+|---------|----------|
+| `embarques.create` / `edit` / `viewOwn` | CRUD de embarques propios |
+| `embarques.updateStatus` | Cambiar estado del embarque |
+| `embarques.subirDocumentos` | Cargar POD, facturas y XML del proveedor |
+| `clientes.view` | Ver clientes asignados a tus operadores |
+| `proveedores.view` | Ver el catálogo de proveedores |
+| `documentos.subirPOD` / `subirFacturaProveedor` / `subirCartaPorteProveedor` | Subir cada tipo de documento |
+
+<Callout kind="info">
+  Por defecto solo ves los embarques de los **clientes a los que estás asignado** como operador. Si necesitas ver todos, pide al administrador el permiso `embarques.view-all`.
+</Callout>
+
+## Tu rutina diaria
+
+<Steps>
+  <Step title="Revisa tu dashboard" icon="layout-dashboard">
+    Al entrar, mira:
+
+    - **Embarques activos**: cuántos tienes en curso.
+    - **Embarques del día**: con recolección programada hoy.
+    - **Próximas entregas**: comprometidas en los siguientes 3 días.
+    - **Pendientes de documentar**: ya entregados pero sin POD o Carta Porte.
+  </Step>
+  <Step title="Atiende lo más urgente" icon="alert-triangle">
+    Revisa el [centro de notificaciones](/features/productividad). Suele tener avisos de:
+
+    - Embarques retrasados.
+    - PODs físicos recibidos.
+    - Documentos subidos por el proveedor.
+  </Step>
+  <Step title="Captura embarques nuevos" icon="plus">
+    Si tu vendedor o customer service te pasó solicitudes nuevas, captúralas como embarques.
+  </Step>
+  <Step title="Da seguimiento" icon="map-pin">
+    Llama al proveedor o consulta su portal para confirmar avances. Captura notas de tracking visibles para el cliente.
+  </Step>
+  <Step title="Documenta lo entregado" icon="upload">
+    Sube los PODs y XMLs que llegaron del proveedor durante el día.
+  </Step>
+  <Step title="Cambia estados" icon="play">
+    Avanza los embarques en el ciclo de vida: a **En tránsito** cuando inician, a **Entregado** al confirmar entrega, a **Documentado** cuando ya tienes todos los papeles.
+  </Step>
+</Steps>
+
+## Tareas frecuentes
+
+<ExpandableGroup>
+  <Expandable title="Crear un embarque" default-open="true">
+    Sigue [Crear un embarque](/help-center/guides/crear-embarque). Cubre todos los campos obligatorios y opcionales paso a paso.
+
+    **Cuidado con:**
+
+    - Capturar la **moneda** correcta. No es lo mismo MXN que USD.
+    - Seleccionar la **razón social emisora** correcta si tu organización maneja varias.
+    - Marcar **internacional** solo cuando realmente cruza aduana.
+  </Expandable>
+  <Expandable title="Asignar proveedor a un embarque">
+    En el detalle del embarque, en la sección de proveedores, pulsa **Agregar proveedor**.
+
+    Captura: tarifa, moneda, comisión negociada, días de crédito y si el pago va vía factoraje.
+
+    Un embarque admite **varios proveedores** (ej. uno hace el tramo nacional, otro el internacional). Cada uno se registra por separado.
+  </Expandable>
+  <Expandable title="Capturar paradas intermedias">
+    Si el embarque tiene paradas (recolectar en varios puntos, entregar en varios destinos), agrégalas como **stops** con su ubicación y fecha estimada.
+  </Expandable>
+  <Expandable title="Generar BOL y Carta de Instrucciones">
+    Antes de que el proveedor cargue, genera y envíale los documentos. Sigue [Generar BOL y carta de instrucciones](/help-center/guides/bol-carta-instrucciones).
+  </Expandable>
+  <Expandable title="Subir POD del embarque">
+    Cuando el proveedor entrega, te llega el POD por correo o por el portal del proveedor. Súbelo al detalle del embarque en la sección **Documentos → POD**.
+
+    Si el cliente exige POD físico, marca el embarque como **POD físico solicitado** y sigue el flujo en tracking.
+  </Expandable>
+  <Expandable title="Subir Carta Porte del proveedor">
+    El XML CFDI con complemento Carta Porte del proveedor se sube al embarque. El sistema extrae los datos clave automáticamente.
+
+    Si el proveedor no emite la Carta Porte (o su XML viene incompleto), activa **Carta Porte Propia** en el embarque y captura los datos manualmente.
+  </Expandable>
+  <Expandable title="Subir factura del proveedor">
+    Cuando el proveedor te factura, sube su XML al embarque. La factura recibida queda en Cuentas por Pagar lista para que Finanzas la pague.
+  </Expandable>
+  <Expandable title="Solicitar modificación de costo">
+    Si después de pactar tarifa el proveedor pide ajustar, abre el embarque, ve a la sección **Costos** y pulsa **Solicitar modificación de costo**.
+
+    Captura motivo y nuevo costo. La solicitud se enruta al Coordinador Operativo o Administrador para autorización. **Tú no puedes aprobar tu propia solicitud.**
+  </Expandable>
+  <Expandable title="Capturar gastos adicionales">
+    Maniobras, almacenaje, demoras, falsos fletes. Captúralos desde el detalle del embarque. Necesitan aprobación antes de incluirse en la factura al cliente.
+  </Expandable>
+  <Expandable title="Clonar un embarque">
+    Si vas a hacer un embarque casi idéntico a uno anterior (mismo cliente, ruta similar), abre el embarque base y pulsa **Clonar**. Pide confirmación para evitar duplicados accidentales.
+  </Expandable>
+</ExpandableGroup>
+
+## Cuándo escalas y a quién
+
+| Situación | A quién escalas |
+|-----------|-----------------|
+| Modificación de costo solicitada | Coordinador Operativo o Administrador (aprueba) |
+| Gasto adicional > tope | Coordinador Operativo o Finanzas |
+| Cliente reclama por retraso | Customer Service |
+| Problema con la factura del proveedor | Finanzas |
+| Error de timbrado tras facturar | Equipo de Finanzas (ellos cancelan/reemiten) |
+| Falla del portal del proveedor | Administrador |
+
+## Errores comunes y cómo evitarlos
+
+<ExpandableGroup>
+  <Expandable title="Olvidar marcar internacional cuando cruza aduana" default-open="true">
+    Genera errores [CP116, CP170, CP172](/help-center/troubleshooting/errores-sat) al timbrar. Verifica el tipo de servicio antes de guardar.
+  </Expandable>
+  <Expandable title="Capturar peso bruto que no cuadra con mercancías">
+    Genera error [CP149](/help-center/troubleshooting/cp149-peso). El peso total debe ser exactamente la suma de pesos individuales.
+  </Expandable>
+  <Expandable title="Olvidar subir el POD">
+    Si entregas un embarque sin POD, no se puede facturar. Aparece en el reporte **Pendientes por Documentar**.
+  </Expandable>
+  <Expandable title="Capturar el cliente equivocado">
+    Cambiar el cliente después de timbrado obliga a cancelar y reemitir. Verifica antes de guardar.
+  </Expandable>
+  <Expandable title="Asignar proveedor sin tarifa">
+    Sin tarifa no se calcula margen ni comisión. El sistema lo permite pero deja huecos en reportes financieros.
+  </Expandable>
+</ExpandableGroup>
+
+## Métricas que te miden
+
+| Métrica | Cómo se calcula | Reporte |
+|---------|-----------------|---------|
+| Embarques entregados a tiempo | Embarques con `fecha_entrega_real ≤ fecha_entrega_comprometida` | Tu dashboard |
+| Embarques documentados a tiempo | Tiempo entre **Entregado** y **Documentado** | Pendientes por Documentar |
+| Embarques sin retrasos | Embarques sin `tiene_retraso` marcado | Tu dashboard |
+
+## Siguiente paso
+
+Cuando todo está documentado, el equipo de Finanzas factura. Si quieres entender ese flujo, lee:
+
+<Columns cols={2}>
+  <Card title="Embarque completo end-to-end" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    Cómo encaja tu trabajo con el resto del proceso.
+  </Card>
+  <Card title="Tutorial de Finanzas" icon="dollar-sign" href="/tutoriales/finanzas" horizontal>
+    Lo que ellos hacen con lo que tú entregas.
+  </Card>
+</Columns>

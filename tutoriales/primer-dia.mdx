@@ -1,0 +1,130 @@
+---
+title: Primer día en Embarque
+description: Lo mínimo que necesitas saber antes de empezar a trabajar. Cubre acceso, recorrido del sistema, conceptos clave y cómo identificar tu rol.
+---
+
+## Antes de empezar
+
+Tu administrador ya creó tu cuenta y te asignó un rol. Recibiste un correo con tu contraseña inicial.
+
+<Callout kind="info">
+  Si no recibiste el correo, revisa spam. Si tampoco está ahí, pídele al administrador que reenvíe la invitación.
+</Callout>
+
+## Paso 1 — Iniciar sesión
+
+<Steps>
+  <Step title="Abre la URL del sistema" icon="log-in">
+    Tu administrador te dio la URL (por ejemplo `https://embarque.tuempresa.com`).
+  </Step>
+  <Step title="Captura tus credenciales" icon="user">
+    Email y contraseña inicial. La contraseña te la enviaron por correo.
+  </Step>
+  <Step title="Cambia tu contraseña" icon="lock">
+    En tu primer ingreso, ve a tu perfil (icono de usuario en la esquina superior derecha) y cambia la contraseña por una propia.
+  </Step>
+</Steps>
+
+## Paso 2 — Conoce tu dashboard
+
+Embarque te lleva al dashboard correspondiente a tu rol. Familiarízate con las métricas y los widgets antes de empezar a operar.
+
+<Tabs>
+  <Tab title="Operador / Coordinador" icon="truck">
+    Verás embarques activos, embarques del día, próximas entregas y pendientes de documentar.
+  </Tab>
+  <Tab title="Vendedor" icon="briefcase">
+    KPIs comerciales del mes: facturación, margen promedio, top 5 clientes.
+  </Tab>
+  <Tab title="Customer Service" icon="headphones">
+    Embarques en tránsito, retrasos y embarques recientes de tus clientes.
+  </Tab>
+  <Tab title="Finanzas / Admin" icon="shield">
+    Vista global del sistema con stats de usuarios, clientes, embarques y huecos de asignación.
+  </Tab>
+</Tabs>
+
+[Ver detalles de cada dashboard →](/features/dashboards)
+
+## Paso 3 — Aprende a moverte
+
+<Columns cols={2}>
+  <Card title="Menú lateral" icon="menu">
+    Acceso a todos los módulos: Embarques, Catálogos, Facturación, Finanzas, Reportes, Configuración.
+  </Card>
+  <Card title="Buscador global" icon="search">
+    **Ctrl+K** o **⌘+K** abre el buscador. Encuentra cualquier embarque, cliente, factura o proveedor en segundos.
+  </Card>
+  <Card title="Notificaciones" icon="bell">
+    El icono de campana en la barra superior abre el centro de notificaciones con avisos automáticos.
+  </Card>
+  <Card title="Perfil" icon="user">
+    Esquina superior derecha. Ahí cierras sesión, cambias contraseña y ves tu rol asignado.
+  </Card>
+</Columns>
+
+## Paso 4 — Conceptos clave
+
+Antes de operar, asegúrate de entender estos términos. Aparecen en todo el sistema.
+
+<ExpandableGroup>
+  <Expandable title="Embarque" default-open="true">
+    Una orden de transporte. Tiene cliente, origen, destino, mercancía y uno o varios proveedores que lo ejecutan.
+  </Expandable>
+  <Expandable title="Estados del embarque">
+    Pendiente → En tránsito → Entregado → Documentado → Facturado → Pagado. En cualquier punto antes de Pagado puede pasar a Cancelado.
+  </Expandable>
+  <Expandable title="POD (Proof of Delivery)">
+    Comprobante de entrega firmado por el consignatario. Lo sube el proveedor o el operador después de la entrega. Puede ser digital y/o físico.
+  </Expandable>
+  <Expandable title="CFDI">
+    Comprobante Fiscal Digital por Internet. Es la factura electrónica obligatoria por el SAT. Embarque emite CFDI tipo "I" (ingresos), "E" (egresos / notas de crédito) y "P" (complementos de pago).
+  </Expandable>
+  <Expandable title="Carta Porte">
+    Complemento del CFDI obligatorio para servicios de transporte. Detalla qué se mueve, quién, en qué vehículo, cuándo y cómo. Embarque emite Carta Porte 3.1.
+  </Expandable>
+  <Expandable title="PPD vs PUE">
+    Métodos de pago en CFDI. **PUE** = Pago en una Sola Exhibición (no requiere complemento). **PPD** = Pago en Parcialidades o Diferido (requiere emitir complemento de pago por cada abono).
+  </Expandable>
+  <Expandable title="Razón social emisora">
+    La entidad fiscal que timbra la factura. Embarque puede operar con varias razones sociales emisoras simultáneamente.
+  </Expandable>
+  <Expandable title="Factoraje">
+    Mecanismo donde una empresa de factoraje paga al proveedor antes del plazo de crédito de Embarque, a cambio de una comisión.
+  </Expandable>
+</ExpandableGroup>
+
+## Paso 5 — Identifica tu siguiente lectura
+
+Según tu rol, ve directo a tu tutorial completo:
+
+<Columns cols={2}>
+  <Card title="Soy Operador" icon="truck" href="/tutoriales/operador" horizontal>
+    Capturas embarques y los acompañas hasta su cierre operativo.
+  </Card>
+  <Card title="Soy Coordinador" icon="user-cog" href="/tutoriales/coordinador-operativo" horizontal>
+    Lo mismo que el operador más aprobaciones de costo y gastos.
+  </Card>
+  <Card title="Soy Vendedor" icon="briefcase" href="/tutoriales/vendedor" horizontal>
+    Tu foco son los clientes, embarques propios y comisiones.
+  </Card>
+  <Card title="Soy Customer Service" icon="headphones" href="/tutoriales/customer-service" horizontal>
+    Acompañas al cliente y atiendes problemas en operación.
+  </Card>
+  <Card title="Soy Finanzas" icon="dollar-sign" href="/tutoriales/finanzas" horizontal>
+    Facturas, cobras, pagas a proveedores y cierras mes.
+  </Card>
+  <Card title="Soy Administrador" icon="shield" href="/tutoriales/administrador" horizontal>
+    Configuras el sistema y mantienes catálogos críticos.
+  </Card>
+</Columns>
+
+## Si te bloqueas
+
+<Callout kind="tip">
+  **Si una opción no aparece** en tu menú, probablemente tu rol no tiene el permiso. Pídele al administrador que revise tus permisos.
+
+  **Si una pantalla da error**, busca el código del error en [Solución de Problemas](/help-center/troubleshooting/errores-sat) o avisa al administrador.
+
+  **Si tienes dudas conceptuales**, las [Preguntas Frecuentes](/help-center/faq/acceso-cuenta) cubren los casos más típicos.
+</Callout>

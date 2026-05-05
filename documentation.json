@@ -100,6 +100,82 @@
         ]
       },
       {
+        "tab": "Paso a Paso",
+        "icon": "list-checks",
+        "pages": [
+          {
+            "title": "Paso a Paso",
+            "path": "tutoriales",
+            "icon": "home"
+          },
+          {
+            "group": "Comenzar",
+            "icon": "rocket",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Primer día en Embarque",
+                "path": "tutoriales/primer-dia"
+              }
+            ]
+          },
+          {
+            "group": "Tutoriales por rol",
+            "icon": "users",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Operador",
+                "path": "tutoriales/operador"
+              },
+              {
+                "title": "Coordinador Operativo",
+                "path": "tutoriales/coordinador-operativo"
+              },
+              {
+                "title": "Vendedor",
+                "path": "tutoriales/vendedor"
+              },
+              {
+                "title": "Customer Service",
+                "path": "tutoriales/customer-service"
+              },
+              {
+                "title": "Finanzas",
+                "path": "tutoriales/finanzas"
+              },
+              {
+                "title": "Administrador",
+                "path": "tutoriales/administrador"
+              }
+            ]
+          },
+          {
+            "group": "Flujos transversales",
+            "icon": "map",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Embarque nacional completo",
+                "path": "tutoriales/embarque-completo"
+              },
+              {
+                "title": "Embarque internacional",
+                "path": "tutoriales/embarque-internacional"
+              },
+              {
+                "title": "Alta de cliente nuevo",
+                "path": "tutoriales/alta-cliente"
+              },
+              {
+                "title": "Alta de proveedor nuevo",
+                "path": "tutoriales/alta-proveedor"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Centro de Ayuda",
         "icon": "help-circle",
         "pages": [

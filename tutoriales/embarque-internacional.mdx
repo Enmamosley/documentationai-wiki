@@ -1,0 +1,177 @@
+---
+title: Embarque internacional completo
+description: Recorrido del ciclo de vida de un embarque que cruza aduana. Lo mismo que el nacional, más agente aduanal, pedimento, régimen aduanero y validaciones SAT específicas.
+---
+
+## Antes de empezar
+
+Si aún no leíste el [Embarque nacional completo](/tutoriales/embarque-completo), comienza ahí. Este tutorial cubre **solo lo adicional** del flujo internacional.
+
+<Callout kind="warning">
+  Un embarque es **internacional** cuando cruza una aduana. Si origen y destino están dentro de México sin cruce, es nacional aunque el cliente sea extranjero.
+</Callout>
+
+## Diferencias clave
+
+| Aspecto | Nacional | Internacional |
+|---------|----------|---------------|
+| Tipo de servicio | Doméstico | Internacional |
+| `TranspInternac` en Carta Porte | "No" | "Sí" |
+| Régimen aduanero | No aplica | Obligatorio |
+| Pedimento | Prohibido | Obligatorio |
+| Agente aduanal | No aplica | Casi siempre necesario |
+| `TipoMateria` y `DescripcionMateria` | Prohibidos | Permitidos según catálogo SAT |
+| Validaciones SAT extra | — | CP116, CP170, CP171, CP172 |
+
+## Catálogos que necesitas listos
+
+Antes del primer embarque internacional:
+
+<Steps>
+  <Step title="Agentes aduanales" icon="user-check">
+    El **Pricing** o **Administrador** captura agentes aduanales con su patente, RFC y datos de contacto. Sin esto no puedes operar internacionales.
+  </Step>
+  <Step title="Régimen aduanero del cliente" icon="globe">
+    Define qué régimen aduanero aplica para el embarque (importación definitiva, temporal, exportación, etc.). El catálogo SAT es `c_RegimenAduanero`.
+  </Step>
+  <Step title="Tipo de materia (si aplica)" icon="package">
+    Para mercancías específicas, captura el `TipoMateria` y `DescripcionMateria`. Solo si el catálogo SAT lo requiere para esa mercancía.
+  </Step>
+</Steps>
+
+## Fase 1 — Creación con datos internacionales
+
+**Quién:** Operador o Vendedor.
+
+<Steps>
+  <Step title="Marca el embarque como internacional" icon="globe">
+    En **Tipo de servicio**, selecciona el tipo internacional correspondiente. Esto activa los campos aduaneros en el formulario.
+  </Step>
+  <Step title="Captura datos aduaneros" icon="file-badge">
+    - **Agente aduanal**: selecciona del catálogo. Es quien tramitará el cruce.
+    - **Pedimento**: se captura cuando se conoce (puede ser después de la creación inicial).
+    - **Aduana de cruce**: catálogo SAT.
+    - **Fracción arancelaria**: para la mercancía.
+    - **Régimen aduanero**: del catálogo `c_RegimenAduanero`.
+  </Step>
+  <Step title="Completa los datos estándar" icon="check">
+    Cliente, origen, destino, mercancía, peso, etc. — igual que el nacional.
+
+    <Callout kind="info">
+      Si el origen o destino es **extranjero**, captura el domicilio sin códigos SAT (los catálogos solo aplican a domicilios mexicanos).
+    </Callout>
+  </Step>
+</Steps>
+
+## Fases 2 a 4 — Asignación, tránsito y entrega
+
+Igual que en el nacional, con dos diferencias prácticas:
+
+<ExpandableGroup>
+  <Expandable title="Más actores en tracking" default-open="true">
+    El embarque puede tener varios proveedores: uno para el tramo nacional de origen, agente aduanal para el cruce, y otro proveedor para el tramo de destino. Captura cada uno como `embarque_proveedor` y genera Carta de Instrucciones por proveedor.
+  </Expandable>
+  <Expandable title="Demoras en aduana son frecuentes">
+    El customer service comunica proactivamente cuando una unidad se detiene en aduana. Captura nota de tracking con la causa (revisión sanitaria, documentación, etc.) y la fecha estimada de liberación.
+  </Expandable>
+</ExpandableGroup>
+
+## Fase 5 — Documentación con pedimento
+
+**Quién:** Operador.
+
+<Steps>
+  <Step title="Capturar pedimento finalizado" icon="file-text">
+    Cuando el agente aduanal entrega el pedimento numerado, el operador lo captura en el detalle del embarque. Este número es obligatorio para timbrar.
+  </Step>
+  <Step title="Verifica fracción arancelaria" icon="search">
+    La fracción capturada debe coincidir con la del pedimento. Si difieren, corrige antes de avanzar.
+  </Step>
+  <Step title="Subir factura del agente aduanal" icon="receipt">
+    Si el agente aduanal cobra honorarios separados, su factura se carga al embarque como gasto adicional o como factura recibida según el modelo de costo.
+  </Step>
+  <Step title="Carta Porte del proveedor" icon="file-badge">
+    El proveedor sube su XML. El sistema valida que tenga `TranspInternac="Sí"`, régimen aduanero y pedimento correctos.
+  </Step>
+</Steps>
+
+## Fase 6 — Facturación con validaciones extra
+
+**Quién:** Finanzas.
+
+El timbrado revisa específicamente para internacionales:
+
+<ExpandableGroup>
+  <Expandable title="CP116 — RegimenesAduaneros" default-open="true">
+    El nodo `RegimenesAduaneros` es **obligatorio** en internacional. Si falta, el SAT rechaza con CP116. Verifica que el embarque tenga régimen aduanero capturado antes de timbrar.
+  </Expandable>
+  <Expandable title="CP170 — TipoMateria solo en internacional">
+    Si el embarque está bien marcado como internacional, `TipoMateria` puede aparecer en mercancías. Si por error está marcado como nacional, este campo dispara CP170.
+  </Expandable>
+  <Expandable title="CP171 — DescripcionMateria condicional">
+    Solo se permite cuando `TipoMateria="05"`. Si capturaste descripción con otro tipo, edita antes de timbrar.
+  </Expandable>
+  <Expandable title="CP172 — DocumentacionAduanera (pedimento)">
+    El pedimento es **obligatorio** en internacional. Si falta, falla. Si está en un embarque marcado como nacional por error, también falla.
+  </Expandable>
+</ExpandableGroup>
+
+[Ver detalle de CP170/CP172 →](/help-center/troubleshooting/cp170-172-internacional)
+
+## Fases 7 y 8 — Cobro y cierre
+
+Idénticas al embarque nacional. Si el cliente es extranjero, considera:
+
+<ExpandableGroup>
+  <Expandable title="RFC genérico para extranjero" default-open="true">
+    Captura el cliente con RFC genérico `XEXX010101000`, su nombre fiscal real y país de residencia. El sistema lo soporta directamente.
+  </Expandable>
+  <Expandable title="Pago en moneda extranjera">
+    Si el cliente paga en USD una factura en USD, captura el pago en USD directamente sin conversión.
+
+    Si paga en MXN una factura en USD (o viceversa), captura el tipo de cambio del día y el sistema convierte.
+  </Expandable>
+  <Expandable title="Facturación con Facturama">
+    Algunos escenarios internacionales se benefician de timbrar con Facturama en lugar de FacturAPI. La razón social emisora controla esto: si tiene `usa_facturapi = false`, se usa Facturama.
+  </Expandable>
+</ExpandableGroup>
+
+## Errores comunes en internacionales
+
+<ExpandableGroup>
+  <Expandable title="Olvidar marcar el embarque como internacional" default-open="true">
+    Síntoma al timbrar: errores CP170 y CP172 simultáneos. Solución: editar el embarque y cambiar el tipo de servicio.
+  </Expandable>
+  <Expandable title="Marcar internacional un embarque que no cruza aduana">
+    Síntoma: error CP116 (régimen aduanero faltante). Solución: corrige el tipo de servicio a doméstico.
+  </Expandable>
+  <Expandable title="Pedimento con formato incorrecto">
+    El pedimento sigue un formato específico del SAT. Si el agente aduanal lo entregó con error, pídele corrección antes de cargarlo.
+  </Expandable>
+  <Expandable title="Fracción arancelaria que no aplica">
+    La fracción del pedimento debe coincidir con el catálogo `c_FraccionArancelaria` y con la mercancía declarada. Diferencias generan rechazos.
+  </Expandable>
+  <Expandable title="Aduana de cruce inexistente">
+    Cada aduana tiene clave SAT en `c_Aduana`. Si capturas una clave inválida, falla. Usa el selector con catálogo cargado.
+  </Expandable>
+</ExpandableGroup>
+
+## Coordinación adicional
+
+| Con quién | De qué hablan |
+|-----------|---------------|
+| **Agente aduanal** | Pedimento, fracción, fecha de cruce, costos |
+| **Cliente extranjero** | Datos fiscales, RFC genérico, contactos en origen |
+| **Pricing** | Mantenimiento del catálogo de agentes aduanales |
+| **Finanzas** | Manejo de moneda, retenciones aplicables a extranjeros |
+
+## Siguiente paso
+
+<Columns cols={2}>
+  <Card title="Embarque nacional" icon="map" href="/tutoriales/embarque-completo" horizontal>
+    El flujo base sin las complicaciones aduanales.
+  </Card>
+  <Card title="Errores SAT relacionados" icon="alert-triangle" href="/help-center/troubleshooting/cp170-172-internacional" horizontal>
+    Detalle de CP170 y CP172, los más frecuentes en internacionales.
+  </Card>
+</Columns>
